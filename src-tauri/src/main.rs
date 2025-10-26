@@ -168,7 +168,20 @@ pub fn main() {
         .build(tauri::generate_context!())
         .expect("error while running wealthfolio application");
 
-    app.run(|_app_handle, _event| {});
+    app.run(|app_handle, event| {
+        if let tauri::RunEvent::Exit = event {
+            // Attempt to stop VN Fund Service on app exit
+            use tauri_plugin_shell::ShellExt;
+            if let Err(e) = app_handle.shell().command("pkill")
+                .args(["-f", "uvicorn app.main:app"])
+                .spawn()
+            {
+                log::warn!("Failed to stop VN Fund Service: {}", e);
+            } else {
+                log::info!("VN Fund Service stopped");
+            }
+        }
+    });
 }
 
 /// Spawns background tasks such as menu setup, update checks, and initial portfolio sync.
@@ -226,6 +239,24 @@ fn spawn_background_tasks(
         if let Ok(is_enabled) = update_context.settings_service().is_auto_update_check_enabled() {
             if is_enabled {
                 check_for_update(update_handle, &*instance_id_update, false).await;
+            }
+        }
+    });
+
+    // Start VN Fund Service
+    let vn_fund_handle = handle.clone();
+    spawn(async move {
+        use tauri_plugin_shell::ShellExt;
+        
+        match vn_fund_handle.shell().command("sh")
+            .args(["services/vn-fund-service/start.sh"])
+            .spawn()
+        {
+            Ok(_) => {
+                log::info!("VN Fund Service started successfully on port 8765");
+            }
+            Err(e) => {
+                log::warn!("Failed to start VN Fund Service: {}. Vietnamese fund data will not be available.", e);
             }
         }
     });

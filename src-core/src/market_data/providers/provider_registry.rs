@@ -1,6 +1,6 @@
 use crate::market_data::market_data_constants::{
     DATA_SOURCE_MANUAL, DATA_SOURCE_MARKET_DATA_APP, DATA_SOURCE_YAHOO,
-    DATA_SOURCE_ALPHA_VANTAGE, DATA_SOURCE_METAL_PRICE_API
+    DATA_SOURCE_ALPHA_VANTAGE, DATA_SOURCE_METAL_PRICE_API, DATA_SOURCE_VN_FUND
 };
 use crate::market_data::market_data_errors::MarketDataError;
 use crate::market_data::market_data_model::{
@@ -11,6 +11,7 @@ use crate::market_data::providers::market_data_provider::{AssetProfiler, MarketD
 use crate::market_data::providers::marketdata_app_provider::MarketDataAppProvider;
 use crate::market_data::providers::metal_price_api_provider::MetalPriceApiProvider;
 use crate::market_data::providers::alpha_vantage_provider::AlphaVantageProvider;
+use crate::market_data::providers::vn_fund_provider::VnFundProvider;
 use crate::market_data::providers::yahoo_provider::YahooProvider;
 use crate::secrets::SecretManager;
 use log::{debug, info, warn};
@@ -47,7 +48,8 @@ impl ProviderRegistry {
 
             let provider_id_str = &setting.id;
 
-            let api_key = if provider_id_str != DATA_SOURCE_YAHOO {
+            let api_key = if provider_id_str != DATA_SOURCE_YAHOO 
+                && provider_id_str != DATA_SOURCE_VN_FUND {
                 match SecretManager::get_secret(provider_id_str) {
                     Ok(key_opt) => key_opt,
                     Err(e) => {
@@ -120,6 +122,13 @@ impl ProviderRegistry {
                         warn!("MetalPriceApi provider '{}' (ID: {}) is enabled but requires an API key, which was not found or resolved. Skipping.", setting.name, setting.id);
                         (None, None)
                     }
+                }
+                DATA_SOURCE_VN_FUND => {
+                    let p = Arc::new(VnFundProvider::new());
+                    (
+                        Some(p.clone() as Arc<dyn MarketDataProvider + Send + Sync>),
+                        Some(p as Arc<dyn AssetProfiler + Send + Sync>),
+                    )
                 }
                 _ => {
                     warn!(
