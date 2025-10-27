@@ -1,3 +1,11 @@
+import sys
+
+# Check Python version requirement (3.9+)
+if sys.version_info < (3, 9):
+    raise RuntimeError(
+        f"Python 3.9 or higher is required. Current version: {sys.version_info.major}.{sys.version_info.minor}"
+    )
+
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from app.models import (
@@ -10,6 +18,9 @@ from app.models import (
     StockHistoryResponse,
     IndexQuoteResponse,
     IndexHistoryResponse,
+    GoldSearchResponse,
+    GoldQuoteResponse,
+    GoldHistoryResponse,
     HealthResponse,
     SearchResponse,
     SearchResult
@@ -17,6 +28,7 @@ from app.models import (
 from app.clients.fund_client import FundClient
 from app.clients.stock_client import StockClient
 from app.clients.index_client import IndexClient
+from app.clients.gold_client import GoldClient
 from app.config import HOST, PORT, CORS_ORIGINS
 import logging
 from datetime import datetime, timedelta
@@ -44,6 +56,7 @@ app.add_middleware(
 fund_client = FundClient()
 stock_client = StockClient()
 index_client = IndexClient()
+gold_client = GoldClient()
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
@@ -279,11 +292,90 @@ async def get_index_history(
         logger.error(f"Error in get_index_history: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/gold/search/VN_GOLD", response_model=GoldSearchResponse)
+async def search_gold():
+    try:
+        gold_info = gold_client.search_gold()
+        return GoldSearchResponse(**gold_info)
+    except Exception as e:
+        logger.error(f"Error in search_gold: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/gold/quote/VN_GOLD", response_model=GoldQuoteResponse)
+async def get_gold_quote():
+    try:
+        quote = gold_client.get_latest_quote()
+        
+        if not quote:
+            raise HTTPException(status_code=404, detail="Gold quote not found")
+        
+        return GoldQuoteResponse(**quote)
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in get_gold_quote: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/gold/history/VN_GOLD", response_model=GoldHistoryResponse)
+async def get_gold_history(
+    start_date: str = Query(None, description="Start date in YYYY-MM-DD format"),
+    end_date: str = Query(None, description="End date in YYYY-MM-DD format")
+):
+    try:
+        if not end_date:
+            end_date = datetime.now().strftime("%Y-%m-%d")
+        
+        if not start_date:
+            start_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
+        
+        try:
+            datetime.strptime(start_date, "%Y-%m-%d")
+            datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid date format. Use YYYY-MM-DD"
+            )
+        
+        history = gold_client.get_gold_history(start_date, end_date)
+        
+        if not history:
+            raise HTTPException(
+                status_code=404,
+                detail="No history found for VN_GOLD"
+            )
+        
+        return GoldHistoryResponse(
+            symbol="VN_GOLD",
+            history=history
+        )
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error in get_gold_history: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/search", response_model=SearchResponse)
 async def search_assets(query: str = Query(..., description="Search query for stocks, funds, or indices")):
     try:
         query_upper = query.upper()
+        query_lower = query.lower()
         results = []
+        
+        # Check for VN_GOLD queries - normalize various formats
+        gold_patterns = ["vn gold", "vn_gold", "vngold", "gold vn", "vietnam gold", "sjc gold"]
+        query_normalized = query_lower.replace("_", " ").replace("-", " ").strip()
+        
+        # Match "gold" alone or any of the patterns
+        if query_normalized == "gold" or any(pattern in query_normalized for pattern in gold_patterns):
+            results.append(SearchResult(
+                symbol="VN_GOLD",
+                name="SJC Gold Price",
+                asset_type="COMMODITY",
+                exchange="VN",
+                currency="VND",
+                data_source="VN_MARKET"
+            ))
         
         # Known Vietnamese indices
         indices = ["VNINDEX", "VN30", "HNX", "HNX30", "UPCOM"]
@@ -317,7 +409,6 @@ async def search_assets(query: str = Query(..., description="Search query for st
         # Search funds
         try:
             funds = fund_client.get_funds_list()
-            query_lower = query.lower()
             for fund in funds:
                 if query_lower in fund["symbol"].lower() or query_lower in fund["fund_name"].lower():
                     results.append(SearchResult(
@@ -353,15 +444,51 @@ async def get_history(
         if not start_date:
             start_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%d")
         
+        # Handle VN_GOLD
+        if symbol == "VN_GOLD":
+            history = gold_client.get_gold_history(start_date, end_date)
+            
+            if not history:
+                raise HTTPException(
+                    status_code=404,
+                    detail="No history found for VN_GOLD"
+                )
+            
+            return {
+                "symbol": "VN_GOLD",
+                "history": history,
+                "currency": "VND",
+                "data_source": "VN_MARKET"
+            }
+        
         indices = ["VNINDEX", "VN30", "HNX", "HNX30", "UPCOM"]
         if symbol in indices:
-            return await get_index_history(symbol, start_date, end_date)
+            result = await get_index_history(symbol, start_date, end_date)
+            # Ensure response includes all required fields
+            return {
+                "symbol": result.symbol,
+                "history": [item.dict() for item in result.history],
+                "currency": result.currency,
+                "data_source": result.data_source
+            }
         
         fund_symbols = [f["symbol"] for f in fund_client.get_funds_list()]
         if symbol in fund_symbols:
-            return await get_fund_history(symbol, start_date, end_date)
+            result = await get_fund_history(symbol, start_date, end_date)
+            return {
+                "symbol": result.symbol,
+                "history": [item.dict() for item in result.history],
+                "currency": result.currency,
+                "data_source": result.data_source
+            }
         
-        return await get_stock_history(symbol, start_date, end_date)
+        result = await get_stock_history(symbol, start_date, end_date)
+        return {
+            "symbol": result.symbol,
+            "history": [item.dict() for item in result.history],
+            "currency": result.currency,
+            "data_source": result.data_source
+        }
     except HTTPException:
         raise
     except Exception as e:
@@ -372,6 +499,15 @@ async def get_history(
 async def search_asset(symbol: str):
     try:
         symbol_upper = symbol.upper()
+        
+        # Handle VN_GOLD
+        if symbol_upper == "VN_GOLD":
+            return {
+                "symbol": "VN_GOLD",
+                "fund_name": "SJC Gold Price",
+                "currency": "VND",
+                "data_source": "VN_MARKET"
+            }
         
         indices = ["VNINDEX", "VN30", "HNX", "HNX30", "UPCOM"]
         if symbol_upper in indices:

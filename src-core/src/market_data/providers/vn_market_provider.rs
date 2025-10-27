@@ -213,7 +213,8 @@ impl MarketDataProvider for VnMarketProvider {
 impl AssetProfiler for VnMarketProvider {
     async fn get_asset_profile(&self, symbol: &str) -> Result<AssetProfile, MarketDataError> {
         let normalized_symbol = Self::normalize_symbol(symbol);
-        let url = format!("{}/search/{}", BASE_URL, normalized_symbol);
+        // Use unified search endpoint to get proper asset_type information
+        let url = format!("{}/search?query={}", BASE_URL, normalized_symbol);
         
         let response = self.client
             .get(&url)
@@ -225,21 +226,35 @@ impl AssetProfiler for VnMarketProvider {
             return Err(MarketDataError::NotFound(symbol.to_string()));
         }
 
-        let search_response: SearchResponse = response
+        let search_response: UnifiedSearchResponse = response
             .json()
             .await
             .map_err(|e| MarketDataError::ProviderError(format!("Failed to parse response: {}", e)))?;
 
+        // Get the first result (should be exact match)
+        let result = search_response.results.first()
+            .ok_or_else(|| MarketDataError::NotFound(symbol.to_string()))?;
+
+        // Map asset_type to appropriate asset_class and asset_sub_class
+        let (asset_class, asset_sub_class) = match result.asset_type.as_str() {
+            "MUTUAL_FUND" => ("Equity", "MutualFund"),
+            "STOCK" => ("Equity", "Stock"),
+            "ETF" => ("Equity", "ETF"),
+            "COMMODITY" => ("Commodity", "Commodity"),
+            "INDEX" => ("Index", "Index"),
+            _ => ("Unknown", "Unknown"),
+        };
+
         Ok(AssetProfile {
             id: None,
             isin: None,
-            symbol: search_response.symbol,
+            symbol: result.symbol.clone(),
             symbol_mapping: None,
-            name: Some(search_response.fund_name),
-            asset_type: Some("MUTUAL_FUND".to_string()),
-            asset_class: Some("Equity".to_string()),
-            asset_sub_class: Some("MutualFund".to_string()),
-            currency: search_response.currency,
+            name: Some(result.name.clone()),
+            asset_type: Some(result.asset_type.clone()),
+            asset_class: Some(asset_class.to_string()),
+            asset_sub_class: Some(asset_sub_class.to_string()),
+            currency: result.currency.clone(),
             data_source: "VN_MARKET".to_string(),
             notes: None,
             countries: None,
@@ -252,6 +267,40 @@ impl AssetProfiler for VnMarketProvider {
     }
 
     async fn search_ticker(&self, query: &str) -> Result<Vec<QuoteSummary>, MarketDataError> {
+        // Only search if query ends with .VN or matches known Vietnamese patterns
+        // This prevents conflicts with global symbols like GOLD, SILVER, etc.
+        
+        let query_upper = query.to_uppercase();
+        
+        // Blocklist of common global commodities/symbols to avoid conflicts
+        // BUT allow VN-prefixed symbols like VN_GOLD, VN_OIL, etc. to pass through
+        const GLOBAL_SYMBOLS: &[&str] = &["GOLD", "SILVER", "OIL", "GAS", "COPPER", "PLATINUM"];
+        let is_vn_prefixed = query_upper.starts_with("VN_");
+        if !is_vn_prefixed && GLOBAL_SYMBOLS.contains(&query_upper.as_str()) {
+            return Ok(Vec::new());
+        }
+        
+        let is_vn_suffix = query.ends_with(".VN") || query.ends_with(".vn");
+        let is_vn_index = matches!(query_upper.as_str(), "VNINDEX" | "VN30" | "HNX" | "HNX30" | "UPCOM" | "VN" | "VNI");
+        
+        // For 3-5 char queries, only search if it contains digits or starts with VN/HN/UP
+        // Most Vietnamese stocks are 3 chars like FPT, MBB, VNM
+        // But exclude common commodities (unless VN-prefixed)
+        let is_likely_vn_stock = query.len() >= 3 && query.len() <= 5 && 
+                                 query.chars().all(|c| c.is_ascii_alphanumeric()) &&
+                                 (query.starts_with("VN") || 
+                                  query.starts_with("HN") || 
+                                  query.starts_with("UP") ||
+                                  query.chars().any(|c| c.is_ascii_digit()) ||
+                                  query.len() == 3);  // Most VN stocks are exactly 3 chars
+        
+        // Allow VN-prefixed symbols (like VN_GOLD) to always search
+        let should_search = is_vn_prefixed || is_vn_suffix || is_vn_index || is_likely_vn_stock;
+        
+        if !should_search {
+            return Ok(Vec::new());
+        }
+        
         let url = format!("{}/search", BASE_URL);
         
         let response = self.client
@@ -293,6 +342,7 @@ impl AssetProfiler for VnMarketProvider {
                     "FUND" => ("MUTUALFUND", "Mutual Fund"),
                     "STOCK" => ("EQUITY", "Stock"),
                     "INDEX" => ("INDEX", "Index"),
+                    "COMMODITY" => ("COMMODITY", "Commodity"),
                     _ => ("OTHER", "Other"),
                 };
                 

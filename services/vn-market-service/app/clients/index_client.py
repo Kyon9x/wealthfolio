@@ -1,4 +1,4 @@
-from vnstock import Vnstock
+from vnstock import Quote
 from datetime import datetime
 from typing import List, Dict, Optional
 import logging
@@ -12,15 +12,15 @@ class IndexClient:
     
     def get_index_history(self, symbol: str, start_date: str, end_date: str) -> List[Dict]:
         try:
-            stock = Vnstock().stock(symbol=symbol, source='VCI')
-            history_df = stock.quote.history(start=start_date, end=end_date)
+            quote = Quote(symbol=symbol, source='VCI')
+            history_df = quote.history(start=start_date, end=end_date)
             
             if history_df is None or history_df.empty:
                 return []
             
             history = []
             for _, row in history_df.iterrows():
-                date_val = row.get("time")
+                date_val = row.get("time") or row.get("tradingDate")
                 if pd.isna(date_val):
                     continue
                     
@@ -34,6 +34,7 @@ class IndexClient:
                 
                 history.append({
                     "date": date_str,
+                    "nav": close_val,
                     "open": open_val,
                     "high": high_val,
                     "low": low_val,
@@ -49,14 +50,15 @@ class IndexClient:
     
     def get_latest_quote(self, symbol: str) -> Optional[Dict]:
         try:
-            stock = Vnstock().stock(symbol=symbol, source='VCI')
-            quote_df = stock.quote.history(start=datetime.now().strftime("%Y-%m-%d"), end=datetime.now().strftime("%Y-%m-%d"))
+            today = datetime.now().strftime("%Y-%m-%d")
+            quote = Quote(symbol=symbol, source='VCI')
+            quote_df = quote.history(start=today, end=today)
             
             if quote_df is None or quote_df.empty:
                 return None
             
             info = quote_df.iloc[-1]
-            date_val = info.get("time")
+            date_val = info.get("time") or info.get("tradingDate")
             if isinstance(date_val, pd.Timestamp):
                 date_str = date_val.strftime("%Y-%m-%d")
             else:

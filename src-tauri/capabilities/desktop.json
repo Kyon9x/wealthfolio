@@ -31,6 +31,28 @@
     "core:window:allow-set-fullscreen",
     "core:window:allow-is-fullscreen",
     "shell:allow-open",
+    "shell:allow-execute",
+    "shell:allow-spawn",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "python3",
+          "cmd": "python3",
+          "args": true
+        },
+        {
+          "name": "lsof",
+          "cmd": "lsof",
+          "args": true
+        },
+        {
+          "name": "pkill",
+          "cmd": "pkill",
+          "args": true
+        }
+      ]
+    },
     "dialog:allow-open",
     "dialog:allow-save",
     "fs:default",

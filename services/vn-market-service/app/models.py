@@ -62,6 +62,7 @@ class StockQuoteResponse(BaseModel):
 
 class StockHistoryItem(BaseModel):
     date: str
+    nav: float
     open: float
     high: float
     low: float
@@ -84,6 +85,7 @@ class IndexQuoteResponse(BaseModel):
 
 class IndexHistoryItem(BaseModel):
     date: str
+    nav: float
     open: float
     high: float
     low: float
@@ -113,4 +115,39 @@ class SearchResult(BaseModel):
 class SearchResponse(BaseModel):
     results: List[SearchResult]
     total: int
+
+class GoldSearchResponse(BaseModel):
+    symbol: str
+    name: str
+    asset_type: str
+    exchange: str
+    currency: str = "VND"
+    data_source: str = "VN_MARKET"
+
+class GoldQuoteResponse(BaseModel):
+    symbol: str
+    close: float
+    date: str
+    buy_price: Optional[float] = None
+    sell_price: Optional[float] = None
+    currency: str = "VND"
+    data_source: str = "VN_MARKET"
+
+class GoldHistoryItem(BaseModel):
+    date: str
+    nav: float
+    open: float
+    high: float
+    low: float
+    close: float
+    adjclose: float
+    volume: float = 0.0
+    buy_price: Optional[float] = None
+    sell_price: Optional[float] = None
+
+class GoldHistoryResponse(BaseModel):
+    symbol: str
+    history: List[GoldHistoryItem]
+    currency: str = "VND"
+    data_source: str = "VN_MARKET"
 

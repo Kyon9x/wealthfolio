@@ -1,4 +1,4 @@
-from vnstock.explorer.fmarket.fund import Fund
+from vnstock import Fund
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import logging

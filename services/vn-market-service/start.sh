@@ -11,13 +11,15 @@ if lsof -i :8765 > /dev/null 2>&1; then
     exit 0
 fi
 
-# Activate virtual environment if it exists (prefer .venv, fallback to venv)
+# Determine which Python to use (prefer .venv, fallback to venv, then system python3)
 if [ -d ".venv" ]; then
-    source .venv/bin/activate
+    PYTHON_BIN=".venv/bin/python"
 elif [ -d "venv" ]; then
-    source venv/bin/activate
+    PYTHON_BIN="venv/bin/python"
+else
+    PYTHON_BIN="python3"
 fi
 
-# Start the service
+# Start the service (using exec to replace the shell process)
 echo "Starting VN Market Service on http://127.0.0.1:8765"
-python3 -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --log-level info
+exec $PYTHON_BIN -m uvicorn app.main:app --host 127.0.0.1 --port 8765 --log-level info

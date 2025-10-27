@@ -30,8 +30,11 @@ REST endpoints that the Rust core can consume. It supports stocks, mutual funds,
 
 ### Prerequisites
 
-- Python 3.8 or higher
+- Python 3.12 or higher (required for vnstock 3.x compatibility)
 - pip3
+
+> **Note**: vnstock 3.x requires Python 3.12+. If you're using an older Python version, you'll need
+> to upgrade.
 
 ### Setup
 
@@ -314,10 +317,34 @@ endpoints to:
 
 ## Troubleshooting
 
+### Migration to vnstock 3.x
+
+If you're upgrading from vnstock 2.x to 3.x, note the following changes:
+
+- **Python Requirement**: vnstock 3.x requires Python 3.12 or higher
+- **API Changes**: The vnstock API has been updated. All clients (stock, fund, index) have been
+  migrated to use the new API
+- **Virtual Environment**: Recommended to create a fresh virtual environment with Python 3.12+
+
+To migrate:
+
+```bash
+# Create new virtual environment with Python 3.12+
+python3.12 -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+
+# Install updated dependencies
+pip install -r requirements.txt
+
+# Verify vnstock version
+pip list | grep vnstock  # Should show 3.2.6 or higher
+```
+
 ### Service won't start
 
-- Check Python version: `python3 --version` (need 3.8+)
+- Check Python version: `python3 --version` (need 3.10+)
 - Verify dependencies: `pip3 list | grep fastapi`
+- Verify vnstock version: `pip3 list | grep vnstock` (need 3.2.6+)
 - Check port availability: `lsof -i :8765`
 
 ### vnstock errors
