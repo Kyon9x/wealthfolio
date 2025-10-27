@@ -27,6 +27,10 @@ export const accountTypeSchema = z.enum([
 export const DataSource = {
   YAHOO: 'YAHOO',
   MANUAL: 'MANUAL',
+  VN_MARKET: 'VN_MARKET',
+  ALPHA_VANTAGE: 'ALPHA_VANTAGE',
+  METAL_PRICE_API: 'METAL_PRICE_API',
+  MARKET_DATA_APP: 'MARKET_DATA_APP',
 } as const;
 
 export type DataSource = (typeof DataSource)[keyof typeof DataSource];
@@ -35,6 +39,10 @@ export type DataSource = (typeof DataSource)[keyof typeof DataSource];
 export const dataSourceSchema = z.enum([
   DataSource.YAHOO,
   DataSource.MANUAL,
+  DataSource.VN_MARKET,
+  DataSource.ALPHA_VANTAGE,
+  DataSource.METAL_PRICE_API,
+  DataSource.MARKET_DATA_APP,
 ]);
 
 export const ImportFormat = {

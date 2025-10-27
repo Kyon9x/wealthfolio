@@ -115,6 +115,7 @@ pub struct QuoteSummary {
     pub score: f64,
     pub type_display: String,
     pub long_name: String,
+    pub data_source: String,
 }
 
 #[derive(Debug, Clone)]

@@ -19,7 +19,7 @@ import {
 import { CashBalanceWarning } from '../cash-balance-warning';
 
 export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
   const tradeTypes: ActivityTypeUI[] = [
@@ -41,7 +41,13 @@ export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
           <FormField
             control={control}
             name="assetId"
-            render={({ field }) => <AssetSymbolInput field={field} isManualAsset={isManualAsset} />}
+            render={({ field }) => (
+              <AssetSymbolInput 
+                field={field} 
+                isManualAsset={isManualAsset}
+                onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
+              />
+            )}
           />
           <div className="flex space-x-4">
             <FormField

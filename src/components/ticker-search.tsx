@@ -16,7 +16,7 @@ interface SearchProps {
   defaultValue?: string;
   value?: string;
   placeholder?: string;
-  onSelectResult: (symbol: string) => void;
+  onSelectResult: (symbol: string, dataSource?: string) => void;
   className?: string;
 }
 
@@ -121,8 +121,8 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
 
     const handleSelectResult = useCallback(
       (ticker: QuoteSummary) => {
-        onSelectResult(ticker?.symbol);
-        const displayText = ticker ? `${ticker.symbol} - ${ticker.longName}` : '';
+        onSelectResult(ticker?.symbol, ticker?.dataSource);
+        const displayText = ticker ? `${ticker.symbol} (${ticker.dataSource})` : '';
         setSearchQuery(displayText);
         setSelected(displayText);
         setOpen(false);
@@ -181,12 +181,12 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
           <Button
             variant="outline"
             role="combobox"
-            className={cn('w-full rounded-md justify-between truncate', open && 'ring-ring ring-2', className)}
+            className={cn('w-full rounded-md justify-between', open && 'ring-ring ring-2', className)}
             ref={ref}
             aria-expanded={open}
             aria-haspopup="listbox"
           >
-            {displayName}
+            <span className="min-w-0 truncate">{displayName}</span>
             <Icons.Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
           </Button>
         </PopoverTrigger>

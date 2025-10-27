@@ -110,6 +110,16 @@ impl ActivityServiceTrait for ActivityService {
             .get_or_create_asset(&activity.asset_id, Some(asset_context_currency))
             .await?;
 
+        // Update asset data source if specified in the activity
+        if let Some(ref data_source) = activity.asset_data_source {
+            if !data_source.is_empty() && data_source != &asset.data_source {
+                debug!("Updating asset {} data source to {}", activity.asset_id, data_source);
+                self.asset_service
+                    .update_asset_data_source(&activity.asset_id, data_source.clone())
+                    .await?;
+            }
+        }
+
         // Now, ensure the activity's currency field is set.
         // Priority: 1. Activity's original currency (if specified), 2. Asset's currency
         if activity.currency.is_empty() {
@@ -145,6 +155,16 @@ impl ActivityServiceTrait for ActivityService {
             .asset_service
             .get_or_create_asset(&activity.asset_id, Some(asset_context_currency))
             .await?;
+
+        // Update asset data source if specified in the activity
+        if let Some(ref data_source) = activity.asset_data_source {
+            if !data_source.is_empty() && data_source != &asset.data_source {
+                debug!("Updating asset {} data source to {}", activity.asset_id, data_source);
+                self.asset_service
+                    .update_asset_data_source(&activity.asset_id, data_source.clone())
+                    .await?;
+            }
+        }
 
         // Ensure activity currency is set
         if activity.currency.is_empty() {
@@ -282,6 +302,7 @@ impl ActivityServiceTrait for ActivityService {
                 amount: activity.amount,
                 is_draft: activity.is_draft,
                 comment: activity.comment.clone(),
+                asset_data_source: None,
             })
             .collect();
 

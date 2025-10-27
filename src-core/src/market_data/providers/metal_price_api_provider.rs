@@ -140,6 +140,7 @@ impl AssetProfiler for MetalPriceApiProvider {
                 index: "".to_string(),
                 score: calculate_score("gold", "xau", &query),
                 type_display: "".to_string(),
+                data_source: "METAL_PRICE_API".to_string(),
             });
         }
 
@@ -154,6 +155,7 @@ impl AssetProfiler for MetalPriceApiProvider {
                 index: "".to_string(),
                 score: calculate_score("silver", "xag", &query),
                 type_display: "".to_string(),
+                data_source: "METAL_PRICE_API".to_string(),
             });
         }
 
@@ -168,6 +170,7 @@ impl AssetProfiler for MetalPriceApiProvider {
                 index: "".to_string(),
                 score: calculate_score("platinum", "xpt", &query),
                 type_display: "".to_string(),
+                data_source: "METAL_PRICE_API".to_string(),
             });
         }
 
@@ -182,6 +185,7 @@ impl AssetProfiler for MetalPriceApiProvider {
                 index: "".to_string(),
                 score: calculate_score("palladium", "xpd", &query),
                 type_display: "".to_string(),
+                data_source: "METAL_PRICE_API".to_string(),
             });
         }
 
@@ -196,6 +200,7 @@ impl AssetProfiler for MetalPriceApiProvider {
                 index: "".to_string(),
                 score: calculate_score("rhodium", "xrh", &query),
                 type_display: "".to_string(),
+                data_source: "METAL_PRICE_API".to_string(),
             });
         }
 

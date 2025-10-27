@@ -1,4 +1,5 @@
 import { useFormContext } from 'react-hook-form';
+import { useRef } from 'react';
 import { AccountSelectOption } from '../activity-form';
 import { FormField } from '@wealthfolio/ui';
 import { FormItem } from '@wealthfolio/ui';
@@ -28,6 +29,8 @@ export const ConfigurationCheckbox = ({
   shouldShowSymbolLookup = true,
 }: ConfigurationCheckboxProps) => {
   const { control } = useFormContext();
+  // Track the data source before switching to MANUAL
+  const previousDataSourceRef = useRef<string>(DataSource.YAHOO);
 
   return (
     <div className="flex items-center justify-end space-x-6">
@@ -35,29 +38,45 @@ export const ConfigurationCheckbox = ({
         <FormField
           control={control}
           name="assetDataSource"
-          render={({ field }) => (
-            <FormItem className="mt-2 space-y-1">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <label
-                    htmlFor="use-lookup-checkbox"
-                    className="cursor-pointer text-sm text-muted-foreground hover:text-foreground"
-                  >
-                    Skip Symbol Lookup
-                  </label>
-                  <Checkbox
-                    id="use-lookup-checkbox"
-                    checked={field.value === DataSource.MANUAL}
-                    onCheckedChange={(checked) => {
-                      field.onChange(checked ? DataSource.MANUAL : DataSource.YAHOO);
-                    }}
-                    defaultChecked={field.value === DataSource.MANUAL}
-                    className="h-4 w-4"
-                  />
+          render={({ field }) => {
+            // Update the ref whenever the data source changes to a non-MANUAL value
+            if (field.value !== DataSource.MANUAL) {
+              previousDataSourceRef.current = field.value;
+            }
+
+            return (
+              <FormItem className="mt-2 space-y-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <label
+                      htmlFor="use-lookup-checkbox"
+                      className="cursor-pointer text-sm text-muted-foreground hover:text-foreground"
+                    >
+                      Skip Symbol Lookup
+                    </label>
+                    <Checkbox
+                      id="use-lookup-checkbox"
+                      checked={field.value === DataSource.MANUAL}
+                      onCheckedChange={(checked) => {
+                        if (checked) {
+                          // Save current data source before switching to MANUAL
+                          if (field.value !== DataSource.MANUAL) {
+                            previousDataSourceRef.current = field.value;
+                          }
+                          field.onChange(DataSource.MANUAL);
+                        } else {
+                          // Restore the previous data source
+                          field.onChange(previousDataSourceRef.current);
+                        }
+                      }}
+                      defaultChecked={field.value === DataSource.MANUAL}
+                      className="h-4 w-4"
+                    />
+                  </div>
                 </div>
-              </div>
-            </FormItem>
-          )}
+              </FormItem>
+            );
+          }}
         />
       )}
       {showCurrencyOption && (
@@ -160,7 +179,7 @@ export const CommonFields = ({ accounts }: { accounts: AccountSelectOption[] }) 
           <FormItem>
             <FormLabel>Description</FormLabel>
             <FormControl>
-              <Textarea 
+              <Textarea
                 placeholder="Add an optional description or comment for this transaction..."
                 className="resize-none"
                 rows={3}
@@ -176,7 +195,15 @@ export const CommonFields = ({ accounts }: { accounts: AccountSelectOption[] }) 
   );
 };
 
-export function AssetSymbolInput({ field, isManualAsset }: { field: any; isManualAsset: boolean }) {
+export function AssetSymbolInput({
+  field,
+  isManualAsset,
+  onDataSourceChange,
+}: {
+  field: any;
+  isManualAsset: boolean;
+  onDataSourceChange?: (dataSource: string) => void;
+}) {
   return (
     <FormItem className="-mt-2">
       <FormLabel>Symbol</FormLabel>
@@ -189,10 +216,18 @@ export function AssetSymbolInput({ field, isManualAsset }: { field: any; isManua
             onChange={(e) => field.onChange(e.target.value.toUpperCase())}
           />
         ) : (
-          <TickerSearchInput onSelectResult={field.onChange} {...field} />
+          <TickerSearchInput
+            onSelectResult={(symbol, dataSource) => {
+              field.onChange(symbol);
+              if (dataSource && onDataSourceChange) {
+                onDataSourceChange(dataSource);
+              }
+            }}
+            {...field}
+          />
         )}
       </FormControl>
       <FormMessage className="text-xs" />
     </FormItem>
   );
-} 
+}

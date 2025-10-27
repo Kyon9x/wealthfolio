@@ -115,6 +115,7 @@ pub struct NewActivity {
     pub amount: Option<Decimal>,
     pub is_draft: bool,
     pub comment: Option<String>,
+    pub asset_data_source: Option<String>,
 }
 
 impl NewActivity {
@@ -164,6 +165,7 @@ pub struct ActivityUpdate {
     pub amount: Option<Decimal>,
     pub is_draft: bool,
     pub comment: Option<String>,
+    pub asset_data_source: Option<String>,
 }
 
 impl ActivityUpdate {

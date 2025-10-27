@@ -7,7 +7,7 @@ import { MoneyInput } from '@wealthfolio/ui';
 import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
 
 export const IncomeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const activityType = watch('activityType');
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
   const shouldShowSymbolLookup = activityType === 'DIVIDEND';
@@ -35,7 +35,11 @@ export const IncomeForm = ({ accounts }: { accounts: AccountSelectOption[] }) =>
               control={control}
               name="assetId"
               render={({ field }) => (
-                <AssetSymbolInput field={field} isManualAsset={isManualAsset} />
+                <AssetSymbolInput 
+                  field={field} 
+                  isManualAsset={isManualAsset}
+                  onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
+                />
               )}
             />
             <div

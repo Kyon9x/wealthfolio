@@ -91,6 +91,7 @@ export type ActivityCreate = {
   fee?: number;
   isDraft: boolean;
   comment?: string | null;
+  assetDataSource?: string;
 }
 
 export type ActivityUpdate = ActivityCreate & { id: string };
@@ -143,9 +144,9 @@ export interface QuoteSummary {
   score: number;
   typeDisplay: string;
   longName: string;
+  dataSource: string;
   sector?: string;
   industry?: string;
-  dataSource?: boolean;
 }
 
 export interface MarketDataProviderInfo {

@@ -32,6 +32,7 @@ impl From<&YQuoteItem> for QuoteSummary {
             score: item.score,
             type_display: item.type_display.clone(),
             long_name: item.long_name.clone(),
+            data_source: "YAHOO".to_string(),
         }
     }
 }

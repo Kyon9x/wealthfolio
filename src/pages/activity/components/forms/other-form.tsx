@@ -7,7 +7,7 @@ import { MoneyInput, QuantityInput } from '@wealthfolio/ui';
 import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
 
 export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const activityType = watch('activityType');
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
@@ -66,7 +66,13 @@ export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
               <FormField
                 control={control}
                 name="assetId"
-                render={({ field }) => <AssetSymbolInput field={field} isManualAsset={isManualAsset} />}
+                render={({ field }) => (
+                  <AssetSymbolInput 
+                    field={field} 
+                    isManualAsset={isManualAsset}
+                    onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
+                  />
+                )}
               />
               {isSplitType && (
                 <FormField

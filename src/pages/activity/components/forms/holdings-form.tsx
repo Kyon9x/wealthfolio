@@ -19,7 +19,7 @@ import {
 
 
 export const HoldingsForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
-  const { control, watch } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
   const holdingTypes: ActivityTypeUI[] = [
@@ -40,7 +40,13 @@ export const HoldingsForm = ({ accounts }: { accounts: AccountSelectOption[] }) 
           <FormField
             control={control}
             name="assetId"
-            render={({ field }) => <AssetSymbolInput field={field} isManualAsset={isManualAsset} />}
+            render={({ field }) => (
+              <AssetSymbolInput 
+                field={field} 
+                isManualAsset={isManualAsset}
+                onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
+              />
+            )}
           />
           <div className="grid grid-cols-2 gap-4">
             <FormField

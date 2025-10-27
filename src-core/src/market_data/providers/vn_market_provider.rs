@@ -355,6 +355,7 @@ impl AssetProfiler for VnMarketProvider {
                     type_display: type_display.to_string(),
                     index: "".to_string(),
                     score,
+                    data_source: "VN_MARKET".to_string(),
                 }
             })
             .collect();
