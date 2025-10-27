@@ -1,4 +1,4 @@
-from vnstock import funds_listing, fund_nav_report
+from vnstock.explorer.fmarket.fund import Fund
 from datetime import datetime, timedelta
 from typing import List, Dict, Optional
 import logging
@@ -6,12 +6,13 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-class VnStockClient:
+class FundClient:
     def __init__(self):
-        self._funds_cache = None
-        self._funds_map = {}
-        self._cache_timestamp = None
+        self._funds_cache: Optional[List[Dict]] = None
+        self._funds_map: Dict[str, int] = {}
+        self._cache_timestamp: Optional[datetime] = None
         self._cache_duration = timedelta(hours=24)
+        self._fund_api = Fund()
     
     def _is_cache_valid(self) -> bool:
         if self._cache_timestamp is None:
@@ -20,14 +21,15 @@ class VnStockClient:
     
     def _refresh_funds_cache(self):
         logger.info("Fetching fresh fund list from vnstock")
-        funds_df = funds_listing()
+        funds_df = self._fund_api.listing()
         
-        funds = []
+        funds: List[Dict] = []
         self._funds_map = {}
         for _, row in funds_df.iterrows():
             fund_code = row.get("fund_code", "")
             short_name = row.get("short_name", "")
-            fund_id = int(row.get("fund_id_fmarket", 0))
+            fund_id_value = row.get("fund_id_fmarket", 0)
+            fund_id = int(fund_id_value) if fund_id_value else 0
             funds.append({
                 "symbol": short_name if short_name else fund_code,
                 "fund_name": row.get("name", ""),
@@ -49,7 +51,7 @@ class VnStockClient:
         
         try:
             self._refresh_funds_cache()
-            return self._funds_cache
+            return self._funds_cache if self._funds_cache else []
         except Exception as e:
             logger.error(f"Error fetching funds list: {e}")
             if self._funds_cache:
@@ -69,38 +71,36 @@ class VnStockClient:
     
     def search_fund_by_symbol(self, symbol: str) -> Optional[Dict]:
         try:
-            print(f"[DEBUG] search_fund_by_symbol called with symbol: {symbol}")
             fund_id = self._get_fund_id(symbol)
-            print(f"[DEBUG] Got fund_id: {fund_id}")
             if not fund_id:
                 logger.warning(f"Fund ID not found for symbol: {symbol}")
                 return None
             
-            print(f"[DEBUG] Calling fund_nav_report with fund_id: {fund_id}")
-            fund_info = fund_nav_report(fund_id)
-            print(f"[DEBUG] fund_nav_report returned: {type(fund_info)}, empty={fund_info.empty if fund_info is not None else 'N/A'}")
+            fund_info = self._fund_api.nav_report(fund_id)
             if fund_info is None or fund_info.empty:
                 return None
             
             info = fund_info.iloc[-1]
-            print(f"[DEBUG] Latest row: {info.to_dict()}")
             nav_value = info.get("nav_per_unit", 0.0)
-            print(f"[DEBUG] nav_value extracted: {nav_value}, type: {type(nav_value)}")
+            
+            fund_name = symbol
+            if self._funds_cache:
+                for fund in self._funds_cache:
+                    if fund.get("symbol", "").upper() == symbol.upper():
+                        fund_name = fund.get("fund_name", symbol)
+                        break
+            
             result = {
                 "symbol": symbol,
-                "fund_name": symbol,
+                "fund_name": fund_name,
                 "fund_type": "MUTUAL_FUND",
                 "management_company": "",
                 "inception_date": "",
                 "nav_per_unit": float(nav_value) if nav_value else 0.0,
             }
-            print(f"[DEBUG] Returning result: {result}")
             return result
         except Exception as e:
             logger.error(f"Error searching fund {symbol}: {e}")
-            print(f"[DEBUG] Exception in search_fund_by_symbol: {e}")
-            import traceback
-            traceback.print_exc()
             return None
     
     def get_fund_nav_history(self, symbol: str, start_date: str, end_date: str) -> List[Dict]:
@@ -110,7 +110,7 @@ class VnStockClient:
                 logger.warning(f"Fund ID not found for symbol: {symbol}")
                 return []
             
-            history_df = fund_nav_report(fund_id)
+            history_df = self._fund_api.nav_report(fund_id)
             
             if history_df is None or history_df.empty:
                 return []
@@ -147,7 +147,7 @@ class VnStockClient:
                 logger.warning(f"Fund ID not found for symbol: {symbol}")
                 return None
             
-            nav_df = fund_nav_report(fund_id)
+            nav_df = self._fund_api.nav_report(fund_id)
             if nav_df is None or nav_df.empty:
                 return None
             

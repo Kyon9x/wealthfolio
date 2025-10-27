@@ -9,17 +9,26 @@ use serde::Deserialize;
 use crate::market_data::providers::models::AssetProfile;
 use crate::market_data::market_data_model::DataSource;
 
-const BASE_URL: &str = "http://127.0.0.1:8081";
+const BASE_URL: &str = "http://127.0.0.1:8765";
 
-pub struct VnFundProvider {
+pub struct VnMarketProvider {
     client: Client,
 }
 
-impl VnFundProvider {
+impl VnMarketProvider {
     pub fn new() -> Self {
-        VnFundProvider {
-            client: Client::new(),
+        VnMarketProvider {
+            client: Client::builder()
+                .no_proxy()
+                .build()
+                .unwrap_or_else(|_| Client::new()),
         }
+    }
+
+    /// Normalize symbol by stripping .VN suffix for VN Market Service API calls
+    /// Example: "MBB.VN" -> "MBB", "FPT.VN" -> "FPT"
+    fn normalize_symbol(symbol: &str) -> &str {
+        symbol.strip_suffix(".VN").unwrap_or(symbol)
     }
 }
 
@@ -66,10 +75,26 @@ struct FundListResponse {
     total: usize,
 }
 
+#[derive(Debug, Deserialize)]
+struct UnifiedSearchResponse {
+    results: Vec<UnifiedSearchResult>,
+    total: usize,
+}
+
+#[derive(Debug, Deserialize)]
+struct UnifiedSearchResult {
+    symbol: String,
+    name: String,
+    asset_type: String,
+    exchange: String,
+    currency: String,
+    data_source: String,
+}
+
 #[async_trait]
-impl MarketDataProvider for VnFundProvider {
+impl MarketDataProvider for VnMarketProvider {
     fn name(&self) -> &'static str {
-        "VN_FUND"
+        "VN_MARKET"
     }
 
     fn priority(&self) -> u8 {
@@ -99,17 +124,18 @@ impl MarketDataProvider for VnFundProvider {
         _end: SystemTime,
         fallback_currency: String,
     ) -> Result<Vec<ModelQuote>, MarketDataError> {
-        let url = format!("{}/history/{}", BASE_URL, symbol);
+        let normalized_symbol = Self::normalize_symbol(symbol);
+        let url = format!("{}/history/{}", BASE_URL, normalized_symbol);
         
         let response = self.client
             .get(&url)
             .send()
             .await
-            .map_err(|e| MarketDataError::ProviderError(format!("VnFund API error: {}", e)))?;
+            .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;
 
         if !response.status().is_success() {
             let error_body = response.text().await.unwrap_or_else(|_| "Unknown error".to_string());
-            return Err(MarketDataError::ProviderError(format!("VnFund API error: {}", error_body)));
+            return Err(MarketDataError::ProviderError(format!("VnMarket API error: {}", error_body)));
         }
 
         let history_response: HistoryResponse = response
@@ -150,7 +176,7 @@ impl MarketDataProvider for VnFundProvider {
                     adjclose: close,
                     volume,
                     currency: currency.clone(),
-                    data_source: DataSource::VnFund,
+                    data_source: DataSource::VnMarket,
                     created_at: Utc::now(),
                 })
             })
@@ -184,15 +210,16 @@ impl MarketDataProvider for VnFundProvider {
 }
 
 #[async_trait]
-impl AssetProfiler for VnFundProvider {
+impl AssetProfiler for VnMarketProvider {
     async fn get_asset_profile(&self, symbol: &str) -> Result<AssetProfile, MarketDataError> {
-        let url = format!("{}/search/{}", BASE_URL, symbol);
+        let normalized_symbol = Self::normalize_symbol(symbol);
+        let url = format!("{}/search/{}", BASE_URL, normalized_symbol);
         
         let response = self.client
             .get(&url)
             .send()
             .await
-            .map_err(|e| MarketDataError::ProviderError(format!("VnFund API error: {}", e)))?;
+            .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;
 
         if !response.status().is_success() {
             return Err(MarketDataError::NotFound(symbol.to_string()));
@@ -213,7 +240,7 @@ impl AssetProfiler for VnFundProvider {
             asset_class: Some("Equity".to_string()),
             asset_sub_class: Some("MutualFund".to_string()),
             currency: search_response.currency,
-            data_source: "VN_FUND".to_string(),
+            data_source: "VN_MARKET".to_string(),
             notes: None,
             countries: None,
             categories: None,
@@ -225,52 +252,57 @@ impl AssetProfiler for VnFundProvider {
     }
 
     async fn search_ticker(&self, query: &str) -> Result<Vec<QuoteSummary>, MarketDataError> {
-        let url = format!("{}/funds", BASE_URL);
+        let url = format!("{}/search", BASE_URL);
         
         let response = self.client
             .get(&url)
+            .query(&[("query", query)])
             .send()
             .await
-            .map_err(|e| MarketDataError::ProviderError(format!("VnFund API error: {}", e)))?;
+            .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;
 
         if !response.status().is_success() {
             return Ok(Vec::new());
         }
 
-        let funds_response: FundListResponse = response
+        let search_response: UnifiedSearchResponse = response
             .json()
             .await
             .map_err(|e| MarketDataError::ProviderError(format!("Failed to parse response: {}", e)))?;
 
         let query_lower = query.to_lowercase();
         
-        let mut results: Vec<QuoteSummary> = funds_response
-            .funds
+        let mut results: Vec<QuoteSummary> = search_response
+            .results
             .into_iter()
-            .filter(|fund| {
-                let symbol_lower = fund.symbol.to_lowercase();
-                let name_lower = fund.fund_name.to_lowercase();
+            .map(|result| {
+                let symbol_lower = result.symbol.to_lowercase();
+                let name_lower = result.name.to_lowercase();
                 
-                symbol_lower.contains(&query_lower) || name_lower.contains(&query_lower)
-            })
-            .map(|fund| {
-                let score = if fund.symbol.to_lowercase() == query_lower {
+                let score = if symbol_lower == query_lower {
                     1.0
-                } else if fund.symbol.to_lowercase().starts_with(&query_lower) {
+                } else if symbol_lower.starts_with(&query_lower) {
                     0.9
-                } else if fund.fund_name.to_lowercase().contains(&query_lower) {
+                } else if name_lower.contains(&query_lower) {
                     0.7
                 } else {
                     0.5
                 };
                 
+                let (quote_type, type_display) = match result.asset_type.as_str() {
+                    "FUND" => ("MUTUALFUND", "Mutual Fund"),
+                    "STOCK" => ("EQUITY", "Stock"),
+                    "INDEX" => ("INDEX", "Index"),
+                    _ => ("OTHER", "Other"),
+                };
+                
                 QuoteSummary {
-                    symbol: fund.symbol,
-                    short_name: fund.fund_name.clone(),
-                    long_name: fund.fund_name,
-                    exchange: "VN".to_string(),
-                    quote_type: "MUTUALFUND".to_string(),
-                    type_display: "Mutual Fund".to_string(),
+                    symbol: result.symbol,
+                    short_name: result.name.clone(),
+                    long_name: result.name,
+                    exchange: result.exchange,
+                    quote_type: quote_type.to_string(),
+                    type_display: type_display.to_string(),
                     index: "".to_string(),
                     score,
                 }

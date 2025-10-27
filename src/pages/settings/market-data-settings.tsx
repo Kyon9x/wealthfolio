@@ -30,7 +30,8 @@ import { ActionConfirm } from '@wealthfolio/ui';
 
 const useApiKeyStatus = (providerId: string) => {
   const queryClient = useQueryClient();
-  const needsApiKey = providerId !== 'YAHOO' && providerId !== 'MANUAL' && providerId !== 'VN_FUND';
+  const needsApiKey =
+    providerId !== 'YAHOO' && providerId !== 'MANUAL' && providerId !== 'VN_MARKET';
 
   const { data: apiKey, isLoading } = useQuery({
     queryKey: QueryKeys.secrets.apiKey(providerId),

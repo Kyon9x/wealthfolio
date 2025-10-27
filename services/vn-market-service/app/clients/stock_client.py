@@ -1,0 +1,96 @@
+from vnstock import Vnstock
+from datetime import datetime
+from typing import List, Dict, Optional
+import logging
+import pandas as pd
+
+logger = logging.getLogger(__name__)
+
+class StockClient:
+    def __init__(self):
+        self.stock = Vnstock().stock(symbol="VN30", source='VCI')
+    
+    def get_stock_history(self, symbol: str, start_date: str, end_date: str) -> List[Dict]:
+        try:
+            self.stock = Vnstock().stock(symbol=symbol, source='VCI')
+            history_df = self.stock.quote.history(start=start_date, end=end_date)
+            
+            if history_df is None or history_df.empty:
+                return []
+            
+            history = []
+            for _, row in history_df.iterrows():
+                date_val = row.get("time")
+                if pd.isna(date_val):
+                    continue
+                    
+                date_str = date_val.strftime("%Y-%m-%d") if isinstance(date_val, pd.Timestamp) else str(date_val)
+                
+                open_val = float(row.get("open", 0.0)) if not pd.isna(row.get("open")) else 0.0
+                high_val = float(row.get("high", 0.0)) if not pd.isna(row.get("high")) else 0.0
+                low_val = float(row.get("low", 0.0)) if not pd.isna(row.get("low")) else 0.0
+                close_val = float(row.get("close", 0.0)) if not pd.isna(row.get("close")) else 0.0
+                volume_val = float(row.get("volume", 0.0)) if not pd.isna(row.get("volume")) else 0.0
+                
+                history.append({
+                    "date": date_str,
+                    "open": open_val,
+                    "high": high_val,
+                    "low": low_val,
+                    "close": close_val,
+                    "adjclose": close_val,
+                    "volume": volume_val
+                })
+            
+            return history
+        except Exception as e:
+            logger.error(f"Error fetching stock history for {symbol}: {e}")
+            return []
+    
+    def get_latest_quote(self, symbol: str) -> Optional[Dict]:
+        try:
+            self.stock = Vnstock().stock(symbol=symbol, source='VCI')
+            quote_df = self.stock.quote.history(start=datetime.now().strftime("%Y-%m-%d"), end=datetime.now().strftime("%Y-%m-%d"))
+            
+            if quote_df is None or quote_df.empty:
+                return None
+            
+            info = quote_df.iloc[-1]
+            date_val = info.get("time")
+            if isinstance(date_val, pd.Timestamp):
+                date_str = date_val.strftime("%Y-%m-%d")
+            else:
+                date_str = str(date_val) if date_val else datetime.now().strftime("%Y-%m-%d")
+            
+            close_val = float(info.get("close", 0.0)) if not pd.isna(info.get("close")) else 0.0
+            
+            return {
+                "symbol": symbol,
+                "close": close_val,
+                "date": date_str
+            }
+        except Exception as e:
+            logger.error(f"Error fetching latest quote for {symbol}: {e}")
+            return None
+    
+    def search_stock(self, symbol: str) -> Optional[Dict]:
+        try:
+            self.stock = Vnstock().stock(symbol=symbol, source='VCI')
+            overview_df = self.stock.company.overview()
+            
+            if overview_df is None or overview_df.empty:
+                return None
+            
+            info = overview_df.iloc[0]
+            company_name = str(info.get("organName", info.get("shortName", symbol)))
+            
+            return {
+                "symbol": symbol,
+                "company_name": company_name,
+                "exchange": "HOSE",
+                "industry": str(info.get("industryName", "")),
+                "company_type": ""
+            }
+        except Exception as e:
+            logger.error(f"Error searching stock {symbol}: {e}")
+            return None

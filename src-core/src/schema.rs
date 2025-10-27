@@ -188,17 +188,4 @@ diesel::joinable!(goals_allocation -> goals (goal_id));
 diesel::joinable!(quotes -> assets (symbol));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    accounts,
-    activities,
-    activity_import_profiles,
-    app_settings,
-    assets,
-    contribution_limits,
-    daily_account_valuation,
-    goals,
-    goals_allocation,
-    holdings_snapshots,
-    market_data_providers,
-    platforms,
-    quotes,
-);
+    accounts,activities,activity_import_profiles,app_settings,assets,contribution_limits,daily_account_valuation,goals,goals_allocation,holdings_snapshots,market_data_providers,platforms,quotes,);
