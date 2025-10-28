@@ -8,7 +8,7 @@ use async_trait::async_trait;
 
 use super::market_data_errors::MarketDataError;
 use super::market_data_model::{
-    LatestQuotePair, MarketDataProviderSetting, Quote, QuoteDb, UpdateMarketDataProviderSetting,
+    DataSource, LatestQuotePair, MarketDataProviderSetting, Quote, QuoteDb, UpdateMarketDataProviderSetting,
 };
 use super::market_data_traits::MarketDataRepositoryTrait;
 use crate::db::{get_connection, WriteHandle};
@@ -190,92 +190,97 @@ impl MarketDataRepositoryTrait for MarketDataRepository {
 
         let mut conn = get_connection(&self.pool)?;
 
-        // Create placeholders for both symbols and data_sources
-        let symbol_placeholders = symbol_source_pairs
+        // Build OR conditions: (symbol = ? AND data_source = ?) OR (symbol = ? AND data_source = ?) ...
+        // This ensures each (symbol, data_source) pair is matched exactly, not as a Cartesian product
+        let pair_conditions = symbol_source_pairs
             .iter()
-            .map(|_| "?")
+            .map(|_| "(q.symbol = ? AND q.data_source = ?)")
             .collect::<Vec<_>>()
-            .join(", ");
-        let source_placeholders = symbol_source_pairs
-            .iter()
-            .map(|_| "?")
-            .collect::<Vec<_>>()
-            .join(", ");
+            .join(" OR ");
         
         let sql = format!(
             "WITH RankedQuotes AS ( \
                 SELECT \
                     q.*, \
                     ROW_NUMBER() OVER (PARTITION BY q.symbol, q.data_source ORDER BY q.timestamp DESC) as rn \
-                FROM quotes q WHERE q.symbol IN ({}) AND q.data_source IN ({}) \
+                FROM quotes q WHERE {} \
             ) \
             SELECT * \
             FROM RankedQuotes \
             WHERE rn <= 2 \
             ORDER BY symbol, data_source, rn",
-            symbol_placeholders,
-            source_placeholders
+            pair_conditions
         );
 
         let mut query_builder = Box::new(sql_query(sql)).into_boxed::<Sqlite>();
 
-        // Bind symbols first
-        for (sym, _) in symbol_source_pairs {
-            query_builder = query_builder.bind::<Text, _>(sym);
-        }
-        
-        // Then bind data_sources
-        for (_, src) in symbol_source_pairs {
-            query_builder = query_builder.bind::<Text, _>(src);
+        // Bind both symbol AND data_source for each pair in sequence
+        for (sym, src) in symbol_source_pairs {
+            query_builder = query_builder
+                .bind::<Text, _>(sym)
+                .bind::<Text, _>(src);
         }
 
         let ranked_quotes_db: Vec<QuoteDb> = query_builder
             .load::<QuoteDb>(&mut conn)
             .map_err(MarketDataError::DatabaseError)?;
 
+        // Group by (symbol, data_source) composite key instead of just symbol
+        // This allows different sources for the same symbol to be handled correctly
         let mut result_map: HashMap<String, LatestQuotePair> = HashMap::new();
-        let mut current_symbol_quotes: Vec<Quote> = Vec::new();
+        let mut current_group_quotes: Vec<Quote> = Vec::new();
+        let mut current_key: Option<(String, DataSource)> = None;
 
         for quote_db in ranked_quotes_db {
             let quote = Quote::from(quote_db);
+            let key = (quote.symbol.clone(), quote.data_source.clone());
 
-            if current_symbol_quotes.is_empty() || quote.symbol == current_symbol_quotes[0].symbol {
-                current_symbol_quotes.push(quote);
+            if current_key.is_none() || current_key.as_ref() == Some(&key) {
+                current_group_quotes.push(quote);
+                current_key = Some(key);
             } else {
-                if !current_symbol_quotes.is_empty() {
-                    let latest_quote = current_symbol_quotes.remove(0);
-                    let previous_quote = if !current_symbol_quotes.is_empty() {
-                        Some(current_symbol_quotes.remove(0))
-                    } else {
-                        None
-                    };
-                    result_map.insert(
-                        latest_quote.symbol.clone(),
-                        LatestQuotePair {
-                            latest: latest_quote,
-                            previous: previous_quote,
-                        },
-                    );
+                // Process accumulated quotes for previous group
+                if let Some((sym, _)) = current_key {
+                    if !current_group_quotes.is_empty() {
+                        let latest_quote = current_group_quotes.remove(0);
+                        let previous_quote = if !current_group_quotes.is_empty() {
+                            Some(current_group_quotes.remove(0))
+                        } else {
+                            None
+                        };
+                        result_map.insert(
+                            sym,
+                            LatestQuotePair {
+                                latest: latest_quote,
+                                previous: previous_quote,
+                            },
+                        );
+                    }
                 }
-                current_symbol_quotes.clear();
-                current_symbol_quotes.push(quote);
+                // Start new group
+                current_group_quotes.clear();
+                current_group_quotes.push(quote);
+                current_key = Some(key);
             }
         }
 
-        if !current_symbol_quotes.is_empty() {
-            let latest_quote = current_symbol_quotes.remove(0);
-            let previous_quote = if !current_symbol_quotes.is_empty() {
-                Some(current_symbol_quotes.remove(0))
-            } else {
-                None
-            };
-            result_map.insert(
-                latest_quote.symbol.clone(),
-                LatestQuotePair {
-                    latest: latest_quote,
-                    previous: previous_quote,
-                },
-            );
+        // Handle final group
+        if let Some((sym, _)) = current_key {
+            if !current_group_quotes.is_empty() {
+                let latest_quote = current_group_quotes.remove(0);
+                let previous_quote = if !current_group_quotes.is_empty() {
+                    Some(current_group_quotes.remove(0))
+                } else {
+                    None
+                };
+                result_map.insert(
+                    sym,
+                    LatestQuotePair {
+                        latest: latest_quote,
+                        previous: previous_quote,
+                    },
+                );
+            }
         }
 
         Ok(result_map)
