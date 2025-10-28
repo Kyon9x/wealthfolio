@@ -220,13 +220,13 @@ impl MarketDataRepositoryTrait for MarketDataRepository {
         let mut query_builder = Box::new(sql_query(sql)).into_boxed::<Sqlite>();
 
         // Bind symbols first
-        for (symbol, _) in symbol_source_pairs {
-            query_builder = query_builder.bind::<Text, _>(symbol);
+        for (sym, _) in symbol_source_pairs {
+            query_builder = query_builder.bind::<Text, _>(sym);
         }
         
         // Then bind data_sources
-        for (_, data_source) in symbol_source_pairs {
-            query_builder = query_builder.bind::<Text, _>(data_source);
+        for (_, src) in symbol_source_pairs {
+            query_builder = query_builder.bind::<Text, _>(src);
         }
 
         let ranked_quotes_db: Vec<QuoteDb> = query_builder

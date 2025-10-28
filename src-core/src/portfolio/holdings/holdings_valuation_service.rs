@@ -67,8 +67,10 @@ impl HoldingsValuationService {
             .iter()
             .filter_map(|holding| {
                 if holding.holding_type == HoldingType::Security {
-                    holding.instrument.as_ref().map(|inst| {
-                        (inst.symbol.clone(), inst.data_source.clone())
+                    holding.instrument.as_ref().and_then(|inst| {
+                        inst.data_source.as_ref().map(|ds| {
+                            (inst.symbol.clone(), ds.clone())
+                        })
                     })
                 } else {
                     None // Skip cash holdings
