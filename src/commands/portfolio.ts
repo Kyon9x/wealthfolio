@@ -7,7 +7,6 @@ import {
   SimplePerformanceMetrics,
 } from '@/lib/types';
 
-
 export const updatePortfolio = async (): Promise<void> => {
   try {
     switch (getRunEnv()) {
@@ -77,7 +76,10 @@ export const getHistoricalValuations = async (
         if (startDate) params.startDate = startDate;
         if (endDate) params.endDate = endDate;
 
-        return invokeTauri('get_historical_valuations', Object.keys(params).length > 0 ? params : undefined);
+        return invokeTauri(
+          'get_historical_valuations',
+          Object.keys(params).length > 0 ? params : undefined,
+        );
       default:
         throw new Error(`Unsupported`);
     }
@@ -106,6 +108,7 @@ export const calculatePerformanceHistory = async (
   itemId: string,
   startDate: string,
   endDate: string,
+  dataSource?: string,
 ): Promise<PerformanceMetrics> => {
   try {
     const response = await invokeTauri('calculate_performance_history', {
@@ -113,12 +116,15 @@ export const calculatePerformanceHistory = async (
       itemId,
       startDate,
       endDate,
+      dataSource,
     });
-    
+
     if (typeof response === 'string' || !response || Object.keys(response).length === 0) {
-      throw new Error(typeof response === 'string' ? response : 'Failed to calculate performance history');
+      throw new Error(
+        typeof response === 'string' ? response : 'Failed to calculate performance history',
+      );
     }
-    
+
     return response as PerformanceMetrics;
   } catch (error) {
     logger.error('Error calculating performance history.');
@@ -153,12 +159,12 @@ export const calculatePerformanceSummary = async ({
 
     const response = await invokeTauri<PerformanceMetrics>(
       'calculate_performance_summary',
-      args as unknown as Record<string, unknown>
+      args as unknown as Record<string, unknown>,
     );
 
     if (!response || typeof response !== 'object' || !response.id) {
       logger.error(
-        `Invalid data received from calculate_performance_summary. Response: ${JSON.stringify(response)}`
+        `Invalid data received from calculate_performance_summary. Response: ${JSON.stringify(response)}`,
       );
       throw new Error('Received invalid performance summary data from backend.');
     }
@@ -167,9 +173,11 @@ export const calculatePerformanceSummary = async ({
   } catch (error) {
     const errorString = error instanceof Error ? error.message : JSON.stringify(error);
     logger.error(
-      `Failed to fetch performance summary for ${itemType} ${itemId}. Error: ${errorString}`
+      `Failed to fetch performance summary for ${itemType} ${itemId}. Error: ${errorString}`,
     );
-    throw error instanceof Error ? error : new Error('An unknown error occurred while fetching performance summary');
+    throw error instanceof Error
+      ? error
+      : new Error('An unknown error occurred while fetching performance summary');
   }
 };
 
@@ -189,10 +197,7 @@ export const calculateAccountsSimplePerformance = async (
   }
 };
 
-export const getHolding = async (
-  accountId: string,
-  assetId: string
-): Promise<Holding | null> => {
+export const getHolding = async (accountId: string, assetId: string): Promise<Holding | null> => {
   try {
     switch (getRunEnv()) {
       case RUN_ENV.DESKTOP:
@@ -208,8 +213,3 @@ export const getHolding = async (
     // return null;
   }
 };
-
-
-
-
-

@@ -13,7 +13,7 @@ use super::market_data_model::{
 use super::market_data_traits::MarketDataRepositoryTrait;
 use crate::db::{get_connection, WriteHandle};
 use crate::errors::Result;
-use crate::schema::quotes::dsl::{quotes, symbol, timestamp};
+use crate::schema::quotes::dsl::{quotes, symbol, timestamp, data_source};
 use diesel::sql_query;
 use diesel::sql_types::Text;
 use diesel::sqlite::Sqlite;
@@ -48,11 +48,12 @@ impl MarketDataRepositoryTrait for MarketDataRepository {
             .collect())
     }
 
-    fn get_historical_quotes_for_symbol(&self, input_symbol: &str) -> Result<Vec<Quote>> {
+    fn get_historical_quotes_for_symbol(&self, input_symbol: &str, input_data_source: &str) -> Result<Vec<Quote>> {
         let mut conn = get_connection(&self.pool)?;
 
         Ok(quotes
             .filter(symbol.eq(input_symbol))
+            .filter(data_source.eq(input_data_source))
             .order(timestamp.desc())
             .load::<QuoteDb>(&mut conn)
             .map_err(MarketDataError::DatabaseError)?
@@ -181,37 +182,51 @@ impl MarketDataRepositoryTrait for MarketDataRepository {
 
     fn get_latest_quotes_pair_for_symbols(
         &self,
-        input_symbols: &[String],
+        symbol_source_pairs: &[(String, String)],
     ) -> Result<HashMap<String, LatestQuotePair>> {
-        if input_symbols.is_empty() {
+        if symbol_source_pairs.is_empty() {
             return Ok(HashMap::new());
         }
 
         let mut conn = get_connection(&self.pool)?;
 
-        let placeholders = input_symbols
+        // Create placeholders for both symbols and data_sources
+        let symbol_placeholders = symbol_source_pairs
             .iter()
             .map(|_| "?")
             .collect::<Vec<_>>()
             .join(", ");
+        let source_placeholders = symbol_source_pairs
+            .iter()
+            .map(|_| "?")
+            .collect::<Vec<_>>()
+            .join(", ");
+        
         let sql = format!(
             "WITH RankedQuotes AS ( \
                 SELECT \
                     q.*, \
-                    ROW_NUMBER() OVER (PARTITION BY q.symbol ORDER BY q.timestamp DESC) as rn \
-                FROM quotes q  WHERE q.symbol IN ({}) \
+                    ROW_NUMBER() OVER (PARTITION BY q.symbol, q.data_source ORDER BY q.timestamp DESC) as rn \
+                FROM quotes q WHERE q.symbol IN ({}) AND q.data_source IN ({}) \
             ) \
             SELECT * \
             FROM RankedQuotes \
             WHERE rn <= 2 \
-            ORDER BY symbol, rn",
-            placeholders
+            ORDER BY symbol, data_source, rn",
+            symbol_placeholders,
+            source_placeholders
         );
 
         let mut query_builder = Box::new(sql_query(sql)).into_boxed::<Sqlite>();
 
-        for symbol_val in input_symbols {
-            query_builder = query_builder.bind::<Text, _>(symbol_val);
+        // Bind symbols first
+        for (symbol, _) in symbol_source_pairs {
+            query_builder = query_builder.bind::<Text, _>(symbol);
+        }
+        
+        // Then bind data_sources
+        for (_, data_source) in symbol_source_pairs {
+            query_builder = query_builder.bind::<Text, _>(data_source);
         }
 
         let ranked_quotes_db: Vec<QuoteDb> = query_builder

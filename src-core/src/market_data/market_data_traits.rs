@@ -16,8 +16,8 @@ pub trait MarketDataServiceTrait: Send + Sync {
         symbols: &[String],
     ) -> Result<HashMap<String, Quote>>;
     fn get_all_historical_quotes(&self) -> Result<HashMap<String, Vec<(NaiveDate, Quote)>>>;
-    async fn get_asset_profile(&self, symbol: &str) -> Result<AssetProfile>;
-    fn get_historical_quotes_for_symbol(&self, symbol: &str) -> Result<Vec<Quote>>;
+    async fn get_asset_profile(&self, symbol: &str, data_source: Option<String>) -> Result<AssetProfile>;
+    fn get_historical_quotes_for_symbol(&self, symbol: &str, data_source: &str) -> Result<Vec<Quote>>;
     async fn add_quote(&self, quote: &Quote) -> Result<Quote>;
     async fn update_quote(&self, quote: Quote) -> Result<Quote>;
     async fn delete_quote(&self, quote_id: &str) -> Result<()>;
@@ -26,12 +26,13 @@ pub trait MarketDataServiceTrait: Send + Sync {
         symbol: &str,
         start_date: NaiveDate,
         end_date: NaiveDate,
+        data_source: Option<String>,
     ) -> Result<Vec<Quote>>;
-    async fn sync_market_data(&self) -> Result<((), Vec<(String, String)>)>;
-    async fn resync_market_data(&self, symbols: Option<Vec<String>>) -> Result<((), Vec<(String, String)>)>;
+    async fn sync_market_data(&self) -> Result<((), Vec<(String, String, Option<String>)>)>;
+    async fn resync_market_data(&self, symbols: Option<Vec<String>>) -> Result<((), Vec<(String, String, Option<String>)>)>;
     fn get_latest_quotes_pair_for_symbols(
         &self,
-        symbols: &[String],
+        symbol_source_pairs: &[(String, String)],
     ) -> Result<HashMap<String, LatestQuotePair>>;
     fn get_historical_quotes_for_symbols_in_range(
         &self,
@@ -60,7 +61,7 @@ pub trait MarketDataServiceTrait: Send + Sync {
 #[async_trait]
 pub trait MarketDataRepositoryTrait {
     fn get_all_historical_quotes(&self) -> Result<Vec<Quote>>;
-    fn get_historical_quotes_for_symbol(&self, symbol: &str) -> Result<Vec<Quote>>;
+    fn get_historical_quotes_for_symbol(&self, symbol: &str, data_source: &str) -> Result<Vec<Quote>>;
     async fn save_quotes(&self, quotes: &[Quote]) -> Result<()>;
     async fn save_quote(&self, quote: &Quote) -> Result<Quote>;
     async fn delete_quote(&self, quote_id: &str) -> Result<()>;
@@ -73,7 +74,7 @@ pub trait MarketDataRepositoryTrait {
     ) -> Result<HashMap<String, Quote>>;
     fn get_latest_quotes_pair_for_symbols(
         &self,
-        symbols: &[String],
+        symbol_source_pairs: &[(String, String)],
     ) -> Result<HashMap<String, LatestQuotePair>>;
     fn get_historical_quotes_for_symbols_in_range(
         &self,

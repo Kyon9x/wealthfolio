@@ -10,11 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { EmptyPlaceholder } from '@/components/ui/empty-placeholder';
 import { Icons } from '@/components/ui/icons';
-import {
-  Tooltip as Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+import { Tooltip as Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePersistentState } from '@/hooks/use-persistent-state';
 
 type ReturnType = 'daily' | 'total';
@@ -253,6 +249,20 @@ export function PortfolioComposition({ holdings, isLoading }: PortfolioCompositi
     setDisplayMode((prev) => (prev === 'symbol' ? 'name' : 'symbol'));
   };
   const data = useMemo(() => {
+    // DEBUG POINT 3A - Input data
+    console.log('[CompositionChart] Input holdings:', {
+      count: holdings.length,
+      sample: holdings.slice(0, 3).map((h) => ({
+        symbol: h.instrument?.symbol,
+        holdingType: h.holdingType,
+        marketValue: h.marketValue,
+        marketValueBase: h.marketValue?.base,
+        rawMarketValue: JSON.stringify(h.marketValue),
+        dayChangePct: h.dayChangePct,
+        totalGainPct: h.totalGainPct,
+      })),
+    });
+
     let maxGain = -Infinity;
     let minGain = Infinity;
 
@@ -260,7 +270,14 @@ export function PortfolioComposition({ holdings, isLoading }: PortfolioCompositi
     const processedData = holdings
       .map((holding) => {
         const symbol = holding.instrument?.symbol;
-        if (!symbol) return null; // Skip if no symbol
+        if (!symbol) {
+          // DEBUG - Log filtered out holdings
+          console.log('[CompositionChart] FILTERED OUT - No symbol:', {
+            id: holding.id,
+            holdingType: holding.holdingType,
+          });
+          return null;
+        }
 
         const gain =
           returnType === 'daily'
@@ -270,7 +287,19 @@ export function PortfolioComposition({ holdings, isLoading }: PortfolioCompositi
         const marketValue = Number(holding.marketValue?.base) || 0;
 
         // Basic validation
-        if (isNaN(gain) || isNaN(marketValue) || marketValue <= 0) return null;
+        if (isNaN(gain) || isNaN(marketValue) || marketValue <= 0) {
+          // DEBUG - Log filtered out holdings
+          console.log('[CompositionChart] FILTERED OUT - Invalid data:', {
+            symbol,
+            gain,
+            marketValue,
+            rawMarketValue: holding.marketValue,
+            isNaNGain: isNaN(gain),
+            isNaNMarketValue: isNaN(marketValue),
+            marketValueLteZero: marketValue <= 0,
+          });
+          return null;
+        }
 
         // Update min/max gain across all valid holdings
         maxGain = Math.max(maxGain, gain);
@@ -292,6 +321,15 @@ export function PortfolioComposition({ holdings, isLoading }: PortfolioCompositi
         maxGain,
         minGain,
       }));
+
+    // DEBUG POINT 3B - Output data
+    console.log('[CompositionChart] Processed data:', {
+      beforeFiltering: holdings.length,
+      afterFiltering: processedData.length,
+      maxGain,
+      minGain,
+      sample: processedData.slice(0, 3),
+    });
 
     // Sort by market value after processing all holdings
     processedData.sort((a, b) => b.marketValueConverted - a.marketValueConverted);

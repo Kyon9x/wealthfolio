@@ -216,7 +216,53 @@ impl ProviderRegistry {
         start: SystemTime,
         end: SystemTime,
         fallback_currency: String,
+        data_source: Option<String>,
     ) -> Result<Vec<ModelQuote>, MarketDataError> {
+        // If a preferred data source is specified, try it first
+        if let Some(ref preferred_source) = data_source {
+            if let Some((provider_id, provider)) = self.get_enabled_providers()
+                .into_iter()
+                .find(|(id, _)| id.as_str() == preferred_source.as_str())
+            {
+                debug!(
+                    "Attempting to use preferred provider '{}' for symbol '{}'",
+                    provider_id, symbol
+                );
+                match provider
+                    .get_historical_quotes(symbol, start, end, fallback_currency.clone())
+                    .await
+                {
+                    Ok(q_vec) if !q_vec.is_empty() => {
+                        debug!(
+                            "Successfully retrieved {} quotes from preferred provider '{}'",
+                            q_vec.len(), provider_id
+                        );
+                        return Ok(q_vec);
+                    }
+                    Ok(_) => info!(
+                        "Preferred provider '{}' returned no historical quotes for symbol '{}'. Falling back to other providers.",
+                        provider_id, symbol
+                    ),
+                    Err(MarketDataError::NoData) => {
+                        info!(
+                            "Preferred provider '{}' reported no data for symbol '{}'. Falling back to other providers.",
+                            provider_id, symbol
+                        );
+                    }
+                    Err(e) => warn!(
+                        "Preferred provider '{}' failed for symbol '{}': {:?}. Falling back to other providers.",
+                        provider_id, symbol, e
+                    ),
+                }
+            } else {
+                warn!(
+                    "Preferred provider '{}' not found or not enabled. Using fallback providers.",
+                    preferred_source
+                );
+            }
+        }
+
+        // Fallback: try all enabled providers
         for (provider_id, p) in self.get_enabled_providers() {
             match p
                 .get_historical_quotes(symbol, start, end, fallback_currency.clone())
@@ -245,10 +291,10 @@ impl ProviderRegistry {
 
     pub async fn historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         start: SystemTime,
         end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError> {
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError> {
         if self.ordered_data_provider_ids.is_empty() {
             warn!("No data providers available for historical_quotes_bulk.");
             return Ok((vec![], symbols_with_currencies.to_vec()));
@@ -304,10 +350,54 @@ impl ProviderRegistry {
     pub async fn get_asset_profile(
         &self,
         symbol: &str,
+        data_source: Option<String>,
     ) -> Result<super::models::AssetProfile, MarketDataError> {
+        // If a preferred data source is specified, try it first
+        if let Some(ref preferred_source) = data_source {
+            if let Some((profiler_id, profiler)) = self
+                .get_enabled_profilers()
+                .into_iter()
+                .find(|(id, _)| id.as_str() == preferred_source.as_str())
+            {
+                debug!(
+                    "Attempting to use preferred profiler '{}' for symbol '{}'",
+                    profiler_id, symbol
+                );
+                match profiler.get_asset_profile(symbol).await {
+                    Ok(mut profile) => {
+                        profile.data_source = profiler_id.clone();
+                        debug!(
+                            "Successfully retrieved profile from preferred profiler '{}'",
+                            profiler_id
+                        );
+                        return Ok(profile);
+                    }
+                    Err(MarketDataError::NoData) => {
+                        info!(
+                            "Preferred profiler '{}' reported no data for symbol '{}'. Falling back to other profilers.",
+                            profiler_id, symbol
+                        );
+                    }
+                    Err(e) => warn!(
+                        "Preferred profiler '{}' failed for symbol '{}': {:?}. Falling back to other profilers.",
+                        profiler_id, symbol, e
+                    ),
+                }
+            } else {
+                warn!(
+                    "Preferred profiler '{}' not found or not enabled. Falling back to priority order.",
+                    preferred_source
+                );
+            }
+        }
+
+        // Fall back to priority-ordered iteration
         for (profiler_id, profiler) in self.get_enabled_profilers() {
             match profiler.get_asset_profile(symbol).await {
-                Ok(profile) => return Ok(profile),
+                Ok(mut profile) => {
+                    profile.data_source = profiler_id.clone();
+                    return Ok(profile);
+                }
                 Err(e) => warn!(
                     "Profiler '{}' failed to get asset profile for symbol '{}': {:?}. Trying next.",
                     profiler_id, symbol, e

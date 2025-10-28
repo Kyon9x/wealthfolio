@@ -73,16 +73,15 @@ export const AssetProfilePage = () => {
     dataSource: DataSource.MANUAL,
   });
 
-
-   const {
-     data: assetProfile,
-     isLoading: isAssetProfileLoading,
-     isError: isAssetProfileError,
-   } = useQuery<Asset | null, Error>({
-     queryKey: [QueryKeys.ASSET_DATA, symbol],
-     queryFn: () => getAssetProfile(symbol),
-     enabled: !!symbol,
-   });
+  const {
+    data: assetProfile,
+    isLoading: isAssetProfileLoading,
+    isError: isAssetProfileError,
+  } = useQuery<Asset | null, Error>({
+    queryKey: [QueryKeys.ASSET_DATA, symbol],
+    queryFn: () => getAssetProfile(symbol),
+    enabled: !!symbol,
+  });
 
   const {
     data: holding,
@@ -100,7 +99,8 @@ export const AssetProfilePage = () => {
     isError: isQuotesError,
   } = useQuoteHistory({
     symbol,
-    enabled: !!symbol,
+    dataSource: assetProfile?.dataSource as DataSource | undefined,
+    enabled: !!symbol && !!assetProfile?.dataSource,
   });
 
   const quote = useMemo(() => {
@@ -235,7 +235,6 @@ export const AssetProfilePage = () => {
 
   const isLoading = isHoldingLoading || isQuotesLoading || isAssetProfileLoading;
 
-
   if (isLoading)
     return (
       <ApplicationShell className="flex items-center justify-center p-6">
@@ -315,18 +314,21 @@ export const AssetProfilePage = () => {
       <Tabs defaultValue={defaultTab} className="space-y-4">
         {/* Custom Header with Editable Title */}
         <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-2 flex-1">
+          <div className="flex flex-1 items-center gap-2">
             <Link to={location.state?.from || '/holdings?tab=holdings'}>
               <Button variant="ghost" size="icon">
                 <Icons.ArrowLeft />
               </Button>
             </Link>
-            <div data-tauri-drag-region="true" className="draggable flex items-center space-x-4 flex-1">
+            <div
+              data-tauri-drag-region="true"
+              className="draggable flex flex-1 items-center space-x-4"
+            >
               {(profile?.symbol || holding?.instrument?.symbol) && (
                 <>
-                  <TickerAvatar 
-                    symbol={profile?.symbol || holding?.instrument?.symbol || symbol} 
-                    className="w-8 h-8"
+                  <TickerAvatar
+                    symbol={profile?.symbol || holding?.instrument?.symbol || symbol}
+                    className="h-8 w-8"
                   />
                   <h1 className="font-heading text-xl font-bold tracking-tight text-muted-foreground">
                     {profile?.symbol || holding?.instrument?.symbol}
@@ -334,15 +336,13 @@ export const AssetProfilePage = () => {
                   <span className="h-6 border-l-2"></span>
                 </>
               )}
-              <div className="group relative flex items-center flex-1">
+              <div className="group relative flex flex-1 items-center">
                 {isEditingTitle ? (
                   <Input
                     value={formData.name}
-                    onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, name: e.target.value }))
-                    }
+                    onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                     placeholder="Enter asset name"
-                    className="font-heading text-xl font-bold tracking-tight w-full max-w-md"
+                    className="font-heading w-full max-w-md text-xl font-bold tracking-tight"
                     onBlur={() => {
                       setIsEditingTitle(false);
                       handleSaveTitle();
@@ -592,42 +592,42 @@ export const AssetProfilePage = () => {
         )}
 
         {/* History/Quotes Content: Requires quoteHistory */}
-          <TabsContent value="history" className="space-y-16 pt-6">
-            <QuoteHistoryTable
-              data={quoteHistory ?? []}
-              isManualDataSource={formData.dataSource === DataSource.MANUAL}
-              onSaveQuote={(quote: Quote) => {
-                let updatedQuote = { ...quote };
-                // Generate id if missing
-                if (!updatedQuote.id) {
-                  const datePart = new Date(updatedQuote.timestamp)
-                    .toISOString()
-                    .slice(0, 10)
-                    .replace(/-/g, '');
-                  updatedQuote.id = `${datePart}_${symbol.toUpperCase()}`;
-                }
-                // Set currency if missing
-                if (!updatedQuote.currency) {
-                  updatedQuote.currency = profile?.currency || 'USD';
-                }
-                saveQuoteMutation.mutate(updatedQuote);
-              }}
-              onDeleteQuote={(id: string) => deleteQuoteMutation.mutate(id)}
-              onChangeDataSource={(isManual) => {
-                // Only allow changing data source if there's a profile/holding to update
-                if (profile) {
-                  updateAssetDataSourceMutation.mutate({
-                    symbol,
-                    dataSource: isManual ? DataSource.MANUAL : DataSource.YAHOO,
-                  });
-                  setFormData((prev) => ({
-                    ...prev,
-                    dataSource: isManual ? DataSource.MANUAL : DataSource.YAHOO,
-                  }));
-                }
-              }}
-            />
-          </TabsContent>
+        <TabsContent value="history" className="space-y-16 pt-6">
+          <QuoteHistoryTable
+            data={quoteHistory ?? []}
+            isManualDataSource={formData.dataSource === DataSource.MANUAL}
+            onSaveQuote={(quote: Quote) => {
+              let updatedQuote = { ...quote };
+              // Generate id if missing
+              if (!updatedQuote.id) {
+                const datePart = new Date(updatedQuote.timestamp)
+                  .toISOString()
+                  .slice(0, 10)
+                  .replace(/-/g, '');
+                updatedQuote.id = `${datePart}_${symbol.toUpperCase()}`;
+              }
+              // Set currency if missing
+              if (!updatedQuote.currency) {
+                updatedQuote.currency = profile?.currency || 'USD';
+              }
+              saveQuoteMutation.mutate(updatedQuote);
+            }}
+            onDeleteQuote={(id: string) => deleteQuoteMutation.mutate(id)}
+            onChangeDataSource={(isManual) => {
+              // Only allow changing data source if there's a profile/holding to update
+              if (profile) {
+                updateAssetDataSourceMutation.mutate({
+                  symbol,
+                  dataSource: isManual ? DataSource.MANUAL : DataSource.YAHOO,
+                });
+                setFormData((prev) => ({
+                  ...prev,
+                  dataSource: isManual ? DataSource.MANUAL : DataSource.YAHOO,
+                }));
+              }
+            }}
+          />
+        </TabsContent>
       </Tabs>
     </ApplicationShell>
   );

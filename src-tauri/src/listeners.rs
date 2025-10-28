@@ -270,5 +270,5 @@ fn handle_portfolio_calculation(
 
 #[derive(Serialize)]
 struct MarketSyncResult {
-    failed_syncs: Vec<(String, String)>,
+    failed_syncs: Vec<(String, String, Option<String>)>,
 }

@@ -63,20 +63,22 @@ impl HoldingsValuationService {
         &self,
         holdings: &[Holding],
     ) -> Result<HashMap<String, LatestQuotePair>> {
-        let required_symbols: Vec<String> = holdings
+        let symbol_source_pairs: Vec<(String, String)> = holdings
             .iter()
             .filter_map(|holding| {
                 if holding.holding_type == HoldingType::Security {
-                    holding.instrument.as_ref().map(|inst| inst.symbol.clone())
+                    holding.instrument.as_ref().map(|inst| {
+                        (inst.symbol.clone(), inst.data_source.clone())
+                    })
                 } else {
                     None // Skip cash holdings
                 }
             })
             .collect();
 
-        let latest_quote_pairs = if !required_symbols.is_empty() {
+        let latest_quote_pairs = if !symbol_source_pairs.is_empty() {
             self.market_data_service
-                .get_latest_quotes_pair_for_symbols(&required_symbols)?
+                .get_latest_quotes_pair_for_symbols(&symbol_source_pairs)?
         } else {
             HashMap::new()
         };

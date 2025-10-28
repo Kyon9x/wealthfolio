@@ -59,7 +59,9 @@ export const HoldingsPage = () => {
   const [sheetTitle, setSheetTitle] = useState('');
   const [sheetFilterType, setSheetFilterType] = useState<SheetFilterType | null>(null);
   const [sheetFilterName, setSheetFilterName] = useState<string | null>(null);
-  const [sheetCompositionFilter, setSheetCompositionFilter] = useState<Instrument['id'] | null>(null);
+  const [sheetCompositionFilter, setSheetCompositionFilter] = useState<Instrument['id'] | null>(
+    null,
+  );
   const [sheetAccountIdsFilter, setSheetAccountIdsFilter] = useState<string[] | null>(null);
 
   const handleChartSectionClick = (
@@ -67,7 +69,7 @@ export const HoldingsPage = () => {
     name: string,
     title?: string,
     compositionId?: Instrument['id'],
-    accountIdsForFilter?: string[]
+    accountIdsForFilter?: string[],
   ) => {
     setSheetFilterType(type);
     setSheetFilterName(name);
@@ -101,13 +103,13 @@ export const HoldingsPage = () => {
         });
         break;
       case 'sector':
-        filteredHoldings = holdings.filter(
-          (h) => h.instrument?.sectors?.some((s) => s.name === sheetFilterName)
+        filteredHoldings = holdings.filter((h) =>
+          h.instrument?.sectors?.some((s) => s.name === sheetFilterName),
         );
         break;
       case 'country':
-        filteredHoldings = holdings.filter(
-          (h) => h.instrument?.countries?.some((c) => c.name === sheetFilterName)
+        filteredHoldings = holdings.filter((h) =>
+          h.instrument?.countries?.some((c) => c.name === sheetFilterName),
         );
         break;
       case 'currency':
@@ -120,7 +122,7 @@ export const HoldingsPage = () => {
           filteredHoldings = holdings.filter(
             (h) =>
               h.instrument?.assetSubclass === sheetFilterName ||
-              h.instrument?.assetClass === sheetFilterName
+              h.instrument?.assetClass === sheetFilterName,
           );
         }
         break;
@@ -129,7 +131,7 @@ export const HoldingsPage = () => {
     }
 
     return filteredHoldings.sort(
-      (a, b) => (Number(b.marketValue?.base) || 0) - (Number(a.marketValue?.base) || 0)
+      (a, b) => (Number(b.marketValue?.base) || 0) - (Number(a.marketValue?.base) || 0),
     );
   }, [holdings, sheetFilterType, sheetFilterName, sheetCompositionFilter, sheetAccountIdsFilter]);
 
@@ -142,13 +144,27 @@ export const HoldingsPage = () => {
       holdings?.filter((holding) => holding.holdingType?.toLowerCase() === HoldingType.CASH) || [];
     const nonCash =
       holdings?.filter((holding) => holding.holdingType?.toLowerCase() !== HoldingType.CASH) || [];
+
+    // DEBUG POINT 2
+    console.log('[HoldingsPage] Holdings split:', {
+      total: holdings?.length || 0,
+      cash: cash.length,
+      nonCash: nonCash.length,
+      holdingTypes:
+        holdings?.map((h) => ({
+          id: h.id,
+          type: h.holdingType,
+          symbol: h.instrument?.symbol,
+        })) || [],
+    });
+
     return { cashHoldings: cash, nonCashHoldings: nonCash };
   }, [holdings]);
 
   return (
-  <ApplicationShell className="p-6 h-full flex flex-col">
-      <Tabs defaultValue={defaultTab} className="flex flex-col h-full w-full">
-        <div className="space-y-2 flex-shrink-0">
+    <ApplicationShell className="flex h-full flex-col p-6">
+      <Tabs defaultValue={defaultTab} className="flex h-full w-full flex-col">
+        <div className="flex-shrink-0 space-y-2">
           <ApplicationHeader heading="Holdings">
             <div className="flex items-center space-x-2">
               <AccountSelector
@@ -176,7 +192,7 @@ export const HoldingsPage = () => {
           <CashHoldingsWidget cashHoldings={cashHoldings || []} isLoading={isLoading} />
         </div>
 
-        <TabsContent value="holdings" className="flex-1 min-h-0 py-2">
+        <TabsContent value="holdings" className="min-h-0 flex-1 py-2">
           <HoldingsTable holdings={nonCashHoldings || []} isLoading={isLoading} />
         </TabsContent>
 

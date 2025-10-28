@@ -580,10 +580,10 @@ impl YahooProvider {
 
     async fn get_historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         start: SystemTime,
         end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError> {
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError> {
         // If start time is after or equal to end time, no data needs fetching.
         if start >= end {
             warn!(
@@ -601,15 +601,16 @@ impl YahooProvider {
         const BATCH_SIZE: usize = 2;
 
         let mut all_quotes = Vec::new();
-        let mut failed_symbols: Vec<(String, String)> = Vec::new();
+        let mut failed_symbols: Vec<(String, String, Option<String>)> = Vec::new();
         let mut errors_for_logging: Vec<(String, String)> = Vec::new();
 
         for chunk in symbols_with_currencies.chunks(BATCH_SIZE) {
             let futures: Vec<_> = chunk
                 .iter()
-                .map(|(symbol, currency)| {
+                .map(|(symbol, currency, data_source)| {
                     let symbol_clone = symbol.clone();
                     let currency_clone = currency.clone();
+                    let data_source_clone = data_source.clone();
                     async move {
                         match self
                             .get_historical_quotes(
@@ -621,7 +622,7 @@ impl YahooProvider {
                             .await
                         {
                             Ok(quotes) => Ok(quotes),
-                            Err(e) => Err((symbol_clone, currency_clone, e.to_string())),
+                            Err(e) => Err((symbol_clone, currency_clone, data_source_clone, e.to_string())),
                         }
                     }
                 })
@@ -632,8 +633,8 @@ impl YahooProvider {
             for result in results {
                 match result {
                     Ok(quotes) => all_quotes.extend(quotes),
-                    Err((symbol, currency, error)) => {
-                        failed_symbols.push((symbol.clone(), currency));
+                    Err((symbol, currency, data_source, error)) => {
+                        failed_symbols.push((symbol.clone(), currency, data_source));
                         errors_for_logging.push((symbol, error));
                     }
                 }
@@ -701,10 +702,10 @@ impl MarketDataProvider for YahooProvider {
 
     async fn get_historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         start: SystemTime,
         end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError> {
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError> {
         self.get_historical_quotes_bulk(symbols_with_currencies, start, end)
             .await
     }

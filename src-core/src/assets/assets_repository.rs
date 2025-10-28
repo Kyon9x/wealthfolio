@@ -66,6 +66,19 @@ impl AssetRepository {
 
         Ok(results.into_iter().map(Asset::from).collect())
     }
+
+    /// Retrieves an asset by symbol and data source
+    pub fn get_by_symbol_and_data_source_impl(&self, symbol: &str, data_source: &str) -> Result<Option<Asset>> {
+        let mut conn = get_connection(&self.pool)?;
+
+        let result = assets::table
+            .filter(assets::symbol.eq(symbol))
+            .filter(assets::data_source.eq(data_source))
+            .first::<AssetDB>(&mut conn)
+            .optional()?;
+
+        Ok(result.map(Asset::from))
+    }
 }
 
 #[async_trait]
@@ -125,6 +138,11 @@ impl AssetRepositoryTrait for AssetRepository {
     /// Retrieves an asset by its ID
     fn get_by_id(&self, asset_id: &str) -> Result<Asset> {
         self.get_by_id_impl(asset_id)
+    }
+
+    /// Retrieves an asset by symbol and data source
+    fn get_by_symbol_and_data_source(&self, symbol: &str, data_source: &str) -> Result<Option<Asset>> {
+        self.get_by_symbol_and_data_source_impl(symbol, data_source)
     }
 
     /// Lists all assets in the database

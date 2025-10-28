@@ -23,7 +23,7 @@ import {
   TIME_WEIGHTED_RETURN_INFO as totalReturnInfo,
   ANNUALIZED_RETURN_INFO as annualizedReturnInfo,
   VOLATILITY_INFO as volatilityInfo,
-  MAX_DRAWDOWN_INFO as maxDrawdownInfo
+  MAX_DRAWDOWN_INFO as maxDrawdownInfo,
 } from '@/components/metric-display';
 import { usePersistentState } from '@/hooks/use-persistent-state';
 
@@ -119,22 +119,23 @@ function PerformanceContent({
   );
 }
 
-const SelectedItemBadge = ({ 
-  item, 
-  isSelected, 
-  onSelect, 
-  onDelete 
-}: { 
-  item: TrackedItem; 
+const SelectedItemBadge = ({
+  item,
+  isSelected,
+  onSelect,
+  onDelete,
+}: {
+  item: TrackedItem;
   isSelected: boolean;
   onSelect: () => void;
   onDelete: (e: React.MouseEvent) => void;
 }) => {
   return (
     <div className="my-2 flex items-center">
-      <Badge className={`rounded-md  px-3 py-1 text-gray-800 shadow-sm dark:bg-zinc-800 dark:text-zinc-300 ${
-        isSelected ? 'ring-2 ring-primary' : ''
-      }`}
+      <Badge
+        className={`rounded-md px-3 py-1 text-gray-800 shadow-sm dark:bg-zinc-800 dark:text-zinc-300 ${
+          isSelected ? 'ring-2 ring-primary' : ''
+        }`}
         onClick={onSelect}
         role="button"
         variant="secondary"
@@ -157,8 +158,8 @@ const SelectedItemBadge = ({
           ></div>
           <span className="text-sm font-medium">{item.name}</span>
         </div>
-        <button 
-          className="ml-3 text-gray-500 dark:text-zinc-400 transition-all duration-150 hover:scale-110 hover:text-gray-800 hover:dark:text-zinc-100"
+        <button
+          className="ml-3 text-gray-500 transition-all duration-150 hover:scale-110 hover:text-gray-800 dark:text-zinc-400 hover:dark:text-zinc-100"
           onClick={onDelete}
           aria-label={`Remove ${item.name}`}
         >
@@ -204,36 +205,41 @@ export default function PerformancePage() {
     isLoading: isLoadingPerformance,
     hasErrors,
     errorMessages,
-    displayDateRange
+    displayDateRange,
   } = useCalculatePerformanceHistory({
     selectedItems,
-    dateRange
+    dateRange,
   });
 
   // Calculate derived chart data
   const chartData = useMemo(() => {
     if (!performanceData || !selectedItems) return [];
 
-    return performanceData
-      // Update type predicate to use the more accurate type
-      .filter((item): item is PerformanceDataFromHook => 
-        item !== null && typeof item.id === 'string' && Array.isArray(item.returns)
-      )
-      .map((perfItem): ChartDataItem => ({
-        id: perfItem.id,
-        name: perfItem.name, // Can now safely access name from perfItem
-        returns: perfItem.returns,
-      }));
+    return (
+      performanceData
+        // Update type predicate to use the more accurate type
+        .filter(
+          (item): item is PerformanceDataFromHook =>
+            item !== null && typeof item.id === 'string' && Array.isArray(item.returns),
+        )
+        .map(
+          (perfItem): ChartDataItem => ({
+            id: perfItem.id,
+            name: perfItem.name, // Can now safely access name from perfItem
+            returns: perfItem.returns,
+          }),
+        )
+    );
   }, [performanceData, selectedItems]);
 
   // Calculate selected item data
   const selectedItemData = useMemo(() => {
     if (!performanceData?.length || !selectedItems) return null;
-    const targetId = selectedItemId || performanceData.find(item => item !== null)?.id; // Find first non-null item ID if none selected
+    const targetId = selectedItemId || performanceData.find((item) => item !== null)?.id; // Find first non-null item ID if none selected
     if (!targetId) return null;
     const found = performanceData.find((item) => item?.id === targetId);
     if (!found) return null;
-    const name = selectedItems.find(item => item.id === found.id)?.name || 'Unknown';
+    const name = selectedItems.find((item) => item.id === found.id)?.name || 'Unknown';
     return {
       id: found.id,
       name: name,
@@ -262,7 +268,7 @@ export default function PerformancePage() {
     });
   };
 
-  const handleSymbolSelect = (symbol: { id: string; name: string }) => {
+  const handleSymbolSelect = (symbol: { id: string; name: string; dataSource?: string }) => {
     setSelectedItems((prev) => {
       const exists = prev.some((item) => item.id === symbol.id);
       if (exists) return sortComparisonItems(prev);
@@ -271,6 +277,7 @@ export default function PerformancePage() {
         id: symbol.id,
         type: 'symbol',
         name: symbol.name,
+        dataSource: symbol.dataSource,
       };
 
       return sortComparisonItems([...prev, newSymbol]);
@@ -335,7 +342,7 @@ export default function PerformancePage() {
                   <div className="grid grid-cols-2 gap-6 rounded-lg p-2 backdrop-blur-sm md:grid-cols-4">
                     <div className="flex flex-col items-center space-y-1">
                       <MetricLabelWithInfo label="Total Return" infoText={totalReturnInfo} />
-                      <div className="flex justify-center items-baseline">
+                      <div className="flex items-baseline justify-center">
                         <span
                           className={`text-lg ${
                             selectedItemData && selectedItemData.totalReturn >= 0
@@ -343,14 +350,21 @@ export default function PerformancePage() {
                               : 'text-destructive'
                           }`}
                         >
-                          <GainPercent value={selectedItemData?.totalReturn || 0} animated={true} className='text-lg'/>
+                          <GainPercent
+                            value={selectedItemData?.totalReturn || 0}
+                            animated={true}
+                            className="text-lg"
+                          />
                         </span>
                       </div>
                     </div>
 
                     <div className="flex flex-col items-center space-y-1">
-                      <MetricLabelWithInfo label="Annualized Return" infoText={annualizedReturnInfo} />
-                      <div className="flex justify-center items-baseline">
+                      <MetricLabelWithInfo
+                        label="Annualized Return"
+                        infoText={annualizedReturnInfo}
+                      />
+                      <div className="flex items-baseline justify-center">
                         <span
                           className={`text-lg ${
                             selectedItemData && selectedItemData.annualizedReturn >= 0
@@ -361,7 +375,7 @@ export default function PerformancePage() {
                           <GainPercent
                             value={selectedItemData?.annualizedReturn || 0}
                             animated={true}
-                            className='text-lg'
+                            className="text-lg"
                           />
                         </span>
                       </div>
@@ -369,10 +383,10 @@ export default function PerformancePage() {
 
                     <div className="flex flex-col items-center space-y-1">
                       <MetricLabelWithInfo label="Volatility" infoText={volatilityInfo} />
-                      <div className="flex justify-center items-baseline">
+                      <div className="flex items-baseline justify-center">
                         <span className="text-lg text-foreground">
                           <NumberFlow
-                            value={(selectedItemData?.volatility || 0)}
+                            value={selectedItemData?.volatility || 0}
                             animated={true}
                             format={{
                               style: 'percent',
@@ -385,7 +399,7 @@ export default function PerformancePage() {
 
                     <div className="flex flex-col items-center space-y-1">
                       <MetricLabelWithInfo label="Max Drawdown" infoText={maxDrawdownInfo} />
-                      <div className="flex justify-center items-baseline">
+                      <div className="flex items-baseline justify-center">
                         <span className="text-lg text-destructive">
                           <NumberFlow
                             value={(selectedItemData?.maxDrawdown || 0) * -1}

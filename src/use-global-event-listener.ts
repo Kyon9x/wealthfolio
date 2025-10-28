@@ -20,17 +20,36 @@ function handleMarketSyncStart() {
   });
 }
 
-function handleMarketSyncComplete(event: { payload: { failed_syncs: [string, string][] } }) {
+function handleMarketSyncComplete(event: {
+  payload: { failed_syncs: [string, string, string | null][] };
+}) {
   const { failed_syncs } = event.payload || { failed_syncs: [] };
   if (failed_syncs && failed_syncs.length > 0) {
-    const failedSymbols = failed_syncs.map(([symbol]) => symbol).join(', ');
+    // Group failures by data source for better error reporting
+    const failuresBySource = failed_syncs.reduce(
+      (acc, [symbol, _error, dataSource]) => {
+        const source = dataSource || 'Unknown';
+        if (!acc[source]) {
+          acc[source] = [];
+        }
+        acc[source].push(symbol);
+        return acc;
+      },
+      {} as Record<string, string[]>,
+    );
+
+    // Create a detailed error message showing which provider failed for which symbols
+    const errorDetails = Object.entries(failuresBySource)
+      .map(([source, symbols]) => `${source}: ${symbols.join(', ')}`)
+      .join(' | ');
+
     toast({
       title: '🔴 Market Data Update Incomplete',
-      description: `Unable to update market data for: ${failedSymbols}. This may affect your portfolio calculations and analytics. Please try again later.`,
+      description: `Unable to update market data for: ${errorDetails}. This may affect your portfolio calculations and analytics. Please try again later.`,
       duration: 15000,
       variant: 'destructive',
     });
-  } 
+  }
 }
 
 const handlePortfolioUpdateStart = () => {
@@ -44,7 +63,8 @@ const handlePortfolioUpdateStart = () => {
 const handlePortfolioUpdateError = (error: string) => {
   toast({
     title: 'Portfolio Update Failed',
-    description: '🔴 There was an error updating your portfolio. Please try again or contact support if the issue persists.',
+    description:
+      '🔴 There was an error updating your portfolio. Please try again or contact support if the issue persists.',
     duration: 5000,
     variant: 'destructive',
   });

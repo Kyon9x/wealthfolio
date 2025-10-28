@@ -191,17 +191,17 @@ impl MarketDataProvider for VnMarketProvider {
 
     async fn get_historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         start: SystemTime,
         end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError> {
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError> {
         let mut all_quotes = Vec::new();
         let mut failed_symbols = Vec::new();
 
-        for (symbol, currency) in symbols_with_currencies {
+        for (symbol, currency, data_source) in symbols_with_currencies {
             match self.get_historical_quotes(symbol, start, end, currency.clone()).await {
                 Ok(mut quotes) => all_quotes.append(&mut quotes),
-                Err(_) => failed_symbols.push((symbol.clone(), currency.clone())),
+                Err(_) => failed_symbols.push((symbol.clone(), currency.clone(), data_source.clone())),
             }
         }
 

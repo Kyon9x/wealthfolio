@@ -25,6 +25,7 @@ pub trait PerformanceServiceTrait: Send + Sync {
         item_id: &str,
         start_date: Option<NaiveDate>,
         end_date: Option<NaiveDate>,
+        data_source: Option<String>,
     ) -> Result<PerformanceMetrics>;
 
     async fn calculate_performance_summary(
@@ -336,6 +337,7 @@ impl PerformanceService {
         symbol: &str,
         start_date_opt: Option<NaiveDate>,
         end_date_opt: Option<NaiveDate>,
+        data_source: Option<String>,
     ) -> Result<PerformanceMetrics> {
         let effective_end_date =
             end_date_opt.unwrap_or_else(|| chrono::Local::now().naive_local().date());
@@ -353,7 +355,7 @@ impl PerformanceService {
 
         let quote_history = self
             .market_data_service
-            .get_historical_quotes_from_provider(symbol, effective_start_date, effective_end_date)
+            .get_historical_quotes_from_provider(symbol, effective_start_date, effective_end_date, data_source)
             .await?;
 
         if quote_history.is_empty() {
@@ -664,6 +666,7 @@ impl PerformanceServiceTrait for PerformanceService {
         item_id: &str,
         start_date: Option<NaiveDate>,
         end_date: Option<NaiveDate>,
+        data_source: Option<String>,
     ) -> Result<PerformanceMetrics> {
         match item_type {
             "account" => {
@@ -671,7 +674,7 @@ impl PerformanceServiceTrait for PerformanceService {
                     .await
             }
             "symbol" => {
-                self.calculate_symbol_performance(item_id, start_date, end_date)
+                self.calculate_symbol_performance(item_id, start_date, end_date, data_source)
                     .await
             }
             _ => Err(errors::Error::Validation(ValidationError::InvalidInput(

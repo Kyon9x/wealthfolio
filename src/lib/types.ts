@@ -1,11 +1,6 @@
 import * as z from 'zod';
 import { importActivitySchema, importMappingSchema } from '@/lib/schemas';
-import {
-  ActivityType,
-  DataSource,
-  AccountType,
-  HoldingType,
-} from './constants';
+import { ActivityType, DataSource, AccountType, HoldingType } from './constants';
 
 export {
   ActivityType,
@@ -92,7 +87,7 @@ export type ActivityCreate = {
   isDraft: boolean;
   comment?: string | null;
   assetDataSource?: string;
-}
+};
 
 export type ActivityUpdate = ActivityCreate & { id: string };
 export type ActivityImport = z.infer<typeof importActivitySchema>;
@@ -382,7 +377,6 @@ export type DateRange = {
 
 export type TimePeriod = '1D' | '1W' | '1M' | '3M' | '6M' | 'YTD' | '1Y' | '5Y' | 'ALL';
 
-
 export interface AccountValuation {
   id: string;
   accountId: string;
@@ -511,6 +505,7 @@ export type TrackedItem = {
   id: string;
   type: 'account' | 'symbol';
   name: string;
+  dataSource?: string; // Required for symbols to distinguish between different data sources (e.g., YAHOO vs VN_MARKET)
 };
 
 // Addon Store Types
@@ -532,4 +527,3 @@ export interface AddonStoreListing {
   /** Classification tags for filtering */
   tags?: string[];
 }
-

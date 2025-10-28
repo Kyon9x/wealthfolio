@@ -184,10 +184,11 @@ pub async fn calculate_performance_history(
     item_id: String,
     start_date: Option<String>,
     end_date: Option<String>,
+    data_source: Option<String>,
 ) -> Result<PerformanceMetrics, String> {
     debug!(
-        "Calculating performance for type: {}, id: {}, start: {:?}, end: {:?}",
-        item_type, item_id, start_date, end_date
+        "Calculating performance for type: {}, id: {}, start: {:?}, end: {:?}, data_source: {:?}",
+        item_type, item_id, start_date, end_date, data_source
     );
 
     // Parse optional dates into Option<NaiveDate>
@@ -207,7 +208,7 @@ pub async fn calculate_performance_history(
 
     state
         .performance_service()
-        .calculate_performance_history(&item_type, &item_id, start_date_opt, end_date_opt)
+        .calculate_performance_history(&item_type, &item_id, start_date_opt, end_date_opt, data_source)
         .await
         .map_err(|e| format!("Failed to calculate performance: {}", e.to_string()))
 }

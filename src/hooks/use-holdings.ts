@@ -15,5 +15,20 @@ export function useHoldings(accountId: string) {
     enabled: !!accountId,
   });
 
+  // DEBUG POINT 1
+  console.log('[useHoldings] Data fetched:', {
+    count: holdings.length,
+    accountId,
+    firstHolding: holdings[0]
+      ? {
+          id: holdings[0].id,
+          symbol: holdings[0].instrument?.symbol,
+          holdingType: holdings[0].holdingType,
+          marketValue: holdings[0].marketValue,
+          rawMarketValue: JSON.stringify(holdings[0].marketValue),
+        }
+      : 'NO HOLDINGS',
+  });
+
   return { holdings, isLoading, isError, error };
 }

@@ -23,10 +23,10 @@ pub trait MarketDataProvider: Send + Sync {
     /// Fetch historical quotes for multiple symbols in parallel
     async fn get_historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         start: SystemTime,
         end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError>;
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError>;
 }
 
 #[async_trait]

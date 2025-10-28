@@ -103,22 +103,22 @@ mod tests {
         async fn add_quote(&self, _quote: &Quote) -> Result<Quote> { unimplemented!() }
         async fn update_quote(&self, _quote: Quote) -> Result<Quote> { unimplemented!() }
         async fn delete_quote(&self, _quote_id: &str) -> Result<()> { unimplemented!() }
-        async fn get_historical_quotes_from_provider(&self, _symbol: &str, _start_date: NaiveDate, _end_date: NaiveDate) -> Result<Vec<Quote>> { unimplemented!() }
-        async fn sync_market_data(&self) -> Result<((), Vec<(String, String)>)> { unimplemented!() }
-        async fn resync_market_data(&self, _symbols: Option<Vec<String>>) -> Result<((), Vec<(String, String)>)> { unimplemented!() }
+        async fn get_historical_quotes_from_provider(&self, _symbol: &str, _start_date: NaiveDate, _end_date: NaiveDate, _data_source: Option<String>) -> Result<Vec<Quote>> { unimplemented!() }
+        async fn sync_market_data(&self) -> Result<((), Vec<(String, String, Option<String>)>)> { unimplemented!() }
+        async fn resync_market_data(&self, _symbols: Option<Vec<String>>) -> Result<((), Vec<(String, String, Option<String>)>)> { unimplemented!() }
         fn get_historical_quotes_for_symbols_in_range(&self, _symbols: &HashSet<String>, _start_date: NaiveDate, _end_date: NaiveDate) -> Result<Vec<Quote>> { unimplemented!() }
         async fn get_daily_quotes(&self, _asset_ids: &HashSet<String>, _start_date: NaiveDate, _end_date: NaiveDate) -> Result<HashMap<NaiveDate, HashMap<String, Quote>>> { unimplemented!() }
         async fn get_market_data_providers_info(&self) -> Result<Vec<MarketDataProviderInfo>> { unimplemented!() }
         async fn get_market_data_providers_settings(&self) -> Result<Vec<MarketDataProviderSetting>> { unimplemented!() }
         async fn update_market_data_provider_settings(&self, _provider_id: String, _priority: i32, _enabled: bool) -> Result<MarketDataProviderSetting> { unimplemented!() }
 
-        fn get_latest_quotes_pair_for_symbols(&self, symbols: &[String]) -> Result<HashMap<String, LatestQuotePair>> {
+        fn get_latest_quotes_pair_for_symbols(&self, symbol_source_pairs: &[(String, String)]) -> Result<HashMap<String, LatestQuotePair>> {
             if self.should_fail.lock().unwrap().clone() {
                 return Err(Error::MarketData(MarketDataError::ProviderError("Intentional market data failure".to_string())));
             }
             let quotes_db = self.quotes.lock().unwrap();
             let mut result = HashMap::new();
-            for symbol in symbols {
+            for (symbol, _data_source) in symbol_source_pairs {
                 if let Some(pair) = quotes_db.get(symbol) {
                     result.insert(symbol.clone(), pair.clone());
                 }

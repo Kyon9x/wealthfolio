@@ -131,16 +131,14 @@ export const deleteQuote = async (id: string): Promise<void> => {
   }
 };
 
-
-export const getQuoteHistory = async (symbol: string): Promise<Quote[]> => {
+export const getQuoteHistory = async (symbol: string, dataSource: string): Promise<Quote[]> => {
   try {
     switch (getRunEnv()) {
       case RUN_ENV.DESKTOP:
-        return await invokeTauri('get_quote_history', { symbol });
+        return await invokeTauri('get_quote_history', { symbol, dataSource });
       default:
         throw new Error(`Unsupported environment`);
     }
-    
   } catch (error) {
     logger.error(`Error fetching quote history for symbol ${symbol}.`);
     throw error;

@@ -58,7 +58,19 @@ impl AssetServiceTrait for AssetService {
     }
 
     /// Retrieves or creates an asset by its ID
-    async fn get_or_create_asset(&self, asset_id: &str, context_currency: Option<String>) -> Result<Asset> {
+    async fn get_or_create_asset(&self, asset_id: &str, context_currency: Option<String>, data_source: Option<String>) -> Result<Asset> {
+        // If data_source is provided, try composite lookup first (symbol + data_source)
+        if let Some(ref ds) = data_source {
+            if let Some(existing_asset) = self.asset_repository.get_by_symbol_and_data_source(asset_id, ds)? {
+                debug!(
+                    "Found existing asset by symbol '{}' and data_source '{}': {}",
+                    asset_id, ds, existing_asset.id
+                );
+                return Ok(existing_asset);
+            }
+        }
+
+        // Fall back to lookup by ID
         match self.asset_repository.get_by_id(asset_id) {
             Ok(existing_asset) => Ok(existing_asset),
             Err(Error::Database(DatabaseError::QueryFailed(DieselError::NotFound))) => {
@@ -68,7 +80,7 @@ impl AssetServiceTrait for AssetService {
                 );
                 let asset_profile_from_provider = self
                     .market_data_service
-                    .get_asset_profile(asset_id)
+                    .get_asset_profile(asset_id, data_source)
                     .await?;
 
                 let mut new_asset: NewAsset = asset_profile_from_provider.into();

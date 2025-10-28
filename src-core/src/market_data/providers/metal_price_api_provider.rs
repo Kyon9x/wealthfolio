@@ -291,10 +291,10 @@ impl MarketDataProvider for MetalPriceApiProvider {
 
     async fn get_historical_quotes_bulk(
         &self,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
         _start: SystemTime,
         _end: SystemTime,
-    ) -> Result<(Vec<ModelQuote>, Vec<(String, String)>), MarketDataError> {
+    ) -> Result<(Vec<ModelQuote>, Vec<(String, String, Option<String>)>), MarketDataError> {
         // The free plan of Metal Price API does not support historical data
         Ok((vec![], symbols_with_currencies.to_vec()))
     }

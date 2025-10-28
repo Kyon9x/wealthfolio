@@ -48,9 +48,9 @@ impl MarketDataServiceTrait for MarketDataService {
 
     fn get_latest_quotes_pair_for_symbols(
         &self,
-        symbols: &[String],
+        symbol_source_pairs: &[(String, String)],
     ) -> Result<HashMap<String, LatestQuotePair>> {
-        self.repository.get_latest_quotes_pair_for_symbols(symbols)
+        self.repository.get_latest_quotes_pair_for_symbols(symbol_source_pairs)
     }
 
     fn get_all_historical_quotes(&self) -> Result<HashMap<String, Vec<(NaiveDate, Quote)>>> {
@@ -72,17 +72,17 @@ impl MarketDataServiceTrait for MarketDataService {
         Ok(quotes_map)
     }
 
-    async fn get_asset_profile(&self, symbol: &str) -> Result<AssetProfile> {
+    async fn get_asset_profile(&self, symbol: &str, data_source: Option<String>) -> Result<AssetProfile> {
         self.provider_registry
             .read()
             .await
-            .get_asset_profile(symbol)
+            .get_asset_profile(symbol, data_source)
             .await
             .map_err(|e| e.into())
     }
 
-    fn get_historical_quotes_for_symbol(&self, symbol: &str) -> Result<Vec<Quote>> {
-        let mut quotes = self.repository.get_historical_quotes_for_symbol(symbol)?;
+    fn get_historical_quotes_for_symbol(&self, symbol: &str, data_source: &str) -> Result<Vec<Quote>> {
+        let mut quotes = self.repository.get_historical_quotes_for_symbol(symbol, data_source)?;
         quotes.sort_by(|a, b| a.timestamp.cmp(&b.timestamp));
         Ok(quotes)
     }
@@ -104,6 +104,7 @@ impl MarketDataServiceTrait for MarketDataService {
         symbol: &str,
         start_date: NaiveDate,
         end_date: NaiveDate,
+        data_source: Option<String>,
     ) -> Result<Vec<Quote>> {
         debug!(
             "Getting symbol history for {} from {} to {}",
@@ -119,12 +120,12 @@ impl MarketDataServiceTrait for MarketDataService {
         self.provider_registry
             .read()
             .await
-            .historical_quotes(symbol, start_time, end_time, "USD".to_string())
+            .historical_quotes(symbol, start_time, end_time, "USD".to_string(), data_source)
             .await
             .map_err(|e| e.into())
     }
 
-    async fn sync_market_data(&self) -> Result<((), Vec<(String, String)>)> {
+    async fn sync_market_data(&self) -> Result<((), Vec<(String, String, Option<String>)>)> {
         debug!("Syncing market data.");
         let assets = self.asset_repository.list()?;
         let quote_requests: Vec<_> = assets
@@ -146,7 +147,7 @@ impl MarketDataServiceTrait for MarketDataService {
     async fn resync_market_data(
         &self,
         symbols: Option<Vec<String>>,
-    ) -> Result<((), Vec<(String, String)>)> {
+    ) -> Result<((), Vec<(String, String, Option<String>)>)> {
         debug!("Resyncing market data. Symbols: {:?}", symbols);
         let assets = match symbols {
             Some(syms) if !syms.is_empty() => self.asset_repository.list_by_symbols(&syms)?,
@@ -398,7 +399,7 @@ impl MarketDataService {
         &self,
         quote_requests: Vec<QuoteRequest>,
         refetch_all: bool,
-    ) -> Result<((), Vec<(String, String)>)> {
+    ) -> Result<((), Vec<(String, String, Option<String>)>)> {
         if quote_requests.is_empty() {
             debug!("No syncable assets found matching the criteria. Skipping sync.");
             return Ok(((), Vec::new()));
@@ -418,9 +419,9 @@ impl MarketDataService {
         let public_requests = quote_requests;
         let mut all_quotes = Vec::new();
         let mut failed_syncs = Vec::new();
-        let symbols_with_currencies: Vec<(String, String)> = public_requests
+        let symbols_with_currencies: Vec<(String, String, Option<String>)> = public_requests
             .iter()
-            .map(|req| (req.symbol.clone(), req.currency.clone()))
+            .map(|req| (req.symbol.clone(), req.currency.clone(), Some(req.data_source.as_str().to_string())))
             .collect();
 
         if !symbols_with_currencies.is_empty() {
@@ -444,7 +445,7 @@ impl MarketDataService {
                     failed_syncs.extend(
                         symbols_with_currencies
                             .into_iter()
-                            .map(|(s, _)| (s, e.to_string())),
+                            .map(|(s, _, ds)| (s, e.to_string(), ds)),
                     );
                 }
             }
@@ -463,7 +464,7 @@ impl MarketDataService {
             });
             if let Err(e) = self.repository.save_quotes(&all_quotes).await {
                 error!("Failed to save synced quotes to repository: {}", e);
-                failed_syncs.push(("repository_save".to_string(), e.to_string()));
+                failed_syncs.push(("repository_save".to_string(), e.to_string(), None));
             } else {
                 debug!("Successfully saved {} filled quotes.", all_quotes.len());
             }
@@ -475,7 +476,7 @@ impl MarketDataService {
     fn calculate_sync_start_time(
         &self,
         refetch_all: bool,
-        symbols_with_currencies: &[(String, String)],
+        symbols_with_currencies: &[(String, String, Option<String>)],
     ) -> Result<SystemTime> {
         if refetch_all {
             let default_history_days = DEFAULT_HISTORY_DAYS;
@@ -485,7 +486,7 @@ impl MarketDataService {
         } else {
             let symbols_for_latest: Vec<String> = symbols_with_currencies
                 .iter()
-                .map(|(sym, _)| sym.clone())
+                .map(|(sym, _, _)| sym.clone())
                 .collect();
 
             let default_history_days = DEFAULT_HISTORY_DAYS;
@@ -499,7 +500,7 @@ impl MarketDataService {
                 Ok(quotes_map) => {
                     let required_start_dates: Vec<NaiveDate> = symbols_with_currencies
                         .iter()
-                        .map(|(symbol, _currency)| {
+                        .map(|(symbol, _currency, _data_source)| {
                             match quotes_map.get(symbol) {
                                 Some(latest_quote) => latest_quote.timestamp.date_naive(),
                                 None => {

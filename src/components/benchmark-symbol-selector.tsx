@@ -71,7 +71,7 @@ const BENCHMARKS = [
 ];
 
 interface BenchmarkSymbolSelectorProps {
-  onSelect: (symbol: { id: string; name: string }) => void;
+  onSelect: (symbol: { id: string; name: string; dataSource?: string }) => void;
 }
 
 export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorProps) {
@@ -80,7 +80,11 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
   const [searchQuery, setSearchQuery] = useState('');
 
   // Query for dynamic ticker search
-  const { data: searchResults, isLoading, isError } = useQuery<QuoteSummary[], Error>({
+  const {
+    data: searchResults,
+    isLoading,
+    isError,
+  } = useQuery<QuoteSummary[], Error>({
     queryKey: ['benchmark-ticker-search', searchQuery],
     queryFn: () => searchTicker(searchQuery),
     enabled: searchQuery?.length > 2, // Only search when query is longer than 2 characters
@@ -90,21 +94,26 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
   const sortedSearchResults = searchResults?.sort((a, b) => b.score - a.score) || [];
 
   // Filter out search results that are already in predefined benchmarks
-  const existingSymbols = BENCHMARKS.flatMap(group => group.items.map(item => item.symbol));
+  const existingSymbols = BENCHMARKS.flatMap((group) => group.items.map((item) => item.symbol));
   const filteredSearchResults = sortedSearchResults.filter(
-    result => !existingSymbols.includes(result.symbol)
+    (result) => !existingSymbols.includes(result.symbol),
   );
 
   const handleBenchmarkSelect = (benchmark: { symbol: string; name: string }) => {
     setValue(benchmark.name);
-    onSelect({ id: benchmark.symbol, name: benchmark.name });
+    // Predefined benchmarks default to YAHOO data source
+    onSelect({ id: benchmark.symbol, name: benchmark.name, dataSource: 'YAHOO' });
     setOpen(false);
     setSearchQuery(''); // Clear search when selecting
   };
 
   const handleSearchResultSelect = (ticker: QuoteSummary) => {
     setValue(ticker.longName || ticker.symbol);
-    onSelect({ id: ticker.symbol, name: ticker.longName || ticker.symbol });
+    onSelect({
+      id: ticker.symbol,
+      name: ticker.longName || ticker.symbol,
+      dataSource: ticker.dataSource,
+    });
     setOpen(false);
     setSearchQuery(''); // Clear search when selecting
   };
@@ -125,29 +134,30 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
       </PopoverTrigger>
       <PopoverContent className="w-[350px] p-0">
         <Command shouldFilter={false}>
-          <CommandInput 
-            placeholder="Search benchmarks or any symbol..." 
+          <CommandInput
+            placeholder="Search benchmarks or any symbol..."
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
           <CommandList className="max-h-[300px] overflow-y-auto">
             <CommandEmpty>
-              {isLoading ? "Searching..." : "No benchmarks or symbols found."}
+              {isLoading ? 'Searching...' : 'No benchmarks or symbols found.'}
             </CommandEmpty>
-            
+
             {/* Predefined benchmark groups */}
             {BENCHMARKS.map((group) => (
-              <CommandGroup 
-                key={group.group} 
+              <CommandGroup
+                key={group.group}
                 heading={group.group}
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10"
+                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
               >
                 {group.items
-                  .filter(benchmark => 
-                    searchQuery.length === 0 || 
-                    benchmark.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    benchmark.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    benchmark.description.toLowerCase().includes(searchQuery.toLowerCase())
+                  .filter(
+                    (benchmark) =>
+                      searchQuery.length === 0 ||
+                      benchmark.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      benchmark.symbol.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                      benchmark.description.toLowerCase().includes(searchQuery.toLowerCase()),
                   )
                   .map((benchmark) => (
                     <CommandItem
@@ -162,7 +172,9 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
                             {benchmark.symbol}
                           </span>
                         </div>
-                        <span className="text-xs text-muted-foreground">{benchmark.description}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {benchmark.description}
+                        </span>
                       </div>
                       <Icons.Check
                         className={cn(
@@ -177,9 +189,9 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
 
             {/* Loading state for search results */}
             {isLoading && searchQuery.length > 2 && (
-              <CommandGroup 
+              <CommandGroup
                 heading="Search Results"
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10"
+                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
               >
                 <div className="space-y-2 p-2">
                   <Skeleton className="h-12 w-full" />
@@ -191,9 +203,9 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
 
             {/* Error state for search results */}
             {isError && searchQuery.length > 2 && (
-              <CommandGroup 
+              <CommandGroup
                 heading="Search Results"
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10"
+                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
               >
                 <div className="p-4 text-sm text-muted-foreground">
                   Error searching for symbols. Please try again.
@@ -202,38 +214,43 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
             )}
 
             {/* Dynamic search results */}
-            {!isLoading && !isError && filteredSearchResults.length > 0 && searchQuery.length > 2 && (
-              <CommandGroup 
-                heading="Search Results"
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10"
-              >
-                {filteredSearchResults.slice(0, 8).map((ticker) => (
-                  <CommandItem
-                    key={ticker.symbol}
-                    value={ticker.symbol}
-                    onSelect={() => handleSearchResultSelect(ticker)}
-                  >
-                    <div className="flex flex-col">
-                      <div className="flex items-center">
-                        <span className="font-medium">{ticker.longName || ticker.symbol}</span>
-                        <span className="ml-2 text-xs text-muted-foreground">
-                          {ticker.symbol}
-                        </span>
+            {!isLoading &&
+              !isError &&
+              filteredSearchResults.length > 0 &&
+              searchQuery.length > 2 && (
+                <CommandGroup
+                  heading="Search Results"
+                  className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
+                >
+                  {filteredSearchResults.slice(0, 8).map((ticker) => (
+                    <CommandItem
+                      key={ticker.symbol}
+                      value={ticker.symbol}
+                      onSelect={() => handleSearchResultSelect(ticker)}
+                    >
+                      <div className="flex flex-col">
+                        <div className="flex items-center">
+                          <span className="font-medium">{ticker.longName || ticker.symbol}</span>
+                          <span className="ml-2 text-xs text-muted-foreground">
+                            {ticker.symbol}
+                          </span>
+                        </div>
+                        {ticker.exchange && (
+                          <span className="text-xs text-muted-foreground">{ticker.exchange}</span>
+                        )}
                       </div>
-                      {ticker.exchange && (
-                        <span className="text-xs text-muted-foreground">{ticker.exchange}</span>
-                      )}
-                    </div>
-                    <Icons.Check
-                      className={cn(
-                        'ml-auto h-4 w-4',
-                        value === (ticker.longName || ticker.symbol) ? 'opacity-100' : 'opacity-0',
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            )}
+                      <Icons.Check
+                        className={cn(
+                          'ml-auto h-4 w-4',
+                          value === (ticker.longName || ticker.symbol)
+                            ? 'opacity-100'
+                            : 'opacity-0',
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              )}
           </CommandList>
         </Command>
       </PopoverContent>
