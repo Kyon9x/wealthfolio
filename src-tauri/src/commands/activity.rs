@@ -47,9 +47,16 @@ fn get_all_symbols_to_sync(
     let mut all_symbols: HashSet<String> = HashSet::new();
 
     for activity_import in activities {
-        // Add asset symbol
-        if !activity_import.symbol.is_empty() {
-            all_symbols.insert(activity_import.symbol.clone());
+        // Generate asset ID (symbol-datasource format) if data_source is provided
+        let asset_identifier = if let Some(ref ds) = activity_import.data_source {
+            format!("{}-{}", activity_import.symbol, ds)
+        } else {
+            activity_import.symbol.clone()
+        };
+
+        // Add asset identifier
+        if !asset_identifier.is_empty() {
+            all_symbols.insert(asset_identifier);
         }
 
         // Add FX symbol if currencies differ

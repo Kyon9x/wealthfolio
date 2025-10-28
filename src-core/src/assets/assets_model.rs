@@ -99,6 +99,16 @@ impl NewAsset {
                 "Currency cannot be empty".to_string(),
             )));
         }
+        if self.asset_class.as_ref().map_or(true, |v| v.trim().is_empty()) {
+            return Err(Error::Validation(ValidationError::InvalidInput(
+                "Asset class cannot be empty".to_string(),
+            )));
+        }
+        if self.asset_sub_class.as_ref().map_or(true, |v| v.trim().is_empty()) {
+            return Err(Error::Validation(ValidationError::InvalidInput(
+                "Asset sub-class cannot be empty".to_string(),
+            )));
+        }
         Ok(())
     }
 
@@ -258,8 +268,12 @@ impl From<AssetDB> for Asset {
 impl From<NewAsset> for AssetDB {
     fn from(domain: NewAsset) -> Self {
         let now = chrono::Utc::now().naive_utc();
+        // Generate asset ID if not provided: use symbol-datasource format
+        let asset_id = domain.id.unwrap_or_else(|| {
+            format!("{}-{}", domain.symbol, domain.data_source)
+        });
         Self {
-            id: domain.id.unwrap_or_default(),
+            id: asset_id,
             isin: domain.isin,
             name: domain.name,
             asset_type: domain.asset_type,

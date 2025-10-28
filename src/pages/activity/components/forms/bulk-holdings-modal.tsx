@@ -81,6 +81,13 @@ export const BulkHoldingsModal = ({ open, onClose, onSuccess }: BulkHoldingsModa
       shouldValidate: true,
       shouldDirty: true,
     });
+    // Update currency to match account currency when account changes
+    if (account?.currency) {
+      form.setValue('currency', account.currency, {
+        shouldValidate: true,
+        shouldDirty: true,
+      });
+    }
   }, [form]);
 
   const { confirmImportMutation } = useActivityImportMutations({
@@ -127,6 +134,7 @@ export const BulkHoldingsModal = ({ open, onClose, onSuccess }: BulkHoldingsModa
       isDraft: false,
       isValid: true,
       comment: data.comment || `Bulk import - ${validHoldings.length} holdings`,
+      dataSource: holding.dataSource,
     }));
 
     confirmImportMutation.mutate({ activities: activitiesToImport });

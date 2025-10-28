@@ -1,7 +1,8 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logger } from '@/adapters';
 import { importActivities } from '@/commands/activity-import';
 import { toast } from '@/components/ui/use-toast';
+import { QueryKeys } from '@/lib/query-keys';
 
 export function useActivityImportMutations({
   onSuccess,
@@ -10,10 +11,16 @@ export function useActivityImportMutations({
   onSuccess?: (activities: any[]) => void;
   onError?: (error: string) => void;
 } = {}) {
+  const queryClient = useQueryClient();
 
   const confirmImportMutation = useMutation({
     mutationFn: importActivities,
     onSuccess: async (result: any) => {
+      // Invalidate activity data cache to trigger refetch
+      await queryClient.invalidateQueries({
+        queryKey: [QueryKeys.ACTIVITY_DATA],
+      });
+      
       // Call the provided onSuccess callback if it exists
       if (onSuccess) {
         // Ensure we pass an array of activities to the callback

@@ -197,7 +197,7 @@ impl ActivityServiceTrait for ActivityService {
 
             let symbol_profile_result = self
                 .asset_service
-                .get_or_create_asset(&activity.symbol, Some(asset_context_currency), None)
+                .get_or_create_asset(&activity.symbol, Some(asset_context_currency), activity.data_source.clone())
                 .await;
 
             let (mut is_valid, mut error_message) = (true, None);
@@ -205,6 +205,7 @@ impl ActivityServiceTrait for ActivityService {
             match symbol_profile_result {
                 Ok(asset) => { // symbol_profile_result now returns Asset
                     activity.symbol_name = asset.name; // Use asset name
+                    activity.asset_id = Some(asset.id.clone()); // Store the actual asset ID from database
                     
                     // Check if activity currency (from import) is valid and handle FX
                     if activity.currency.is_empty() {
@@ -272,7 +273,7 @@ impl ActivityServiceTrait for ActivityService {
             .map(|activity| NewActivity {
                 id: activity.id.clone(),
                 account_id: activity.account_id.clone().unwrap_or_default(),
-                asset_id: activity.symbol.clone(),
+                asset_id: activity.asset_id.clone().unwrap_or_else(|| activity.symbol.clone()),
                 activity_type: activity.activity_type.clone(),
                 activity_date: activity.date.clone(),
                 quantity: Some(activity.quantity),
@@ -282,7 +283,7 @@ impl ActivityServiceTrait for ActivityService {
                 amount: activity.amount,
                 is_draft: activity.is_draft,
                 comment: activity.comment.clone(),
-                asset_data_source: None,
+                asset_data_source: activity.data_source.clone(),
             })
             .collect();
 

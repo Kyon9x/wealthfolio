@@ -28,6 +28,7 @@ export interface BulkHoldingRow {
   averageCost: number | string;
   totalValue: number;
   assetId?: string;
+  dataSource?: string;
 }
 
 interface BulkHoldingsFormProps {
@@ -56,7 +57,7 @@ const HoldingRow = memo(({
   setFocus: any;
   canRemove: boolean;
 }) => {
-  const { control } = useFormContext();
+  const { control, setValue } = useFormContext();
   
   // Use useWatch for specific fields instead of watch() in parent
   const ticker = useWatch({ 
@@ -135,8 +136,11 @@ const HoldingRow = memo(({
               render={({ field: tickerField }) => (
                 <TickerSearchInput
                   ref={tickerField.ref}
-                  onSelectResult={(symbol: string) => {
+                  onSelectResult={(symbol: string, dataSource?: string) => {
                     tickerField.onChange(symbol);
+                    if (dataSource) {
+                      setValue(`holdings.${index}.dataSource`, dataSource);
+                    }
                     handleTickerSelect(symbol);
                   }}
                   value={tickerField.value}

@@ -104,6 +104,8 @@ export const importActivitySchema = z.object({
   lineNumber: z.number().optional(),
   isDraft: z.boolean(),
   comment: z.string().optional(),
+  dataSource: z.string().optional(),
+  assetId: z.string().optional(),
 }).refine(
   (data) => {
     // For cash activities, income activities or cash transfers, either amount or both quantity and unit price must be provided
