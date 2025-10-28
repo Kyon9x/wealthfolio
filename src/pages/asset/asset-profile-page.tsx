@@ -99,8 +99,8 @@ export const AssetProfilePage = () => {
     isError: isQuotesError,
   } = useQuoteHistory({
     symbol,
-    dataSource: assetProfile?.dataSource as DataSource | undefined,
-    enabled: !!symbol && !!assetProfile?.dataSource,
+    dataSource: (holding?.instrument?.dataSource as DataSource) || DataSource.YAHOO,
+    enabled: !!symbol && !!(holding?.instrument?.dataSource || DataSource.YAHOO),
   });
 
   const quote = useMemo(() => {
