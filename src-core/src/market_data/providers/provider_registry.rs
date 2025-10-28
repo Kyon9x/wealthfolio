@@ -300,6 +300,14 @@ impl ProviderRegistry {
             return Ok((vec![], symbols_with_currencies.to_vec()));
         }
 
+        // Build a map of symbol -> preferred data_source for later override
+        let mut preferred_sources: HashMap<String, String> = HashMap::new();
+        for (symbol, _currency, data_source_opt) in symbols_with_currencies {
+            if let Some(ref data_source) = data_source_opt {
+                preferred_sources.insert(symbol.clone(), data_source.clone());
+            }
+        }
+
         let mut all_quotes = Vec::new();
         let mut remaining_symbols = symbols_with_currencies.to_vec();
 
@@ -317,7 +325,20 @@ impl ProviderRegistry {
                 .get_historical_quotes_bulk(&remaining_symbols, start, end)
                 .await
             {
-                Ok((quotes, failed)) => {
+                Ok((mut quotes, failed)) => {
+                    // Override data_source in quotes to match Asset's preference
+                    for quote in &mut quotes {
+                        if let Some(preferred_source) = preferred_sources.get(&quote.symbol) {
+                            debug!(
+                                "Overriding data_source for symbol '{}' from '{}' to preferred '{}'",
+                                quote.symbol,
+                                quote.data_source.as_str(),
+                                preferred_source
+                            );
+                            quote.data_source = preferred_source.as_str().into();
+                        }
+                    }
+                    
                     all_quotes.extend(quotes);
                     if !failed.is_empty() {
                         warn!(
