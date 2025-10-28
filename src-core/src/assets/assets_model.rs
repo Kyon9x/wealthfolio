@@ -268,12 +268,8 @@ impl From<AssetDB> for Asset {
 impl From<NewAsset> for AssetDB {
     fn from(domain: NewAsset) -> Self {
         let now = chrono::Utc::now().naive_utc();
-        // Generate asset ID if not provided: use symbol-datasource format
-        let asset_id = domain.id.unwrap_or_else(|| {
-            format!("{}-{}", domain.symbol, domain.data_source)
-        });
         Self {
-            id: asset_id,
+            id: domain.id.unwrap_or_else(|| domain.symbol.clone()),
             isin: domain.isin,
             name: domain.name,
             asset_type: domain.asset_type,
