@@ -113,6 +113,7 @@ fn calculate_investment_market_value_acct(
     let mut total_position_market_value = Decimal::ZERO;
     for (asset_id, position) in &holdings_snapshot.positions {
         if let Some(quote) = quotes_today.get(asset_id) {
+            // Use market quote
             let quote_currency = &quote.currency;
             let quote_fx_rate = if quote_currency == account_currency {
                 Decimal::ONE
@@ -128,10 +129,15 @@ fn calculate_investment_market_value_acct(
             let market_value = position.quantity * quote.close * quote_fx_rate;
             total_position_market_value += market_value;
         } else {
+            // No market quote available: use cost basis (average cost) instead
+            // This is standard practice - value at cost when market price unavailable
             debug!(
-                "Missing quote for asset {} on date {}. Position market value treated as ZERO.",
+                "Missing quote for asset {} on date {}. Using cost basis (average_cost) for valuation.",
                 asset_id, target_date
             );
+            
+            let cost_value = position.quantity * position.average_cost;
+            total_position_market_value += cost_value;
         }
     }
     Ok(total_position_market_value)
