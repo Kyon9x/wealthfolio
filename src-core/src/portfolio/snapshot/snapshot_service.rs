@@ -901,31 +901,44 @@ impl SnapshotService {
         let mut sorted_snapshot_dates: Vec<NaiveDate> = all_snapshot_dates.into_iter().collect();
         sorted_snapshot_dates.sort();
 
-        for target_date in sorted_snapshot_dates {
-            let mut individual_snapshots_on_or_before_date: HashMap<String, AccountStateSnapshot> =
-                HashMap::new();
+        // Generate daily snapshots for the full date range from earliest to latest keyframe
+        if !sorted_snapshot_dates.is_empty() {
+            let start_date = sorted_snapshot_dates.first().copied().unwrap();
+            let end_date = sorted_snapshot_dates.last().copied().unwrap();
+            
+            debug!(
+                "Generating TOTAL portfolio daily snapshots from {} to {}",
+                start_date, end_date
+            );
 
-            for (account_id, account_keyframes) in &keyframes_by_account {
-                if let Some((_, latest_snapshot)) = account_keyframes.range(..=target_date).last() {
-                    individual_snapshots_on_or_before_date
-                        .insert(account_id.clone(), latest_snapshot.clone());
-                }
-            }
+            // Iterate through every day in the range, not just keyframe dates
+            for target_date in crate::utils::time_utils::get_days_between(start_date, end_date) {
+                let mut individual_snapshots_on_or_before_date: HashMap<String, AccountStateSnapshot> =
+                    HashMap::new();
 
-            if !individual_snapshots_on_or_before_date.is_empty() {
-                match self.generate_total_portfolio_snapshot_for_date(
-                    target_date,
-                    &individual_snapshots_on_or_before_date,
-                    &base_portfolio_currency,
-                ) {
-                    Ok(total_snapshot) => {
-                        total_portfolio_snapshots_to_save.push(total_snapshot);
+                // For each account, find the most recent snapshot on or before this date
+                for (account_id, account_keyframes) in &keyframes_by_account {
+                    if let Some((_, latest_snapshot)) = account_keyframes.range(..=target_date).last() {
+                        individual_snapshots_on_or_before_date
+                            .insert(account_id.clone(), latest_snapshot.clone());
                     }
-                    Err(e) => {
-                        error!(
-                            "Failed to generate TOTAL portfolio snapshot for target_date {}: {}",
-                            target_date, e
-                        );
+                }
+
+                if !individual_snapshots_on_or_before_date.is_empty() {
+                    match self.generate_total_portfolio_snapshot_for_date(
+                        target_date,
+                        &individual_snapshots_on_or_before_date,
+                        &base_portfolio_currency,
+                    ) {
+                        Ok(total_snapshot) => {
+                            total_portfolio_snapshots_to_save.push(total_snapshot);
+                        }
+                        Err(e) => {
+                            error!(
+                                "Failed to generate TOTAL portfolio snapshot for target_date {}: {}",
+                                target_date, e
+                            );
+                        }
                     }
                 }
             }

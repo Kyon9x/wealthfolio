@@ -135,6 +135,52 @@ impl ValuationService {
 
         Ok(fx_rates_by_date)
     }
+
+    /// Build forward-filled quotes: for each date and symbol, use the last known price
+    /// if the exact date quote is missing. This allows valuations to be calculated
+    /// even when some assets don't have quotes on certain dates.
+    fn build_forward_filled_quotes(
+        &self,
+        quotes_by_date_raw: &HashMap<NaiveDate, HashMap<String, crate::market_data::Quote>>,
+        required_asset_ids: &std::collections::HashSet<String>,
+        start_date: NaiveDate,
+        end_date: NaiveDate,
+    ) -> HashMap<NaiveDate, HashMap<String, crate::market_data::Quote>> {
+        use crate::utils::time_utils;
+        
+        let mut result: HashMap<NaiveDate, HashMap<String, crate::market_data::Quote>> = HashMap::new();
+        let mut last_known_quotes: HashMap<String, crate::market_data::Quote> = HashMap::new();
+
+        // Iterate through all dates
+        for current_date in time_utils::get_days_between(start_date, end_date) {
+            let mut day_quotes: HashMap<String, crate::market_data::Quote> = HashMap::new();
+
+            // For each required asset, find the quote (exact date or use last known)
+            for asset_id in required_asset_ids {
+                // Check if we have a quote for this exact date
+                if let Some(date_quotes) = quotes_by_date_raw.get(&current_date) {
+                    if let Some(quote) = date_quotes.get(asset_id) {
+                        day_quotes.insert(asset_id.clone(), quote.clone());
+                        last_known_quotes.insert(asset_id.clone(), quote.clone());
+                        continue;
+                    }
+                }
+
+                // If no quote for this date, use last known price (forward-fill)
+                if let Some(last_quote) = last_known_quotes.get(asset_id) {
+                    day_quotes.insert(asset_id.clone(), last_quote.clone());
+                }
+                // If no last known quote either, skip this asset for this date
+            }
+
+            // Only insert day if it has at least some quotes
+            if !day_quotes.is_empty() {
+                result.insert(current_date, day_quotes);
+            }
+        }
+
+        result
+    }
 }
 
 #[async_trait]
@@ -221,7 +267,7 @@ impl ValuationServiceTrait for ValuationService {
             )
             .await?;
 
-        let quotes_by_date = {
+        let quotes_by_date_raw = {
             let mut map = HashMap::new();
             for quote in quotes_vec {
                 map.entry(quote.timestamp.date_naive())
@@ -230,6 +276,14 @@ impl ValuationServiceTrait for ValuationService {
             }
             map
         };
+
+        // Build forward-filled quotes: for each date, carry forward last known price for each symbol
+        let quotes_by_date = self.build_forward_filled_quotes(
+            &quotes_by_date_raw,
+            &required_asset_ids,
+            actual_calculation_start_date,
+            calculation_end_date,
+        );
 
         let newly_calculated_valuations: Vec<DailyAccountValuation> = snapshots_to_process
             .into_iter()
@@ -246,29 +300,32 @@ impl ValuationServiceTrait for ValuationService {
                     .cloned()
                     .unwrap_or_default();
 
-                let missing_quotes: Vec<_> = holdings_snapshot
-                    .positions
-                    .iter()
-                    .filter(|(_, position)| !position.quantity.is_zero())
-                    .map(|(symbol, _)| symbol)
-                    .filter(|symbol| !quotes_for_current_date.contains_key(*symbol))
-                    .cloned()
-                    .collect();
-
-                if !missing_quotes.is_empty() {
+                // Check if we have any quotes available (either exact date or forward-filled)
+                // Only skip if holdings snapshot has positions but NO quotes at all exist before this date
+                let has_any_quotes = !quotes_for_current_date.is_empty();
+                if !has_any_quotes && !holdings_snapshot.positions.is_empty() {
                     debug!(
-                        "Missing quotes {:?} on {} (account '{}'). Skipping day.",
-                        missing_quotes, current_date, account_id_clone
+                        "No quotes available for any holdings on {} (account '{}'). Skipping day.",
+                        current_date, account_id_clone
                     );
                     return None;
                 }
 
-                if quotes_for_current_date.is_empty() && !holdings_snapshot.positions.is_empty() {
+                // Warn about assets using forward-filled quotes (for debugging)
+                let forward_filled_assets: Vec<_> = holdings_snapshot
+                    .positions
+                    .iter()
+                    .filter(|(_, position)| !position.quantity.is_zero())
+                    .map(|(symbol, _)| symbol)
+                    .filter(|symbol| !quotes_by_date_raw.get(&current_date).map_or(false, |day_quotes| day_quotes.contains_key(*symbol)))
+                    .cloned()
+                    .collect();
+
+                if !forward_filled_assets.is_empty() {
                     debug!(
-                        "No quotes for date {} (account '{}'). Skipping day.",
-                        current_date, account_id_clone
+                        "Using forward-filled quotes for {:?} on {} (account '{}')",
+                        forward_filled_assets, current_date, account_id_clone
                     );
-                    return None;
                 }
                 let account_curr = &holdings_snapshot.currency;
                 if account_curr != &base_curr_clone
