@@ -381,15 +381,32 @@ impl MarketDataServiceTrait for MarketDataService {
 
         debug!("📊 Validation complete: {} total, {} to import", results.len(), quotes_to_import.len());
 
+        // Fetch assets for all unique symbols to get their configured data sources
+        debug!("🔍 Fetching asset data sources for imported symbols...");
+        let unique_symbols: Vec<String> = quotes_to_import
+            .iter()
+            .map(|q| q.symbol.clone())
+            .collect::<HashSet<_>>()
+            .into_iter()
+            .collect();
+        
+        let assets = self.asset_repository.list_by_symbols(&unique_symbols)?;
+        let symbol_to_data_source: HashMap<String, String> = assets
+            .iter()
+            .map(|asset| (asset.symbol.clone(), asset.data_source.clone()))
+            .collect();
+        
+        debug!("📦 Found {} assets with configured data sources", symbol_to_data_source.len());
+
         // Convert to Quote structs and import
         debug!("🔄 Converting import quotes to database quotes...");
         let quotes_for_db: Vec<Quote> = quotes_to_import
             .iter()
             .enumerate()
             .filter_map(|(index, import_quote)| {
-                match self.convert_import_quote_to_quote(import_quote) {
+                match self.convert_import_quote_to_quote(import_quote, &symbol_to_data_source) {
                     Ok(quote) => {
-                        debug!("✅ Converted quote {}: {}", index + 1, quote.symbol);
+                        debug!("✅ Converted quote {}: {} with data_source={:?}", index + 1, quote.symbol, quote.data_source);
                         Some(quote)
                     }
                     Err(e) => {
@@ -777,7 +794,11 @@ impl MarketDataService {
         ImportValidationStatus::Valid
     }
 
-    fn convert_import_quote_to_quote(&self, import_quote: &QuoteImport) -> Result<Quote> {
+    fn convert_import_quote_to_quote(
+        &self, 
+        import_quote: &QuoteImport,
+        symbol_to_data_source: &HashMap<String, String>
+    ) -> Result<Quote> {
 
         use super::market_data_model::DataSource;
 
@@ -786,6 +807,15 @@ impl MarketDataService {
             .unwrap()
             .and_local_timezone(Utc)
             .unwrap();
+
+        // Use asset's configured data_source, fallback to Manual if not found
+        let data_source = symbol_to_data_source
+            .get(&import_quote.symbol)
+            .map(|ds| ds.as_str().into())
+            .unwrap_or_else(|| {
+                debug!("⚠️ No asset found for symbol '{}', using Manual data source", import_quote.symbol);
+                DataSource::Manual
+            });
 
         Ok(Quote {
             id: format!("{}_{}", import_quote.symbol, import_quote.date),
@@ -798,7 +828,7 @@ impl MarketDataService {
             adjclose: import_quote.close, // Assume no adjustment for imported data
             volume: import_quote.volume.unwrap_or(Decimal::ZERO),
             currency: import_quote.currency.clone(),
-            data_source: DataSource::Manual,
+            data_source,
             created_at: Utc::now(),
         })
     }

@@ -34,6 +34,8 @@ impl AssetProfiler for ManualProvider {
                 isin: None,
                 name: Some(symbol.to_string()),
                 asset_type: Some("EQUITY".to_string()),
+                asset_class: Some("EQUITY".to_string()),
+                asset_sub_class: Some("COMMON_STOCK".to_string()),
                 symbol: symbol.to_string(),
                 data_source: DataSource::Manual.as_str().to_string(),
                 ..Default::default()
