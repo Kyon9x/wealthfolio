@@ -29,7 +29,7 @@ import {
 import { ActionConfirm } from '@wealthfolio/ui';
 import { ImportQuotesSection } from '@/components/quote-import/ImportQuotesSection';
 
-const useApiKeyStatus = (providerId: string) => {
+const useApiKeyStatus = (providerId: string, enabled = true) => {
   const queryClient = useQueryClient();
   const needsApiKey =
     providerId !== 'YAHOO' && providerId !== 'MANUAL' && providerId !== 'VN_MARKET';
@@ -37,7 +37,7 @@ const useApiKeyStatus = (providerId: string) => {
   const { data: apiKey, isLoading } = useQuery({
     queryKey: QueryKeys.secrets.apiKey(providerId),
     queryFn: () => getSecret(providerId),
-    enabled: needsApiKey,
+    enabled: needsApiKey && enabled,
     staleTime: Infinity,
   });
 
@@ -67,7 +67,10 @@ function ProviderSettings({
 }: ProviderSettingsProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [showApiKey, setShowApiKey] = useState(false);
-  const { apiKey, isSecretSet, needsApiKey, invalidateApiKeyStatus } = useApiKeyStatus(provider.id);
+  const { apiKey, isSecretSet, needsApiKey, invalidateApiKeyStatus } = useApiKeyStatus(
+    provider.id,
+    isOpen,
+  );
   const { mutate: setApiKey } = useSetApiKey();
   const { mutate: deleteApiKey } = useDeleteApiKey();
 
