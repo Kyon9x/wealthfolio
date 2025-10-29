@@ -27,6 +27,7 @@ import {
   useUpdatePortfolioMutation,
 } from '@/hooks/use-calculate-portfolio';
 import { ActionConfirm } from '@wealthfolio/ui';
+import { ImportQuotesSection } from '@/components/quote-import/ImportQuotesSection';
 
 const useApiKeyStatus = (providerId: string) => {
   const queryClient = useQueryClient();
@@ -406,6 +407,10 @@ export default function MarketDataSettingsPage() {
           </div>
         )}
       </div>
+
+      <Separator />
+
+      <ImportQuotesSection />
     </div>
   );
 }
