@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-
 export const PORTFOLIO_ACCOUNT_ID = 'TOTAL';
 
 export const HoldingType = {
@@ -82,7 +81,7 @@ export const IMPORT_REQUIRED_FIELDS = [
   ImportFormat.AMOUNT,
 ] as const;
 
-export type ImportRequiredField = typeof IMPORT_REQUIRED_FIELDS[number];
+export type ImportRequiredField = (typeof IMPORT_REQUIRED_FIELDS)[number];
 
 export const ExportDataType = {
   ACCOUNTS: 'accounts',
@@ -150,10 +149,7 @@ export const CASH_ACTIVITY_TYPES = [
   ActivityType.FEE,
 ] as const;
 
-export const INCOME_ACTIVITY_TYPES = [
-  ActivityType.DIVIDEND,
-  ActivityType.INTEREST,
-] as const;
+export const INCOME_ACTIVITY_TYPES = [ActivityType.DIVIDEND, ActivityType.INTEREST] as const;
 
 // Zod schema for activity type validation
 export const activityTypeSchema = z.enum([
@@ -186,4 +182,16 @@ export const ActivityTypeNames: Record<ActivityType, string> = {
   [ActivityType.FEE]: 'Fee',
   [ActivityType.TAX]: 'Tax',
   [ActivityType.SPLIT]: 'Split',
-}; 
+};
+
+// Asset subclass types (from Rust AssetSubClass enum)
+export const ASSET_SUBCLASS_TYPES = [
+  { label: 'Stock', value: 'Stock' },
+  { label: 'ETF', value: 'ETF' },
+  { label: 'Mutual Fund', value: 'Mutual Fund' },
+  { label: 'Cryptocurrency', value: 'Cryptocurrency' },
+  { label: 'Commodity', value: 'Commodity' },
+  { label: 'Precious Metal', value: 'Precious Metal' },
+  { label: 'Alternative', value: 'Alternative' },
+  { label: 'Cash', value: 'Cash' },
+] as const;

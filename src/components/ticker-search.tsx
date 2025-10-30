@@ -1,15 +1,15 @@
-import { useState, forwardRef, useRef, useMemo, useCallback, memo } from 'react';
+import { searchTicker } from '@/commands/market-data';
+import { Button } from '@/components/ui/button';
+import { Command, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { Icons } from '@/components/ui/icons';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Skeleton } from '@/components/ui/skeleton';
+import { QuoteSummary } from '@/lib/types';
+import { cn } from '@/lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { Command as CommandPrimitive } from 'cmdk';
-import { Command, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { searchTicker } from '@/commands/market-data';
-import { cn } from '@/lib/utils';
-import { QuoteSummary } from '@/lib/types';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Icons } from '@/components/ui/icons';
 import { debounce } from 'lodash';
+import { forwardRef, memo, useCallback, useMemo, useRef, useState } from 'react';
 
 interface SearchProps {
   selectedResult?: QuoteSummary;
@@ -85,7 +85,7 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
     ref,
   ) => {
     const [open, setOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState(defaultValue || value || '');
+    const [searchQuery, setSearchQuery] = useState(defaultValue ?? value ?? '');
     const [debouncedQuery, setDebouncedQuery] = useState('');
     const [selected, setSelected] = useState(() => {
       if (selectedResult) {
@@ -181,7 +181,11 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
           <Button
             variant="outline"
             role="combobox"
-            className={cn('w-full rounded-md justify-between', open && 'ring-ring ring-2', className)}
+            className={cn(
+              'w-full justify-between truncate rounded-md',
+              open && 'ring-ring ring-2',
+              className,
+            )}
             ref={ref}
             aria-expanded={open}
             aria-haspopup="listbox"
@@ -194,7 +198,7 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
         <PopoverContent
           side="bottom"
           align="start"
-          className="h-auto w-[var(--radix-popover-trigger-width)] p-0"
+          className="w-(--radix-popover-trigger-width) h-auto p-0"
           onOpenAutoFocus={handleOpenAutoFocus}
           onCloseAutoFocus={handleCloseAutoFocus}
         >

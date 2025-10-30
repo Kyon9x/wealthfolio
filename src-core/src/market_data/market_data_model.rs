@@ -230,17 +230,6 @@ pub struct QuoteImport {
     pub error_message: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct QuoteImportPreview {
-    pub total_rows: usize,
-    pub valid_rows: usize,
-    pub invalid_rows: usize,
-    pub sample_quotes: Vec<QuoteImport>,
-    pub detected_columns: HashMap<String, String>,
-    pub duplicate_count: usize,
-}
-
 #[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(rename_all = "camelCase")]
 pub enum ImportValidationStatus {

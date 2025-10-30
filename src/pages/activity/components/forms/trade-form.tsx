@@ -1,30 +1,42 @@
-import { useFormContext } from 'react-hook-form';
 import {
-  Card, 
+  Card,
   CardContent,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
   MoneyInput,
   QuantityInput,
 } from '@wealthfolio/ui';
-import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
+import { useFormContext } from 'react-hook-form';
 import { AccountSelectOption } from '../activity-form';
 import {
   ActivityTypeSelector,
   type ActivityType as ActivityTypeUI,
 } from '../activity-type-selector';
 import { CashBalanceWarning } from '../cash-balance-warning';
+import { AssetSymbolInput, CommonFields, ConfigurationCheckbox } from './common';
 
 export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
   const { control, watch, setValue } = useFormContext();
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
   const tradeTypes: ActivityTypeUI[] = [
-    { value: 'BUY', label: 'Buy', icon: 'ArrowDown', description: 'Purchase an asset. This increases your holding quantity and decreases your cash balance.' },
-    { value: 'SELL', label: 'Sell', icon: 'ArrowUp', description: 'Sell an asset. This decreases your holding quantity and increases your cash balance.' },
+    {
+      value: 'BUY',
+      label: 'Buy',
+      icon: 'ArrowDown',
+      description:
+        'Purchase an asset. This increases your holding quantity and decreases your cash balance.',
+    },
+    {
+      value: 'SELL',
+      label: 'Sell',
+      icon: 'ArrowUp',
+      description:
+        'Sell an asset. This decreases your holding quantity and increases your cash balance.',
+    },
   ];
 
   return (
@@ -42,8 +54,8 @@ export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
             control={control}
             name="assetId"
             render={({ field }) => (
-              <AssetSymbolInput 
-                field={field} 
+              <AssetSymbolInput
+                field={field}
                 isManualAsset={isManualAsset}
                 onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
               />
@@ -95,4 +107,4 @@ export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
       </Card>
     </div>
   );
-}; 
+};

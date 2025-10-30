@@ -1,30 +1,41 @@
-import { useFormContext } from 'react-hook-form';
 import {
   Card,
   CardContent,
-  MoneyInput,
-  QuantityInput,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage,
+  MoneyInput,
+  QuantityInput,
 } from '@wealthfolio/ui';
-import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
+import { useFormContext } from 'react-hook-form';
 import { AccountSelectOption } from '../activity-form';
 import {
   ActivityTypeSelector,
   type ActivityType as ActivityTypeUI,
 } from '../activity-type-selector';
-
+import { AssetSymbolInput, CommonFields, ConfigurationCheckbox } from './common';
 
 export const HoldingsForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
   const { control, watch, setValue } = useFormContext();
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
   const holdingTypes: ActivityTypeUI[] = [
-    { value: 'ADD_HOLDING', label: 'Add Holding', icon: 'PlusCircle', description: 'Record a new asset holding. This is similar to a "Buy" but does not impact your cash balance. Use this for initial holdings, assets transferred from another brokerage, holdings received (e.g., gifts, inheritance), or to quickly record a purchase without a separate deposit entry.' },
-    { value: 'REMOVE_HOLDING', label: 'Remove Holding', icon: 'MinusCircle', description: 'Record the removal of an asset holding. This is similar to a "Sell" but does not impact your cash balance. Also use to record assets transferred out to another brokerage or holdings removed for reasons other than a sale (e.g., gifts, donations).' },
+    {
+      value: 'ADD_HOLDING',
+      label: 'Add Holding',
+      icon: 'PlusCircle',
+      description:
+        'Record a new asset holding. This is similar to a "Buy" but does not impact your cash balance. Use this for initial holdings, assets transferred from another brokerage, holdings received (e.g., gifts, inheritance), or to quickly record a purchase without a separate deposit entry.',
+    },
+    {
+      value: 'REMOVE_HOLDING',
+      label: 'Remove Holding',
+      icon: 'MinusCircle',
+      description:
+        'Record the removal of an asset holding. This is similar to a "Sell" but does not impact your cash balance. Also use to record assets transferred out to another brokerage or holdings removed for reasons other than a sale (e.g., gifts, donations).',
+    },
   ];
 
   return (
@@ -41,8 +52,8 @@ export const HoldingsForm = ({ accounts }: { accounts: AccountSelectOption[] }) 
             control={control}
             name="assetId"
             render={({ field }) => (
-              <AssetSymbolInput 
-                field={field} 
+              <AssetSymbolInput
+                field={field}
                 isManualAsset={isManualAsset}
                 onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
               />
@@ -81,4 +92,4 @@ export const HoldingsForm = ({ accounts }: { accounts: AccountSelectOption[] }) 
       </Card>
     </div>
   );
-}; 
+};

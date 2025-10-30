@@ -238,7 +238,7 @@ fn spawn_background_tasks(
     let update_handle = handle.clone();
     let instance_id_update = instance_id.clone();
     let update_context = context.clone();
-    spawn(async move { 
+    spawn(async move {
         // Check if auto-update is enabled before performing the check
         if let Ok(is_enabled) = update_context.settings_service().is_auto_update_check_enabled() {
             if is_enabled {
@@ -251,7 +251,7 @@ fn spawn_background_tasks(
     let vn_market_handle = handle.clone();
     spawn(async move {
         use tauri_plugin_shell::ShellExt;
-        
+
         // Get the app's resource directory to determine the correct working directory
         let app_dir = match std::env::current_dir() {
             Ok(dir) => dir,
@@ -260,16 +260,16 @@ fn spawn_background_tasks(
                 return;
             }
         };
-        
+
         let service_dir = app_dir.join("services/vn-market-service");
-        
+
         if !service_dir.exists() {
             log::warn!("VN Market Service directory not found at {:?}. Vietnamese market data will not be available.", service_dir);
             return;
         }
-        
+
         log::info!("Starting VN Market Service from directory: {:?}", service_dir);
-        
+
         // Check if port 8765 is already in use
         match vn_market_handle.shell().command("lsof")
             .args(["-i", ":8765"])
@@ -286,10 +286,10 @@ fn spawn_background_tasks(
                 log::debug!("Could not check if port 8765 is in use: {}", e);
             }
         }
-        
+
         // Start the service using the start.sh script (which activates virtual environment)
         let start_script = service_dir.join("start.sh");
-        
+
         let start_script_str = match start_script.to_str() {
             Some(path) => path,
             None => {
@@ -297,7 +297,7 @@ fn spawn_background_tasks(
                 return;
             }
         };
-        
+
         match vn_market_handle.shell()
             .command("bash")
             .args([start_script_str])
@@ -306,7 +306,7 @@ fn spawn_background_tasks(
         {
             Ok((mut rx, child)) => {
                 log::info!("VN Market Service process spawned with PID: {}", child.pid());
-                
+
                 // Spawn a task to read stdout/stderr
                 tauri::async_runtime::spawn(async move {
                     while let Some(event) = rx.recv().await {
@@ -328,7 +328,7 @@ fn spawn_background_tasks(
                         }
                     }
                 });
-                
+
                 log::info!("VN Market Service started successfully on port 8765");
             }
             Err(e) => {

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { searchTicker } from '@/commands/market-data';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -9,12 +8,13 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { Icons } from '@/components/ui/icons';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Skeleton } from '@/components/ui/skeleton';
-import { cn } from '@/lib/utils';
-import { Icons } from '@/components/ui/icons';
-import { searchTicker } from '@/commands/market-data';
 import { QuoteSummary } from '@/lib/types';
+import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 const BENCHMARKS = [
   {
@@ -72,9 +72,15 @@ const BENCHMARKS = [
 
 interface BenchmarkSymbolSelectorProps {
   onSelect: (symbol: { id: string; name: string; dataSource?: string }) => void;
+  className?: string;
+  iconOnly?: boolean;
 }
 
-export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorProps) {
+export function BenchmarkSymbolSelector({
+  onSelect,
+  className,
+  iconOnly = false,
+}: BenchmarkSymbolSelectorProps) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -91,7 +97,7 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
   });
 
   // Sort search results by score if available
-  const sortedSearchResults = searchResults?.sort((a, b) => b.score - a.score) || [];
+  const sortedSearchResults = searchResults?.sort((a, b) => b.score - a.score) ?? [];
 
   // Filter out search results that are already in predefined benchmarks
   const existingSymbols = BENCHMARKS.flatMap((group) => group.items.map((item) => item.symbol));
@@ -125,11 +131,16 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="flex h-8 items-center gap-1.5 rounded-md border-[1.5px] border-none bg-secondary/30 px-3 py-1 text-sm font-medium hover:bg-muted/80"
-          size="sm"
+          aria-label={iconOnly ? 'Add benchmark' : undefined}
+          className={cn(
+            'bg-secondary/30 hover:bg-muted/80 flex items-center gap-1.5 rounded-md border-dashed text-sm font-medium',
+            iconOnly ? 'h-9 w-9 p-0' : 'h-8 px-3 py-1',
+            className,
+          )}
+          size={iconOnly ? 'icon' : 'sm'}
         >
-          <Icons.Plus className="h-4 w-4" />
-          Add Benchmark
+          <Icons.TrendingUp className="h-4 w-4" />
+          {!iconOnly && 'Add Benchmark'}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[350px] p-0">
@@ -149,7 +160,7 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
               <CommandGroup
                 key={group.group}
                 heading={group.group}
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
+                className="[&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b"
               >
                 {group.items
                   .filter(
@@ -168,11 +179,11 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
                       <div className="flex flex-col">
                         <div className="flex items-center">
                           <span className="font-medium">{benchmark.name}</span>
-                          <span className="ml-2 text-xs text-muted-foreground">
+                          <span className="text-muted-foreground ml-2 text-xs">
                             {benchmark.symbol}
                           </span>
                         </div>
-                        <span className="text-xs text-muted-foreground">
+                        <span className="text-muted-foreground text-xs">
                           {benchmark.description}
                         </span>
                       </div>
@@ -191,7 +202,7 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
             {isLoading && searchQuery.length > 2 && (
               <CommandGroup
                 heading="Search Results"
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
+                className="[&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b"
               >
                 <div className="space-y-2 p-2">
                   <Skeleton className="h-12 w-full" />
@@ -205,9 +216,9 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
             {isError && searchQuery.length > 2 && (
               <CommandGroup
                 heading="Search Results"
-                className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
+                className="[&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b"
               >
-                <div className="p-4 text-sm text-muted-foreground">
+                <div className="text-muted-foreground p-4 text-sm">
                   Error searching for symbols. Please try again.
                 </div>
               </CommandGroup>
@@ -220,7 +231,7 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
               searchQuery.length > 2 && (
                 <CommandGroup
                   heading="Search Results"
-                  className="[&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:bg-popover"
+                  className="[&_[cmdk-group-heading]]:bg-popover [&_[cmdk-group-heading]]:border-border/10 [&_[cmdk-group-heading]]:sticky [&_[cmdk-group-heading]]:top-0 [&_[cmdk-group-heading]]:z-10 [&_[cmdk-group-heading]]:border-b"
                 >
                   {filteredSearchResults.slice(0, 8).map((ticker) => (
                     <CommandItem
@@ -231,12 +242,12 @@ export function BenchmarkSymbolSelector({ onSelect }: BenchmarkSymbolSelectorPro
                       <div className="flex flex-col">
                         <div className="flex items-center">
                           <span className="font-medium">{ticker.longName || ticker.symbol}</span>
-                          <span className="ml-2 text-xs text-muted-foreground">
+                          <span className="text-muted-foreground ml-2 text-xs">
                             {ticker.symbol}
                           </span>
                         </div>
                         {ticker.exchange && (
-                          <span className="text-xs text-muted-foreground">{ticker.exchange}</span>
+                          <span className="text-muted-foreground text-xs">{ticker.exchange}</span>
                         )}
                       </div>
                       <Icons.Check

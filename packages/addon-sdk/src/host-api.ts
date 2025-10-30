@@ -3,34 +3,34 @@
  * Provides comprehensive access to Wealthfolio functionality organized by domain
  */
 
-import type { EventCallback, UnlistenFn } from './types';
 import type {
-  Holding,
-  Activity,
   Account,
-  ActivityDetails,
+  AccountValuation,
+  Activity,
   ActivityCreate,
-  ActivityUpdate,
+  ActivityDetails,
   ActivityImport,
   ActivitySearchResponse,
-  ExchangeRate,
+  ActivityUpdate,
+  Asset,
   ContributionLimit,
-  NewContributionLimit,
   DepositsCalculation,
+  ExchangeRate,
   Goal,
   GoalAllocation,
-  QuoteSummary,
-  Asset,
-  Quote,
-  UpdateAssetProfile,
-  MarketDataProviderInfo,
-  IncomeSummary,
-  AccountValuation,
-  PerformanceMetrics,
-  SimplePerformanceMetrics,
-  Settings,
+  Holding,
   ImportMappingData,
+  IncomeSummary,
+  MarketDataProviderInfo,
+  NewContributionLimit,
+  PerformanceMetrics,
+  Quote,
+  QuoteSummary,
+  Settings,
+  SimplePerformanceMetrics,
+  UpdateAssetProfile,
 } from './data-types';
+import type { EventCallback, UnlistenFn } from './types';
 
 /**
  * Account management APIs
@@ -47,8 +47,7 @@ export interface AccountsAPI {
    * @param account New account data
    * @returns Promise resolving to created account
    */
-  create(account: any): Promise<Account>;
-
+  create(account: unknown): Promise<Account>;
 }
 
 /**
@@ -95,6 +94,11 @@ export interface PortfolioAPI {
    * @param endDate Optional end date
    * @returns Promise resolving to array of account valuations
    */
+  getHistoricalValuations(
+    accountId?: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<AccountValuation[]>;
   getHistoricalValuations(
     accountId?: string,
     startDate?: string,
@@ -380,7 +384,7 @@ export interface GoalsAPI {
    * @param goal New goal data
    * @returns Promise resolving to created goal
    */
-  create(goal: any): Promise<Goal>;
+  create(goal: unknown): Promise<Goal>;
 
   /**
    * Update an existing goal
@@ -443,7 +447,10 @@ export interface FilesAPI {
    * @param fileName Default file name
    * @returns Promise resolving to save result
    */
-  openSaveDialog(fileContent: Uint8Array | Blob | string, fileName: string): Promise<any>;
+  openSaveDialog(
+    fileContent: Uint8Array | Blob | string,
+    fileName: string,
+  ): Promise<unknown>;
 }
 
 /**
@@ -608,7 +615,7 @@ export interface QueryAPI {
    * Get the shared QueryClient instance from the main application
    * @returns The shared QueryClient instance
    */
-  getClient(): any; // QueryClient from @tanstack/react-query
+  getClient(): unknown; // QueryClient from @tanstack/react-query
 
   /**
    * Invalidate queries by key

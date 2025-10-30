@@ -1,20 +1,35 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { AccountSelectOption } from '../activity-form';
-import { ActivityTypeSelector, type ActivityType as ActivityTypeUI } from '../activity-type-selector';
-import { useFormContext } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { MoneyInput } from '@wealthfolio/ui';
-import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
+import { useFormContext } from 'react-hook-form';
+import { AccountSelectOption } from '../activity-form';
+import {
+  ActivityTypeSelector,
+  type ActivityType as ActivityTypeUI,
+} from '../activity-type-selector';
+import { AssetSymbolInput, CommonFields, ConfigurationCheckbox } from './common';
 
 export const IncomeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
-  const { control, watch, setValue } = useFormContext();
+  const { control, watch } = useFormContext();
   const activityType = watch('activityType');
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
   const shouldShowSymbolLookup = activityType === 'DIVIDEND';
 
   const incomeTypes: ActivityTypeUI[] = [
-    { value: 'DIVIDEND', label: 'Dividend', icon: 'Income', description: 'Income received from owning shares in a company or units in a fund. This typically represents a distribution of profits.' },
-    { value: 'INTEREST', label: 'Interest', icon: 'Percent', description: 'Income earned from cash deposits, bonds, or lending money. This is a payment for the use of your money.' },
+    {
+      value: 'DIVIDEND',
+      label: 'Dividend',
+      icon: 'Income',
+      description:
+        'Income received from owning shares in a company or units in a fund. This typically represents a distribution of profits.',
+    },
+    {
+      value: 'INTEREST',
+      label: 'Interest',
+      icon: 'Percent',
+      description:
+        'Income earned from cash deposits, bonds, or lending money. This is a payment for the use of your money.',
+    },
   ];
 
   return (
@@ -35,8 +50,8 @@ export const IncomeForm = ({ accounts }: { accounts: AccountSelectOption[] }) =>
               control={control}
               name="assetId"
               render={({ field }) => (
-                <AssetSymbolInput 
-                  field={field} 
+                <AssetSymbolInput
+                  field={field}
                   isManualAsset={isManualAsset}
                   onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
                 />
@@ -89,4 +104,4 @@ export const IncomeForm = ({ accounts }: { accounts: AccountSelectOption[] }) =>
       </Card>
     </div>
   );
-}; 
+};

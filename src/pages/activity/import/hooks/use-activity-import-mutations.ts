@@ -1,14 +1,14 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { logger } from '@/adapters';
 import { importActivities } from '@/commands/activity-import';
 import { toast } from '@/components/ui/use-toast';
 import { QueryKeys } from '@/lib/query-keys';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export function useActivityImportMutations({
   onSuccess,
   onError,
 }: {
-  onSuccess?: (activities: any[]) => void;
+  onSuccess?: (activities: unknown[]) => void;
   onError?: (error: string) => void;
 } = {}) {
   const queryClient = useQueryClient();
@@ -20,7 +20,7 @@ export function useActivityImportMutations({
       await queryClient.invalidateQueries({
         queryKey: [QueryKeys.ACTIVITY_DATA],
       });
-      
+
       // Call the provided onSuccess callback if it exists
       if (onSuccess) {
         // Ensure we pass an array of activities to the callback
@@ -32,12 +32,16 @@ export function useActivityImportMutations({
         });
       }
     },
-    onError: (error: any) => {
-      logger.error(`Error confirming import: ${error}`);
+    onError: (error: unknown) => {
+      logger.error(`Error confirming import: ${String(error)}`);
 
       // Call the provided onError callback if it exists
       if (onError) {
-        onError(error.message || 'An error occurred during import');
+        const errMsg =
+          error && typeof error === 'object' && 'message' in error
+            ? String((error as { message?: unknown }).message)
+            : 'An error occurred during import';
+        onError(errMsg);
       } else {
         toast({
           title: 'Uh oh! Something went wrong.',

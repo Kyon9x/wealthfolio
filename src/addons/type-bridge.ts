@@ -3,35 +3,35 @@
  * These utilities help convert between the main app's internal types and the SDK's public types
  */
 
-import type { HostAPI as SDKHostAPI } from '@wealthfolio/addon-sdk';
 import type { EventCallback, UnlistenFn } from '@/adapters';
 import type {
-  Holding,
-  Activity,
   Account,
-  ActivityDetails,
+  AccountValuation,
+  Activity,
   ActivityCreate,
-  ActivityUpdate,
+  ActivityDetails,
   ActivityImport,
   ActivitySearchResponse,
-  ExchangeRate,
+  ActivityUpdate,
+  Asset,
   ContributionLimit,
-  NewContributionLimit,
   DepositsCalculation,
+  ExchangeRate,
   Goal,
   GoalAllocation,
-  QuoteSummary,
-  Asset,
-  Quote,
-  UpdateAssetProfile,
-  MarketDataProviderInfo,
-  IncomeSummary,
-  AccountValuation,
-  PerformanceMetrics,
-  SimplePerformanceMetrics,
-  Settings,
+  Holding,
   ImportMappingData,
+  IncomeSummary,
+  MarketDataProviderInfo,
+  NewContributionLimit,
+  PerformanceMetrics,
+  Quote,
+  QuoteSummary,
+  Settings,
+  SimplePerformanceMetrics,
+  UpdateAssetProfile,
 } from '@/lib/types';
+import type { HostAPI as SDKHostAPI } from '@wealthfolio/addon-sdk';
 
 /**
  * Internal HostAPI interface that matches the actual command function signatures
@@ -55,11 +55,15 @@ export interface InternalHostAPI {
     id: string,
     updatedLimit: NewContributionLimit,
   ): Promise<ContributionLimit>;
+  updateContributionLimit(
+    id: string,
+    updatedLimit: NewContributionLimit,
+  ): Promise<ContributionLimit>;
   calculateDepositsForLimit(limitId: string): Promise<DepositsCalculation>;
 
   // Goals
   getGoals(): Promise<Goal[]>;
-  createGoal(goal: any): Promise<Goal>;
+  createGoal(goal: unknown): Promise<Goal>;
   updateGoal(goal: Goal): Promise<Goal>;
   updateGoalsAllocations(allocations: GoalAllocation[]): Promise<void>;
   getGoalsAllocation(): Promise<GoalAllocation[]>;
@@ -79,6 +83,11 @@ export interface InternalHostAPI {
   updatePortfolio(): Promise<void>;
   recalculatePortfolio(): Promise<void>;
   getIncomeSummary(): Promise<IncomeSummary[]>;
+  getHistoricalValuations(
+    accountId?: string,
+    startDate?: string,
+    endDate?: string,
+  ): Promise<AccountValuation[]>;
   getHistoricalValuations(
     accountId?: string,
     startDate?: string,
@@ -106,16 +115,16 @@ export interface InternalHostAPI {
   backupDatabase(): Promise<{ filename: string; data: Uint8Array }>;
 
   // Account management
-  createAccount(account: any): Promise<Account>;
-  updateAccount(account: any): Promise<Account>;
+  createAccount(account: unknown): Promise<Account>;
+  updateAccount(account: unknown): Promise<Account>;
 
   // Activity management
   searchActivities(
     page: number,
     pageSize: number,
-    filters: any,
+    filters: { accountId?: string; activityType?: string; symbol?: string },
     searchKeyword: string,
-    sort: any,
+    sort: { id: string; desc: boolean },
   ): Promise<ActivitySearchResponse>;
   createActivity(activity: ActivityCreate): Promise<Activity>;
   updateActivity(activity: ActivityUpdate): Promise<Activity>;
@@ -123,7 +132,7 @@ export interface InternalHostAPI {
 
   // File operations
   openCsvFileDialog(): Promise<null | string | string[]>;
-  openFileSaveDialog(fileContent: Uint8Array | Blob | string, fileName: string): Promise<any>;
+  openFileSaveDialog(fileContent: Uint8Array | Blob | string, fileName: string): Promise<unknown>;
 
   // Event listeners - Import
   listenImportFileDropHover<T>(handler: EventCallback<T>): Promise<UnlistenFn>;
@@ -157,7 +166,7 @@ export interface InternalHostAPI {
   navigateToRoute(route: string): Promise<void>;
 
   // Query functions
-  getQueryClient(): any;
+  getQueryClient(): unknown;
   invalidateQueries(queryKey: string | string[]): void;
   refetchQueries(queryKey: string | string[]): void;
 }
@@ -251,7 +260,7 @@ export function createSDKHostAPIBridge(internalAPI: InternalHostAPI, addonId?: s
       openSaveDialog: internalAPI.openFileSaveDialog,
     },
 
-    logger: createAddonLogger(addonId || 'unknown-addon'),
+    logger: createAddonLogger(addonId ?? 'unknown-addon'),
 
     events: {
       import: {
@@ -279,7 +288,7 @@ export function createSDKHostAPIBridge(internalAPI: InternalHostAPI, addonId?: s
       invalidateQueries: internalAPI.invalidateQueries,
       refetchQueries: internalAPI.refetchQueries,
     },
-  } as any as SDKHostAPI;
+  } as unknown as SDKHostAPI;
 }
 
 /**

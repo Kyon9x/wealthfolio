@@ -1,10 +1,13 @@
 import { Card, CardContent } from '@/components/ui/card';
-import { AccountSelectOption } from '../activity-form';
-import { ActivityTypeSelector, type ActivityType as ActivityTypeUI } from '../activity-type-selector';
-import { useFormContext } from 'react-hook-form';
-import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { MoneyInput, QuantityInput } from '@wealthfolio/ui';
-import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from './common';
+import { useFormContext } from 'react-hook-form';
+import { AccountSelectOption } from '../activity-form';
+import {
+  ActivityTypeSelector,
+  type ActivityType as ActivityTypeUI,
+} from '../activity-type-selector';
+import { AssetSymbolInput, CommonFields, ConfigurationCheckbox } from './common';
 
 export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
   const { control, watch, setValue } = useFormContext();
@@ -12,9 +15,27 @@ export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
   const isManualAsset = watch('assetDataSource') === 'MANUAL';
 
   const otherTypes: ActivityTypeUI[] = [
-    { value: 'SPLIT', label: 'Split', icon: 'Split', description: 'Record a stock split. This changes the number of shares you own but typically not the total value of your holding (e.g., a 2-for-1 split doubles your shares).' },
-    { value: 'FEE', label: 'Fee', icon: 'Receipt', description: 'Record a standalone fee or charge not directly tied to a specific trade, such as an account maintenance fee. This will decrease your cash balance.' },
-    { value: 'TAX', label: 'Tax', icon: 'ReceiptText', description: 'Record tax payments related to your investments, such as capital gains tax or withholding tax. This will decrease your cash balance.' },
+    {
+      value: 'SPLIT',
+      label: 'Split',
+      icon: 'Split',
+      description:
+        'Record a stock split. This changes the number of shares you own but typically not the total value of your holding (e.g., a 2-for-1 split doubles your shares).',
+    },
+    {
+      value: 'FEE',
+      label: 'Fee',
+      icon: 'Receipt',
+      description:
+        'Record a standalone fee or charge not directly tied to a specific trade, such as an account maintenance fee. This will decrease your cash balance.',
+    },
+    {
+      value: 'TAX',
+      label: 'Tax',
+      icon: 'ReceiptText',
+      description:
+        'Record tax payments related to your investments, such as capital gains tax or withholding tax. This will decrease your cash balance.',
+    },
   ];
 
   const shouldShowSymbolLookup = activityType !== 'FEE' && activityType !== 'TAX';
@@ -67,8 +88,8 @@ export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
                 control={control}
                 name="assetId"
                 render={({ field }) => (
-                  <AssetSymbolInput 
-                    field={field} 
+                  <AssetSymbolInput
+                    field={field}
                     isManualAsset={isManualAsset}
                     onDataSourceChange={(dataSource) => setValue('assetDataSource', dataSource)}
                   />
@@ -82,7 +103,10 @@ export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
                     <FormItem>
                       <FormLabel>Split Ratio</FormLabel>
                       <FormControl>
-                        <QuantityInput placeholder="Ex. 2 for 2:1 split, 0.5 for 1:2 split" {...field} />
+                        <QuantityInput
+                          placeholder="Ex. 2 for 2:1 split, 0.5 for 1:2 split"
+                          {...field}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -96,4 +120,4 @@ export const OtherForm = ({ accounts }: { accounts: AccountSelectOption[] }) => 
       </Card>
     </div>
   );
-}; 
+};

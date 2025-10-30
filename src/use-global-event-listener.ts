@@ -1,14 +1,14 @@
 // useGlobalEventListener.ts
-import { useEffect } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
-import { toast } from '@/components/ui/use-toast';
 import { listenMarketSyncComplete } from '@/commands/portfolio-listener';
+import { toast } from '@/components/ui/use-toast';
+import { useQueryClient } from '@tanstack/react-query';
+import { useCallback, useEffect } from 'react';
 
 import {
-  listenPortfolioUpdateStart,
+  listenMarketSyncStart,
   listenPortfolioUpdateComplete,
   listenPortfolioUpdateError,
-  listenMarketSyncStart,
+  listenPortfolioUpdateStart,
 } from '@/commands/portfolio-listener';
 import { logger } from './adapters';
 
@@ -45,7 +45,7 @@ function handleMarketSyncComplete(event: {
 
     toast({
       title: '🔴 Market Data Update Incomplete',
-      description: `Unable to update market data for: ${errorDetails}. This may affect your portfolio calculations and analytics. Please try again later.`,
+      description: `Unable to update market data for: ${failedSymbols}. This may affect your portfolio calculations and analytics. Please try again later.`,
       duration: 15000,
       variant: 'destructive',
     });
@@ -55,7 +55,7 @@ function handleMarketSyncComplete(event: {
 const handlePortfolioUpdateStart = () => {
   toast({
     description: 'Calculating portfolio performance...',
-    duration: 15000,
+    duration: 2000,
     variant: 'subtle',
   });
 };
@@ -74,17 +74,14 @@ const handlePortfolioUpdateError = (error: string) => {
 const useGlobalEventListener = () => {
   const queryClient = useQueryClient();
 
-  const handlePortfolioUpdateComplete = () => {
+  const handlePortfolioUpdateComplete = useCallback(() => {
     queryClient.invalidateQueries();
-    toast({
-      description: 'Portfolio Updated Successfully!',
-      variant: 'subtle',
-      duration: 2000,
-    });
-  };
+  }, [queryClient]);
 
   useEffect(() => {
-    let actualCleanup = () => {};
+    let actualCleanup = () => {
+      return;
+    };
 
     const setupListeners = async () => {
       const unlistenPortfolioSyncStart = await listenPortfolioUpdateStart(
@@ -119,7 +116,7 @@ const useGlobalEventListener = () => {
     return () => {
       actualCleanup();
     };
-  }, []);
+  }, [handlePortfolioUpdateComplete]);
 
   return null;
 };

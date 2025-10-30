@@ -1,5 +1,5 @@
+import { ActivityType, DataSource } from '@/lib/constants';
 import { z } from 'zod';
-import { ActivityType, DataSource, dataSourceSchema } from '@/lib/constants';
 
 export const baseActivitySchema = z.object({
   id: z.string().uuid().optional(),
@@ -123,11 +123,7 @@ export const incomeActivitySchema = baseActivitySchema.extend({
 });
 
 export const otherActivitySchema = baseActivitySchema.extend({
-  activityType: z.enum([
-    ActivityType.SPLIT,
-    ActivityType.TAX,
-    ActivityType.FEE,
-  ]),
+  activityType: z.enum([ActivityType.SPLIT, ActivityType.TAX, ActivityType.FEE]),
   assetId: z.string().min(1, { message: 'Please select a security' }).optional(),
   amount: z.coerce.number().min(0).optional(),
   quantity: z.coerce.number().nonnegative().optional(),
@@ -141,17 +137,18 @@ export const otherActivitySchema = baseActivitySchema.extend({
   assetDataSource: dataSourceSchema.default(DataSource.YAHOO).optional(),
 });
 
+export const newActivitySchema = z
+  .discriminatedUnion('activityType', [
+    tradeActivitySchema,
+    cashActivitySchema,
+    incomeActivitySchema,
+    otherActivitySchema,
+    holdingsActivitySchema,
+  ])
+  .and(
+    z.object({
+      showCurrencySelect: z.boolean().optional(),
+    }),
+  );
 
-
-export const newActivitySchema = z.discriminatedUnion('activityType', [
-  tradeActivitySchema,
-  cashActivitySchema,
-  incomeActivitySchema,
-  otherActivitySchema,
-  holdingsActivitySchema,
-]);
-
-export type NewActivityFormValues = z.infer<typeof newActivitySchema> & {
-  showCurrencySelect?: boolean;
-}; 
-
+export type NewActivityFormValues = z.infer<typeof newActivitySchema>;
