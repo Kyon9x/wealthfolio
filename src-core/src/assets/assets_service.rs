@@ -78,10 +78,13 @@ impl AssetServiceTrait for AssetService {
                     "Asset not found locally, attempting to fetch from market data: {}",
                     asset_id
                 );
-                let asset_profile_from_provider = self
+                let asset_profile_option = self
                     .market_data_service
-                    .get_asset_profile(asset_id, data_source)
+                    .get_asset_profile(asset_id)
                     .await?;
+
+                let asset_profile_from_provider = asset_profile_option
+                    .ok_or_else(|| Error::Database(DatabaseError::QueryFailed(DieselError::NotFound)))?;
 
                 let mut new_asset: NewAsset = asset_profile_from_provider.into();
 

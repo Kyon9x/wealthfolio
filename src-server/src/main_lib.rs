@@ -1,4 +1,4 @@
-use std::sync::{Arc, RwLock};
+use std::sync::Arc;
 
 use tracing_subscriber::{fmt, EnvFilter};
 use tracing_subscriber::prelude::*;
@@ -30,7 +30,7 @@ pub struct AppState {
     pub holdings_service: Arc<dyn HoldingsServiceTrait + Send + Sync>,
     pub valuation_service: Arc<dyn ValuationServiceTrait + Send + Sync>,
     pub market_data_service: Arc<dyn MarketDataServiceTrait + Send + Sync>,
-    pub base_currency: Arc<RwLock<String>>,
+    pub base_currency: Arc<std::sync::RwLock<String>>,
     pub snapshot_service: Arc<dyn SnapshotServiceTrait + Send + Sync>,
     pub performance_service: Arc<dyn wealthfolio_core::portfolio::performance::PerformanceServiceTrait + Send + Sync>,
     pub income_service: Arc<dyn IncomeServiceTrait + Send + Sync>,
@@ -65,7 +65,7 @@ pub async fn build_state(config: &Config) -> anyhow::Result<Arc<AppState>> {
     let settings_repo = Arc::new(SettingsRepository::new(pool.clone(), writer.clone()));
     let settings_service = Arc::new(SettingsService::new(settings_repo, fx_service.clone()));
     let settings = settings_service.get_settings()?;
-    let base_currency = Arc::new(RwLock::new(settings.base_currency));
+    let base_currency = Arc::new(std::sync::RwLock::new(settings.base_currency));
 
     // Ensure a device ID exists in the database for trigger stamping (origin/updated_version)
     #[cfg(feature = "wealthfolio-pro")]
@@ -87,10 +87,22 @@ pub async fn build_state(config: &Config) -> anyhow::Result<Arc<AppState>> {
     // Additional repositories/services for web API
     let asset_repository = Arc::new(AssetRepository::new(pool.clone(), writer.clone()));
     let market_data_repository = Arc::new(MarketDataRepository::new(pool.clone(), writer.clone()));
+    
+    // Load provider settings from database and create registry
+    let provider_settings = market_data_repository.get_all_providers()?;
+    let provider_registry = Arc::new(tokio::sync::RwLock::new(
+        wealthfolio_core::market_data::providers::ProviderRegistry::new(
+            provider_settings,
+            Some(settings_service.clone())
+        ).await?
+    ));
+    
     let market_data_service = Arc::new(MarketDataService::new(
+        Some(settings_service.clone()),
+        provider_registry,
         market_data_repository.clone(),
         asset_repository.clone(),
-    ).await?);
+    ));
 
     let asset_service = Arc::new(AssetService::new(asset_repository.clone(), market_data_service.clone())?);
     let activity_repository = Arc::new(ActivityRepository::new(pool.clone(), writer.clone()));
@@ -151,6 +163,7 @@ pub async fn build_state(config: &Config) -> anyhow::Result<Arc<AppState>> {
         account_service.clone(),
         asset_service.clone(),
         fx_service.clone(),
+        market_data_service.clone(),
     ));
 
     // Determine data root directory (parent of DB path)

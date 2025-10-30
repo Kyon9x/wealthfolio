@@ -1,7 +1,9 @@
 use crate::market_data::market_data_model::DataSource;
-use crate::market_data::providers::market_data_provider::AssetProfiler;
+use crate::market_data::providers::market_data_provider::{AssetProfiler, MarketDataProvider};
 use crate::market_data::market_data_errors::MarketDataError;
 use crate::market_data::QuoteSummary;
+use crate::market_data::market_data_model::Quote;
+use std::time::SystemTime;
 
 use super::models::AssetProfile;
 pub struct ManualProvider;
@@ -9,6 +11,36 @@ pub struct ManualProvider;
 impl ManualProvider {
     pub fn new() -> Result<Self, MarketDataError> {
         Ok(ManualProvider)
+    }
+}
+
+#[async_trait::async_trait]
+impl MarketDataProvider for ManualProvider {
+    fn name(&self) -> &'static str {
+        "Manual"
+    }
+
+    async fn get_latest_quote(&self, _symbol: &str, _fallback_currency: String) -> Result<Quote, MarketDataError> {
+        Err(MarketDataError::UnsupportedProvider("Manual provider does not support quote fetching".to_string()))
+    }
+
+    async fn get_historical_quotes(
+        &self,
+        _symbol: &str,
+        _start: SystemTime,
+        _end: SystemTime,
+        _fallback_currency: String,
+    ) -> Result<Vec<Quote>, MarketDataError> {
+        Err(MarketDataError::UnsupportedProvider("Manual provider does not support historical quotes".to_string()))
+    }
+
+    async fn get_historical_quotes_bulk(
+        &self,
+        _symbols_with_currencies: &[(String, String, Option<String>)],
+        _start: SystemTime,
+        _end: SystemTime,
+    ) -> Result<(Vec<Quote>, Vec<(String, String, Option<String>)>), MarketDataError> {
+        Err(MarketDataError::UnsupportedProvider("Manual provider does not support bulk historical quotes".to_string()))
     }
 }
 

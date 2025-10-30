@@ -8,7 +8,7 @@ use rust_decimal::Decimal;
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
-use std::collections::HashMap;
+
 use crate::market_data::market_data_constants::{DATA_SOURCE_YAHOO, DATA_SOURCE_MANUAL, DATA_SOURCE_MARKET_DATA_APP, DATA_SOURCE_ALPHA_VANTAGE, DATA_SOURCE_METAL_PRICE_API, DATA_SOURCE_VN_MARKET};
 
 #[derive(Queryable, Identifiable, Selectable, Debug, Clone, Serialize, Deserialize, PartialEq, Default)]
@@ -205,7 +205,7 @@ pub struct MarketDataProviderSetting {
     pub last_sync_error: Option<String>,
 }
 
-#[derive(Debug, Clone, Serialize, Deserialize, Insertable, AsChangeset)]
+#[derive(Debug, Clone, Serialize, Deserialize, AsChangeset)]
 #[diesel(table_name = crate::schema::market_data_providers)]
 #[diesel(check_for_backend(diesel::sqlite::Sqlite))]
 pub struct UpdateMarketDataProviderSetting {

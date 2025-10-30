@@ -9,20 +9,22 @@ use serde::Deserialize;
 use crate::market_data::providers::models::AssetProfile;
 use crate::market_data::market_data_model::DataSource;
 
-const BASE_URL: &str = "http://127.0.0.1:8765";
+const DEFAULT_BASE_URL: &str = "http://127.0.0.1:8765";
+
 #[derive(Debug, Clone)]
 pub struct VnMarketConfig {
     pub base_url: String,
+    pub api_token: Option<String>,
 }
 
 impl Default for VnMarketConfig {
     fn default() -> Self {
         Self {
-            base_url: BASE_URL.to_string(),
+            base_url: DEFAULT_BASE_URL.to_string(),
+            api_token: None,
         }
     }
 }
-
 
 pub struct VnMarketProvider {
     client: Client,
@@ -45,10 +47,29 @@ impl VnMarketProvider {
         self
     }
 
+    pub fn with_api_token(mut self, api_token: String) -> Self {
+        self.config.api_token = Some(api_token);
+        self
+    }
+
+    pub fn with_config(mut self, config: VnMarketConfig) -> Self {
+        self.config = config;
+        self
+    }
+
     /// Normalize symbol by stripping .VN suffix for VN Market Service API calls
     /// Example: "MBB.VN" -> "MBB", "FPT.VN" -> "FPT"
     fn normalize_symbol(symbol: &str) -> &str {
         symbol.strip_suffix(".VN").unwrap_or(symbol)
+    }
+
+    /// Add API token to request headers if configured
+    fn add_auth_headers(&self, request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
+        if let Some(ref token) = self.config.api_token {
+            request.header("Authorization", format!("Bearer {}", token))
+        } else {
+            request
+        }
     }
 }
 
@@ -147,8 +168,8 @@ impl MarketDataProvider for VnMarketProvider {
         let normalized_symbol = Self::normalize_symbol(symbol);
         let url = format!("{}/history/{}", self.config.base_url, normalized_symbol);
         
-        let response = self.client
-            .get(&url)
+        let request = self.add_auth_headers(self.client.get(&url));
+        let response = request
             .send()
             .await
             .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;
@@ -236,8 +257,8 @@ impl AssetProfiler for VnMarketProvider {
         // Use unified search endpoint to get proper asset_type information
         let url = format!("{}/search?query={}", self.config.base_url, normalized_symbol);
         
-        let response = self.client
-            .get(&url)
+        let request = self.add_auth_headers(self.client.get(&url));
+        let response = request
             .send()
             .await
             .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;
@@ -323,9 +344,8 @@ impl AssetProfiler for VnMarketProvider {
         
         let url = format!("{}/search", self.config.base_url);
         
-        let response = self.client
-            .get(&url)
-            .query(&[("query", query)])
+        let request = self.add_auth_headers(self.client.get(&url).query(&[("query", query)]));
+        let response = request
             .send()
             .await
             .map_err(|e| MarketDataError::ProviderError(format!("VnMarket API error: {}", e)))?;

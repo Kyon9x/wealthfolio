@@ -298,7 +298,7 @@ impl ActivityServiceTrait for ActivityService {
         // Create initial quotes for manual assets
         for activity in &validated_activities {
             // Check if activity is marked as manual
-            let is_manual = activity.asset_data_source.as_ref().map_or(false, |source| source == "MANUAL");
+            let is_manual = activity.data_source.as_ref().map_or(false, |source| source == "MANUAL");
 
             if is_manual {
                 let quote = Quote {
@@ -318,7 +318,7 @@ impl ActivityServiceTrait for ActivityService {
                     created_at: chrono::Utc::now(),
                 };
 
-                if let Err(e) = self.market_data_service.add_quote(&quote).await {
+                if let Err(e) = self.market_data_service.save_quote(&quote).await {
                     debug!("Failed to create quote for manual asset {}: {}", activity.symbol, e);
                 } else {
                     debug!("Created initial quote for manual asset {} at price {}", activity.symbol, activity.unit_price);

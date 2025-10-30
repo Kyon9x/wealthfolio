@@ -34,6 +34,13 @@ pub trait MarketDataServiceTrait: Send + Sync {
         currency: &str,
     ) -> Result<Vec<Quote>>;
     
+    async fn get_historical_quotes_for_symbols_in_range(
+        &self,
+        symbols: &HashSet<String>,
+        start_date: NaiveDate,
+        end_date: NaiveDate,
+    ) -> Result<Vec<Quote>>;
+    
     async fn import_quotes(&self, quotes: Vec<QuoteImport>) -> Result<Vec<ImportValidationStatus>>;
     
 
@@ -44,6 +51,7 @@ pub trait MarketDataServiceTrait: Send + Sync {
     
     async fn update_provider_setting(
         &self,
+        provider_id: String,
         update: UpdateMarketDataProviderSetting,
     ) -> Result<()>;
     
@@ -51,6 +59,13 @@ pub trait MarketDataServiceTrait: Send + Sync {
     
     async fn import_quotes_from_csv(&self, quotes: Vec<QuoteImport>, overwrite: bool) -> Result<Vec<QuoteImport>>;
     async fn bulk_upsert_quotes(&self, quotes: Vec<Quote>) -> Result<usize>;
+    async fn save_quote(&self, quote: &Quote) -> Result<Quote>;
+    
+    // Repository methods exposed through service
+    fn get_latest_quotes_pair_for_symbols(
+        &self,
+        symbol_source_pairs: &[(String, String)],
+    ) -> Result<HashMap<String, LatestQuotePair>>;
 }
 
 #[async_trait]

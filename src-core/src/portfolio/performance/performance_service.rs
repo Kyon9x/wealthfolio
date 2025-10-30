@@ -5,9 +5,10 @@ use crate::performance::ReturnData;
 use crate::valuation::ValuationServiceTrait;
 
 use async_trait::async_trait;
-use chrono::{Duration, NaiveDate};
+use chrono::{Duration, NaiveDate, TimeZone, Utc};
 use std::collections::HashMap;
 use std::sync::Arc;
+use std::time::SystemTime;
 
 use log::{debug, warn};
 use rust_decimal::Decimal;
@@ -337,7 +338,7 @@ impl PerformanceService {
         symbol: &str,
         start_date_opt: Option<NaiveDate>,
         end_date_opt: Option<NaiveDate>,
-        data_source: Option<String>,
+        _data_source: Option<String>,
     ) -> Result<PerformanceMetrics> {
         let effective_end_date =
             end_date_opt.unwrap_or_else(|| chrono::Local::now().naive_local().date());
@@ -353,9 +354,18 @@ impl PerformanceService {
             )));
         }
 
+        // Convert NaiveDate to SystemTime
+        let start_time: SystemTime = Utc
+            .from_utc_datetime(&effective_start_date.and_hms_opt(0, 0, 0).unwrap())
+            .into();
+        let end_time: SystemTime = Utc
+            .from_utc_datetime(&effective_end_date.and_hms_opt(23, 59, 59).unwrap())
+            .into();
+        
+        // Use USD as default currency - the service will fetch using the asset's actual currency
         let quote_history = self
             .market_data_service
-            .get_historical_quotes_from_provider(symbol, effective_start_date, effective_end_date, data_source)
+            .get_historical_quotes(symbol, start_time, end_time, "USD")
             .await?;
 
         if quote_history.is_empty() {

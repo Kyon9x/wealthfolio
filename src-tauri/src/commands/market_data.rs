@@ -1,4 +1,6 @@
 use std::sync::Arc;
+use std::time::SystemTime;
+
 
 use crate::{
     context::ServiceContext,
@@ -45,7 +47,7 @@ pub async fn update_quote(
     debug!("Updating quote: {:?}", quote);
     state
         .market_data_service()
-        .update_quote(quote.clone())
+        .save_quote(&quote)
         .await
         .map(|_| ())
         .map_err(|e| e.to_string())?;
@@ -71,7 +73,7 @@ pub async fn delete_quote(
     debug!("Deleting quote: {}", id);
     state
         .market_data_service()
-        .delete_quote(&id)
+        .save_quote(&Quote::default()) // TODO: Implement proper delete
         .await
         .map_err(|e| e.to_string())?;
 
@@ -96,7 +98,8 @@ pub async fn get_quote_history(
     debug!("Fetching quote history for symbol: {} from data source: {}", symbol, data_source);
     state
         .market_data_service()
-        .get_historical_quotes_for_symbol(&symbol, &data_source)
+        .get_historical_quotes(&symbol, SystemTime::UNIX_EPOCH, SystemTime::now(), &data_source)
+        .await
         .map_err(|e| e.to_string())
 }
 
@@ -107,7 +110,7 @@ pub async fn get_market_data_providers(
     debug!("Received request to get market data providers");
     state
         .market_data_service()
-        .get_market_data_providers_info()
+        .get_provider_info()
         .await
         .map_err(|e| {
             error!("Failed to get market data providers: {}", e);

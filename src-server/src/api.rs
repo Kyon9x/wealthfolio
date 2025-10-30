@@ -351,21 +351,25 @@ async fn save_account_import_mapping(State(state): State<Arc<AppState>>, Json(bo
 
 // Market data providers
 async fn get_market_data_providers(State(state): State<Arc<AppState>>) -> ApiResult<Json<Vec<MarketDataProviderInfo>>> {
-    let infos = state.market_data_service.get_market_data_providers_info().await?;
+    let infos = state.market_data_service.get_provider_info().await?;
     Ok(Json(infos))
 }
 
 async fn get_market_data_providers_settings(State(state): State<Arc<AppState>>) -> ApiResult<Json<Vec<MarketDataProviderSetting>>> {
-    let settings = state.market_data_service.get_market_data_providers_settings().await?;
+    let settings = state.market_data_service.get_provider_settings().await?;
     Ok(Json(settings))
 }
 
 #[derive(serde::Deserialize)]
-struct ProviderUpdateBody { #[serde(rename = "providerId")] provider_id: String, priority: i32, enabled: bool }
+struct ProviderUpdateBody { #[serde(rename = "providerId")] provider_id: String, priority: Option<i32>, enabled: Option<bool> }
 
-async fn update_market_data_provider_settings(State(state): State<Arc<AppState>>, Json(body): Json<ProviderUpdateBody>) -> ApiResult<Json<MarketDataProviderSetting>> {
-    let updated = state.market_data_service.update_market_data_provider_settings(body.provider_id, body.priority, body.enabled).await?;
-    Ok(Json(updated))
+async fn update_market_data_provider_settings(State(state): State<Arc<AppState>>, Json(body): Json<ProviderUpdateBody>) -> ApiResult<Json<()>> {
+    let update = wealthfolio_core::market_data::market_data_model::UpdateMarketDataProviderSetting {
+        priority: body.priority,
+        enabled: body.enabled,
+    };
+    state.market_data_service.update_provider_setting(body.provider_id, update).await?;
+    Ok(Json(()))
 }
 
 // Contribution limits

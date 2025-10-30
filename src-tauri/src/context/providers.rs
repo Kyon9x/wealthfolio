@@ -7,7 +7,7 @@ use wealthfolio_core::{
     fx::{FxRepository, FxService, FxServiceTrait},
     goals::{GoalRepository, GoalService},
     limits::{ContributionLimitRepository, ContributionLimitService},
-    market_data::{MarketDataRepository, MarketDataService, MarketDataServiceTrait},
+    market_data::{MarketDataRepository, MarketDataService, MarketDataServiceTrait, MarketDataRepositoryTrait, providers::ProviderRegistry},
     portfolio::{
         holdings::{HoldingsService, HoldingsValuationService},
         income::IncomeService,
@@ -60,8 +60,20 @@ pub async fn initialize_context(
     let base_currency = Arc::new(RwLock::new(base_currency_string.clone()));
     let instance_id = Arc::new(settings.instance_id.clone());
 
+    // Load provider settings from database
+    let provider_settings = market_data_repo.get_all_providers()?;
+
+    let provider_registry = Arc::new(tauri::async_runtime::RwLock::new(
+        ProviderRegistry::new(provider_settings, Some(settings_service.clone())).await?
+    ));
+
     let market_data_service: Arc<dyn MarketDataServiceTrait> =
-        Arc::new(MarketDataService::new(market_data_repo.clone(), asset_repository.clone(), Some(settings_service.clone())).await?);
+        Arc::new(MarketDataService::new(
+            Some(settings_service.clone()),
+            provider_registry,
+            market_data_repo.clone(),
+            asset_repository.clone()
+        ));
 
     let asset_service = Arc::new(AssetService::new(
         asset_repository.clone(),

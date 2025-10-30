@@ -1,18 +1,18 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const PORTFOLIO_ACCOUNT_ID = 'TOTAL';
+export const PORTFOLIO_ACCOUNT_ID = "TOTAL";
 
 export const HoldingType = {
-  CASH: 'cash',
-  SECURITY: 'security',
+  CASH: "cash",
+  SECURITY: "security",
 } as const;
 
 export type HoldingType = (typeof HoldingType)[keyof typeof HoldingType];
 
 export const AccountType = {
-  SECURITIES: 'SECURITIES',
-  CASH: 'CASH',
-  CRYPTOCURRENCY: 'CRYPTOCURRENCY',
+  SECURITIES: "SECURITIES",
+  CASH: "CASH",
+  CRYPTOCURRENCY: "CRYPTOCURRENCY",
 } as const;
 
 export type AccountType = (typeof AccountType)[keyof typeof AccountType];
@@ -24,12 +24,12 @@ export const accountTypeSchema = z.enum([
 ]);
 
 export const DataSource = {
-  YAHOO: 'YAHOO',
-  MANUAL: 'MANUAL',
-  VN_MARKET: 'VN_MARKET',
-  ALPHA_VANTAGE: 'ALPHA_VANTAGE',
-  METAL_PRICE_API: 'METAL_PRICE_API',
-  MARKET_DATA_APP: 'MARKET_DATA_APP',
+  YAHOO: "YAHOO",
+  MANUAL: "MANUAL",
+  VN_MARKET: "VN_MARKET",
+  ALPHA_VANTAGE: "ALPHA_VANTAGE",
+  METAL_PRICE_API: "METAL_PRICE_API",
+  MARKET_DATA_APP: "MARKET_DATA_APP",
 } as const;
 
 export type DataSource = (typeof DataSource)[keyof typeof DataSource];
@@ -45,16 +45,16 @@ export const dataSourceSchema = z.enum([
 ]);
 
 export const ImportFormat = {
-  DATE: 'date',
-  ACTIVITY_TYPE: 'activityType',
-  SYMBOL: 'symbol',
-  QUANTITY: 'quantity',
-  UNIT_PRICE: 'unitPrice',
-  AMOUNT: 'amount',
-  CURRENCY: 'currency',
-  FEE: 'fee',
-  ACCOUNT: 'account',
-  COMMENT: 'comment',
+  DATE: "date",
+  ACTIVITY_TYPE: "activityType",
+  SYMBOL: "symbol",
+  QUANTITY: "quantity",
+  UNIT_PRICE: "unitPrice",
+  AMOUNT: "amount",
+  CURRENCY: "currency",
+  FEE: "fee",
+  ACCOUNT: "account",
+  COMMENT: "comment",
 } as const;
 
 export type ImportFormat = (typeof ImportFormat)[keyof typeof ImportFormat];
@@ -84,10 +84,10 @@ export const IMPORT_REQUIRED_FIELDS = [
 export type ImportRequiredField = (typeof IMPORT_REQUIRED_FIELDS)[number];
 
 export const ExportDataType = {
-  ACCOUNTS: 'accounts',
-  ACTIVITIES: 'activities',
-  GOALS: 'goals',
-  PORTFOLIO_HISTORY: 'portfolio-history',
+  ACCOUNTS: "accounts",
+  ACTIVITIES: "activities",
+  GOALS: "goals",
+  PORTFOLIO_HISTORY: "portfolio-history",
 } as const;
 
 export type ExportDataType = (typeof ExportDataType)[keyof typeof ExportDataType];
@@ -100,9 +100,9 @@ export const exportDataTypeSchema = z.enum([
 ]);
 
 export const ExportedFileFormat = {
-  CSV: 'CSV',
-  JSON: 'JSON',
-  SQLITE: 'SQLite',
+  CSV: "CSV",
+  JSON: "JSON",
+  SQLITE: "SQLite",
 } as const;
 
 export type ExportedFileFormat = (typeof ExportedFileFormat)[keyof typeof ExportedFileFormat];
@@ -114,19 +114,19 @@ export const exportedFileFormatSchema = z.enum([
 ]);
 
 export const ActivityType = {
-  BUY: 'BUY',
-  SELL: 'SELL',
-  DIVIDEND: 'DIVIDEND',
-  INTEREST: 'INTEREST',
-  DEPOSIT: 'DEPOSIT',
-  WITHDRAWAL: 'WITHDRAWAL',
-  ADD_HOLDING: 'ADD_HOLDING',
-  REMOVE_HOLDING: 'REMOVE_HOLDING',
-  TRANSFER_IN: 'TRANSFER_IN',
-  TRANSFER_OUT: 'TRANSFER_OUT',
-  FEE: 'FEE',
-  TAX: 'TAX',
-  SPLIT: 'SPLIT',
+  BUY: "BUY",
+  SELL: "SELL",
+  DIVIDEND: "DIVIDEND",
+  INTEREST: "INTEREST",
+  DEPOSIT: "DEPOSIT",
+  WITHDRAWAL: "WITHDRAWAL",
+  ADD_HOLDING: "ADD_HOLDING",
+  REMOVE_HOLDING: "REMOVE_HOLDING",
+  TRANSFER_IN: "TRANSFER_IN",
+  TRANSFER_OUT: "TRANSFER_OUT",
+  FEE: "FEE",
+  TAX: "TAX",
+  SPLIT: "SPLIT",
 } as const;
 
 export type ActivityType = (typeof ActivityType)[keyof typeof ActivityType];
@@ -145,7 +145,6 @@ export const CASH_ACTIVITY_TYPES = [
   ActivityType.INTEREST,
   ActivityType.TRANSFER_IN,
   ActivityType.TRANSFER_OUT,
-  ActivityType.TRANSFER,
   ActivityType.TAX,
   ActivityType.FEE,
 ] as const;
@@ -162,7 +161,6 @@ export const activityTypeSchema = z.enum([
   ActivityType.WITHDRAWAL,
   ActivityType.TRANSFER_IN,
   ActivityType.TRANSFER_OUT,
-  ActivityType.TRANSFER,
   ActivityType.ADD_HOLDING,
   ActivityType.REMOVE_HOLDING,
   ActivityType.FEE,
@@ -171,29 +169,29 @@ export const activityTypeSchema = z.enum([
 ]);
 
 export const ActivityTypeNames: Record<ActivityType, string> = {
-  [ActivityType.BUY]: 'Buy',
-  [ActivityType.SELL]: 'Sell',
-  [ActivityType.DIVIDEND]: 'Dividend',
-  [ActivityType.INTEREST]: 'Interest',
-  [ActivityType.DEPOSIT]: 'Deposit',
-  [ActivityType.WITHDRAWAL]: 'Withdrawal',
-  [ActivityType.ADD_HOLDING]: 'Add Holding',
-  [ActivityType.REMOVE_HOLDING]: 'Remove Holding',
-  [ActivityType.TRANSFER_IN]: 'Transfer In',
-  [ActivityType.TRANSFER_OUT]: 'Transfer Out',
-  [ActivityType.FEE]: 'Fee',
-  [ActivityType.TAX]: 'Tax',
-  [ActivityType.SPLIT]: 'Split',
+  [ActivityType.BUY]: "Buy",
+  [ActivityType.SELL]: "Sell",
+  [ActivityType.DIVIDEND]: "Dividend",
+  [ActivityType.INTEREST]: "Interest",
+  [ActivityType.DEPOSIT]: "Deposit",
+  [ActivityType.WITHDRAWAL]: "Withdrawal",
+  [ActivityType.ADD_HOLDING]: "Add Holding",
+  [ActivityType.REMOVE_HOLDING]: "Remove Holding",
+  [ActivityType.TRANSFER_IN]: "Transfer In",
+  [ActivityType.TRANSFER_OUT]: "Transfer Out",
+  [ActivityType.FEE]: "Fee",
+  [ActivityType.TAX]: "Tax",
+  [ActivityType.SPLIT]: "Split",
 };
 
 // Asset subclass types (from Rust AssetSubClass enum)
 export const ASSET_SUBCLASS_TYPES = [
-  { label: 'Stock', value: 'Stock' },
-  { label: 'ETF', value: 'ETF' },
-  { label: 'Mutual Fund', value: 'Mutual Fund' },
-  { label: 'Cryptocurrency', value: 'Cryptocurrency' },
-  { label: 'Commodity', value: 'Commodity' },
-  { label: 'Precious Metal', value: 'Precious Metal' },
-  { label: 'Alternative', value: 'Alternative' },
-  { label: 'Cash', value: 'Cash' },
+  { label: "Stock", value: "Stock" },
+  { label: "ETF", value: "ETF" },
+  { label: "Mutual Fund", value: "Mutual Fund" },
+  { label: "Cryptocurrency", value: "Cryptocurrency" },
+  { label: "Commodity", value: "Commodity" },
+  { label: "Precious Metal", value: "Precious Metal" },
+  { label: "Alternative", value: "Alternative" },
+  { label: "Cash", value: "Cash" },
 ] as const;

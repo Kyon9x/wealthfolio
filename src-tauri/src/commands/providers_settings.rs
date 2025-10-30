@@ -4,7 +4,8 @@ use wealthfolio_core::market_data::MarketDataProviderSetting;
 use crate::context::ServiceContext; // To access the service
 use std::sync::Arc;
 
-use super::error::CommandResult;
+
+use super::error::{CommandResult, CommandError};
 
 #[tauri::command]
 pub async fn get_market_data_providers_settings(
@@ -12,7 +13,7 @@ pub async fn get_market_data_providers_settings(
 ) -> CommandResult<Vec<MarketDataProviderSetting>> {
     Ok(context
         .market_data_service
-        .get_market_data_providers_settings()
+        .get_provider_settings()
         .await?)
 }
 
@@ -23,8 +24,25 @@ pub async fn update_market_data_provider_settings(
     priority: i32,
     enabled: bool,
 ) -> CommandResult<MarketDataProviderSetting> {
-    Ok(context
+    context
         .market_data_service
-        .update_market_data_provider_settings(provider_id, priority, enabled)
-        .await?)
+        .update_provider_setting(
+            provider_id.clone(),
+            wealthfolio_core::market_data::market_data_model::UpdateMarketDataProviderSetting {
+                priority: Some(priority),
+                enabled: Some(enabled),
+            }
+        )
+        .await?;
+    
+    // Get updated settings and find the specific provider
+    let settings = context
+        .market_data_service
+        .get_provider_settings()
+        .await?;
+    
+    settings
+        .into_iter()
+        .find(|s| s.id == provider_id)
+        .ok_or_else(|| CommandError::ServiceError("Provider setting not found after update".to_string()))
 }

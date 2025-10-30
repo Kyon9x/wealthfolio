@@ -257,7 +257,7 @@ impl ValuationServiceTrait for ValuationService {
                 &required_asset_ids,
                 actual_calculation_start_date,
                 calculation_end_date,
-            )?;
+            ).await?;
 
         let fx_rates_by_date = self
             .fetch_fx_rates_for_range(

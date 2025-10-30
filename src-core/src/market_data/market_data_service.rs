@@ -1,6 +1,6 @@
 use async_trait::async_trait;
 use uuid::Uuid;
-use chrono::{DateTime, Duration, Local, NaiveDate, NaiveDateTime, TimeZone, Utc};
+use chrono::{NaiveDate, TimeZone, Utc};
 use log::{debug, error};
 use rust_decimal::Decimal;
 use std::collections::{HashMap, HashSet};
@@ -8,18 +8,18 @@ use std::sync::Arc;
 use std::time::SystemTime;
 use tokio::sync::RwLock;
 
-use super::market_data_constants::*;
+
 use super::market_data_model::{
     LatestQuotePair, MarketDataProviderInfo, MarketDataProviderSetting, Quote, QuoteRequest,
-    QuoteSummary, UpdateMarketDataProviderSetting, QuoteImport, ImportValidationStatus,
+    QuoteSummary, UpdateMarketDataProviderSetting, QuoteImport, ImportValidationStatus, DataSource,
 };
 use super::market_data_traits::{MarketDataRepositoryTrait, MarketDataServiceTrait};
 use super::providers::models::AssetProfile;
-use crate::assets::assets_constants::CASH_ASSET_TYPE;
+
 use crate::assets::assets_traits::AssetRepositoryTrait;
 use crate::errors::Result;
 use crate::market_data::providers::ProviderRegistry;
-use crate::utils::time_utils;
+
 use crate::settings::SettingsServiceTrait;
 
 const QUOTE_LOOKBACK_DAYS: i64 = 7;
@@ -53,6 +53,7 @@ impl MarketDataServiceTrait for MarketDataService {
         let quote_request = QuoteRequest {
             symbol: symbol.to_string(),
             currency: currency.to_string(),
+            data_source: crate::market_data::market_data_model::DataSource::Yahoo,
         };
 
         self.get_latest_quotes_bulk(&[quote_request])
@@ -70,11 +71,9 @@ impl MarketDataServiceTrait for MarketDataService {
         // Group requests by provider for efficiency
         let mut provider_requests: HashMap<String, Vec<QuoteRequest>> = HashMap::new();
 
+        let provider_registry = self.provider_registry.read().await;
         for request in quote_requests {
-            let provider = self
-                .provider_registry
-                .read()
-                .await
+            let provider = provider_registry
                 .get_provider_for_symbol(&request.symbol)
                 .await;
 
@@ -97,7 +96,7 @@ impl MarketDataServiceTrait for MarketDataService {
             let provider = self.provider_registry.read().await.get_provider(&provider_name).await;
             
             if let Some(provider) = provider {
-                let start = SystemTime::now() - Duration::days(QUOTE_LOOKBACK_DAYS);
+                let start = SystemTime::now() - std::time::Duration::from_secs((QUOTE_LOOKBACK_DAYS * 24 * 60 * 60) as u64);
                 let end = SystemTime::now();
 
                 let symbols_with_currencies: Vec<(String, String, Option<String>)> = requests
@@ -132,6 +131,7 @@ impl MarketDataServiceTrait for MarketDataService {
                                 .map(|((symbol, currency, _), req)| QuoteRequest {
                                     symbol,
                                     currency,
+                                    data_source: req.data_source.clone(),
                                 })
                         );
                     }
@@ -165,19 +165,14 @@ impl MarketDataServiceTrait for MarketDataService {
         end: SystemTime,
         currency: &str,
     ) -> Result<Vec<Quote>> {
-        let provider = self
-            .provider_registry
-            .read()
-            .await
+        let provider_registry = self.provider_registry.read().await;
+        let provider = provider_registry
             .get_provider_for_symbol(symbol)
             .await;
 
         match provider {
             Some(provider_name) => {
-                let provider = self
-                    .provider_registry
-                    .read()
-                    .await
+                let provider = provider_registry
                     .get_provider(provider_name)
                     .await;
 
@@ -205,24 +200,22 @@ impl MarketDataServiceTrait for MarketDataService {
     }
 
     async fn get_asset_profile(&self, symbol: &str) -> Result<Option<AssetProfile>> {
-        let provider = self
-            .provider_registry
-            .read()
-            .await
+        let provider_registry = self.provider_registry.read().await;
+        let provider_name = provider_registry
             .get_provider_for_symbol(symbol)
             .await;
 
-        match provider {
+        match provider_name {
             Some(provider_name) => {
-                let provider = self
+                let profiler = self
                     .provider_registry
                     .read()
                     .await
-                    .get_provider(provider_name)
+                    .get_profiler(provider_name)
                     .await;
 
-                if let Some(provider) = provider {
-                    match provider.get_asset_profile(symbol).await {
+                if let Some(profiler) = profiler {
+                    match profiler.get_asset_profile(symbol).await {
                         Ok(profile) => Ok(Some(profile)),
                         Err(crate::market_data::MarketDataError::NotFound(_)) => Ok(None),
                         Err(e) => {
@@ -244,7 +237,7 @@ impl MarketDataServiceTrait for MarketDataService {
     async fn import_quotes(&self, quotes: Vec<QuoteImport>) -> Result<Vec<ImportValidationStatus>> {
         let mut validation_results = Vec::new();
 
-        for quote_import in quotes {
+        for quote_import in &quotes {
             let validation_status = self.validate_quote_import(&quote_import).await;
             validation_results.push(validation_status);
         }
@@ -254,16 +247,22 @@ impl MarketDataServiceTrait for MarketDataService {
             .zip(quotes.iter())
             .filter_map(|(status, import)| match status {
                 ImportValidationStatus::Valid => {
+                    // Parse the date string to DateTime<Utc>
+                    let parsed_date = NaiveDate::parse_from_str(&import.date, "%Y-%m-%d")
+                        .ok()?
+                        .and_hms_opt(0, 0, 0)?;
+                    let timestamp = Utc.from_utc_datetime(&parsed_date);
+                    
                     let quote = Quote {
-                        id: format!("{}_{}", import.symbol, import.timestamp.format("%Y%m%d")),
+                        id: format!("{}_{}", import.symbol, import.date.replace("-", "")),
                         symbol: import.symbol.clone(),
-                        timestamp: import.timestamp,
-                        open: import.open,
-                        high: import.high,
-                        low: import.low,
+                        timestamp,
+                        open: import.open.unwrap_or(import.close),
+                        high: import.high.unwrap_or(import.close),
+                        low: import.low.unwrap_or(import.close),
                         close: import.close,
                         adjclose: import.close,
-                        volume: import.volume,
+                        volume: import.volume.unwrap_or(Decimal::ZERO),
                         currency: import.currency.clone(),
                         data_source: crate::market_data::market_data_model::DataSource::Manual,
                         created_at: Utc::now(),
@@ -275,7 +274,7 @@ impl MarketDataServiceTrait for MarketDataService {
             .collect();
 
         if !valid_quotes.is_empty() {
-            self.repository.save_quotes_bulk(&valid_quotes).await?;
+            self.repository.save_quotes(&valid_quotes).await?;
         }
 
         Ok(validation_results)
@@ -312,7 +311,8 @@ impl MarketDataServiceTrait for MarketDataService {
 
             // Check if quote exists if not overwriting
             if !overwrite {
-                match self.repository.quote_exists(&quote.symbol, naive_datetime).await {
+                let date_str = &quote.date;
+                match self.repository.quote_exists(&quote.symbol, date_str) {
                     Ok(true) => {
                         quote.validation_status = ImportValidationStatus::Warning(
                             "Quote already exists".to_string()
@@ -335,8 +335,8 @@ impl MarketDataServiceTrait for MarketDataService {
             let new_quote = Quote {
                 id: Uuid::new_v4().to_string(),
                 created_at: Utc::now(),
-                data_source: "CSV".to_string(),
-                date: naive_datetime,
+                data_source: DataSource::Manual,
+                timestamp: Utc.from_utc_datetime(&naive_datetime),
                 symbol: quote.symbol.clone(),
                 open: quote.open.unwrap_or(Decimal::ZERO),
                 high: quote.high.unwrap_or(Decimal::ZERO),
@@ -344,6 +344,7 @@ impl MarketDataServiceTrait for MarketDataService {
                 volume: quote.volume.unwrap_or(Decimal::ZERO),
                 close: quote.close,
                 adjclose: quote.close,
+                currency: quote.currency.clone(),
             };
 
             // Save the quote
@@ -363,57 +364,78 @@ impl MarketDataServiceTrait for MarketDataService {
         Ok(quotes)
     }
 
-    async fn bulk_upsert_quotes(&self, quotes: &[Quote]) -> Result<()> {
+    async fn bulk_upsert_quotes(&self, quotes: Vec<Quote>) -> Result<usize> {
         self.repository.bulk_upsert_quotes(quotes).await
     }
 
     async fn validate_quote_import(&self, quote_import: &QuoteImport) -> ImportValidationStatus {
         // Validate symbol exists
-        let asset = self
+        let assets = self
             .asset_repository
-            .get_asset_by_symbol(&quote_import.symbol)
-            .await;
+            .list_by_symbols(&vec![quote_import.symbol.clone()]);
 
-        if asset.is_err() {
-            return ImportValidationStatus::InvalidSymbol(format!(
+        if assets.is_err() || assets.as_ref().unwrap().is_empty() {
+            return ImportValidationStatus::Error(format!(
                 "Asset '{}' not found",
                 quote_import.symbol
             ));
         }
 
-        // Validate price data
-        if quote_import.open.is_sign_negative()
-            || quote_import.high.is_sign_negative()
-            || quote_import.low.is_sign_negative()
+        // Validate price data - check optional fields
+        if quote_import.open.map_or(false, |p| p.is_sign_negative())
+            || quote_import.high.map_or(false, |p| p.is_sign_negative())
+            || quote_import.low.map_or(false, |p| p.is_sign_negative())
             || quote_import.close.is_sign_negative()
         {
-            return ImportValidationStatus::InvalidPrice(
+            return ImportValidationStatus::Error(
                 "Prices cannot be negative".to_string(),
             );
         }
 
-        // Validate price relationships
-        if quote_import.high < quote_import.open
-            || quote_import.high < quote_import.close
-            || quote_import.high < quote_import.low
-        {
-            return ImportValidationStatus::InvalidPrice(
-                "High price must be >= other prices".to_string(),
-            );
+        // Validate price relationships - only if values are present
+        if let (Some(high), Some(open)) = (quote_import.high, quote_import.open) {
+            if high < open {
+                return ImportValidationStatus::Error(
+                    "High price must be >= open price".to_string(),
+                );
+            }
+        }
+        
+        if let Some(high) = quote_import.high {
+            if high < quote_import.close {
+                return ImportValidationStatus::Error(
+                    "High price must be >= close price".to_string(),
+                );
+            }
+        }
+        
+        if let (Some(high), Some(low)) = (quote_import.high, quote_import.low) {
+            if high < low {
+                return ImportValidationStatus::Error(
+                    "High price must be >= low price".to_string(),
+                );
+            }
         }
 
-        if quote_import.low > quote_import.open
-            || quote_import.low > quote_import.close
-            || quote_import.low > quote_import.high
-        {
-            return ImportValidationStatus::InvalidPrice(
-                "Low price must be <= other prices".to_string(),
-            );
+        if let (Some(low), Some(open)) = (quote_import.low, quote_import.open) {
+            if low > open {
+                return ImportValidationStatus::Error(
+                    "Low price must be <= open price".to_string(),
+                );
+            }
+        }
+        
+        if let Some(low) = quote_import.low {
+            if low > quote_import.close {
+                return ImportValidationStatus::Error(
+                    "Low price must be <= close price".to_string(),
+                );
+            }
         }
 
         // Validate volume
-        if quote_import.volume.is_sign_negative() {
-            return ImportValidationStatus::InvalidVolume(
+        if quote_import.volume.map_or(false, |v| v.is_sign_negative()) {
+            return ImportValidationStatus::Error(
                 "Volume cannot be negative".to_string(),
             );
         }
@@ -422,52 +444,63 @@ impl MarketDataServiceTrait for MarketDataService {
     }
 
     async fn get_provider_settings(&self) -> Result<Vec<MarketDataProviderSetting>> {
-        let providers = self.provider_registry.read().await.get_all_providers().await;
-        let mut settings = Vec::new();
-
-        for provider in providers {
-            let setting = MarketDataProviderSetting {
-                name: provider.name().to_string(),
-                priority: provider.priority(),
-                enabled: true,
-                api_key: None,
-                base_url: None,
-            };
-            settings.push(setting);
-        }
-
-        Ok(settings)
+        self.repository.get_all_providers()
     }
 
     async fn update_provider_setting(
         &self,
+        provider_id: String,
         update: UpdateMarketDataProviderSetting,
     ) -> Result<()> {
-        // This would typically update settings in a database
-        // For now, we'll just log the update
         debug!(
-            "Updating provider setting: {} -> enabled: {}",
-            update.provider_name, update.enabled
+            "Updating provider setting for {}: priority: {:?}, enabled: {:?}",
+            provider_id, update.priority, update.enabled
         );
+        
+        // Update the provider settings in the repository
+        self.repository.update_provider_settings(
+            provider_id,
+            update
+        ).await?;
+        
         Ok(())
     }
 
     async fn get_provider_info(&self) -> Result<Vec<MarketDataProviderInfo>> {
-        let providers = self.provider_registry.read().await.get_all_providers().await;
+        let providers = self.provider_registry.read().await.get_all_providers_with_ids().await;
         let mut info = Vec::new();
 
-        for provider in providers {
+        for (id, provider) in providers {
             let provider_info = MarketDataProviderInfo {
+                id: id.clone(),
                 name: provider.name().to_string(),
-                priority: provider.priority(),
-                enabled: true,
-                supported_assets: vec!["Stocks".to_string(), "ETFs".to_string(), "Funds".to_string()],
-                supported_regions: vec!["Vietnam".to_string()],
+                logo_filename: format!("{}.png", id.to_lowercase()),
+                last_synced_date: None,
             };
             info.push(provider_info);
         }
 
         Ok(info)
+    }
+    
+    async fn save_quote(&self, quote: &Quote) -> Result<Quote> {
+        self.repository.save_quote(quote).await
+    }
+    
+    fn get_latest_quotes_pair_for_symbols(
+        &self,
+        symbol_source_pairs: &[(String, String)],
+    ) -> Result<HashMap<String, LatestQuotePair>> {
+        self.repository.get_latest_quotes_pair_for_symbols(symbol_source_pairs)
+    }
+    
+    async fn get_historical_quotes_for_symbols_in_range(
+        &self,
+        symbols: &HashSet<String>,
+        start_date: NaiveDate,
+        end_date: NaiveDate,
+    ) -> Result<Vec<Quote>> {
+        self.repository.get_historical_quotes_for_symbols_in_range(symbols, start_date, end_date)
     }
 }
 

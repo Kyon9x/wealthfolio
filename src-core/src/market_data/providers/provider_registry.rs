@@ -4,7 +4,7 @@ use crate::market_data::market_data_constants::{
 };
 use crate::market_data::market_data_errors::MarketDataError;
 use crate::market_data::market_data_model::{
-    MarketDataProviderSetting, Quote as ModelQuote, QuoteSummary,
+    MarketDataProviderSetting, QuoteSummary,
 };
 use crate::market_data::providers::manual_provider::ManualProvider;
 use crate::market_data::providers::market_data_provider::{AssetProfiler, MarketDataProvider};
@@ -17,7 +17,7 @@ use crate::secrets::SecretManager;
 use log::{debug, info, warn};
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::SystemTime;
+
 
 pub struct ProviderRegistry {
     data_providers: HashMap<String, Arc<dyn MarketDataProvider + Send + Sync>>,
@@ -50,8 +50,7 @@ impl ProviderRegistry {
 
             let provider_id_str = &setting.id;
 
-            let api_key = if provider_id_str != DATA_SOURCE_YAHOO 
-                && provider_id_str != DATA_SOURCE_VN_MARKET {
+            let api_key = if provider_id_str != DATA_SOURCE_YAHOO {
                 match SecretManager::get_secret(provider_id_str) {
                     Ok(key_opt) => key_opt,
                     Err(e) => {
@@ -131,7 +130,19 @@ impl ProviderRegistry {
                     } else {
                         "http://127.0.0.1:8765".to_string()
                     };
-                    let p = Arc::new(VnMarketProvider::new().with_base_url(vn_url));
+                    
+                    let provider = VnMarketProvider::new().with_base_url(vn_url);
+                    let provider = if let Some(key) = api_key {
+                        if !key.is_empty() {
+                            provider.with_api_token(key)
+                        } else {
+                            provider
+                        }
+                    } else {
+                        provider
+                    };
+                    
+                    let p = Arc::new(provider);
                     (
                         Some(p.clone() as Arc<dyn MarketDataProvider + Send + Sync>),
                         Some(p as Arc<dyn AssetProfiler + Send + Sync>),
@@ -172,7 +183,7 @@ impl ProviderRegistry {
         let mut asset_profilers = HashMap::new();
         let mut ordered_profiler_ids = Vec::new();
 
-        for (priority, id, provider, profiler) in active_providers_with_priority {
+        for (_priority, id, provider, profiler) in active_providers_with_priority {
             ordered_data_provider_ids.push(id.clone());
             data_providers.insert(id, provider);
 
@@ -193,7 +204,7 @@ impl ProviderRegistry {
     pub async fn get_provider_for_symbol(&self, symbol: &str) -> Option<&str> {
         // Try each provider in order of priority
         for provider_id in &self.ordered_data_provider_ids {
-            if let Some(provider) = self.data_providers.get(provider_id) {
+            if let Some(_provider) = self.data_providers.get(provider_id) {
                 // For now, we'll use a simple heuristic
                 // In a real implementation, you might want to check if the provider
                 // actually supports the symbol
@@ -221,6 +232,13 @@ impl ProviderRegistry {
         self.ordered_data_provider_ids
             .iter()
             .filter_map(|id| self.data_providers.get(id).cloned())
+            .collect()
+    }
+
+    pub async fn get_all_providers_with_ids(&self) -> Vec<(String, Arc<dyn MarketDataProvider + Send + Sync>)> {
+        self.ordered_data_provider_ids
+            .iter()
+            .filter_map(|id| self.data_providers.get(id).map(|p| (id.clone(), p.clone())))
             .collect()
     }
 

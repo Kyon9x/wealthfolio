@@ -38,6 +38,9 @@ pub enum MarketDataError {
     #[error("No data found")]
     NoData,
 
+    #[error("Unsupported provider: {0}")]
+    UnsupportedProvider(String),
+
     #[error("Unknown error: {0}")]
     Unknown(String),
 }
