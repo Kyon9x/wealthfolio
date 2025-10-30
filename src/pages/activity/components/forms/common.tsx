@@ -110,7 +110,13 @@ export const ConfigurationCheckbox = ({
   );
 };
 
-export const CommonFields = ({ accounts }: { accounts: AccountSelectOption[] }) => {
+export const CommonFields = ({
+  accounts,
+  isTransfer = false,
+}: {
+  accounts: AccountSelectOption[];
+  isTransfer?: boolean;
+}) => {
   const { control, watch } = useFormContext();
   const showCurrency = watch('showCurrencySelect');
 
@@ -121,7 +127,7 @@ export const CommonFields = ({ accounts }: { accounts: AccountSelectOption[] }) 
         name="accountId"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Account</FormLabel>
+            <FormLabel>{isTransfer ? 'From Account' : 'Account'}</FormLabel>
             <FormControl>
               <Select onValueChange={field.onChange} defaultValue={field.value}>
                 <SelectTrigger>

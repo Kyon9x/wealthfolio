@@ -145,6 +145,7 @@ export const CASH_ACTIVITY_TYPES = [
   ActivityType.INTEREST,
   ActivityType.TRANSFER_IN,
   ActivityType.TRANSFER_OUT,
+  ActivityType.TRANSFER,
   ActivityType.TAX,
   ActivityType.FEE,
 ] as const;
@@ -161,6 +162,7 @@ export const activityTypeSchema = z.enum([
   ActivityType.WITHDRAWAL,
   ActivityType.TRANSFER_IN,
   ActivityType.TRANSFER_OUT,
+  ActivityType.TRANSFER,
   ActivityType.ADD_HOLDING,
   ActivityType.REMOVE_HOLDING,
   ActivityType.FEE,

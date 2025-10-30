@@ -1,5 +1,5 @@
-import { ActivityType, DataSource, dataSourceSchema } from '@/lib/constants';
-import { z } from 'zod';
+import { ActivityType, DataSource } from "@/lib/constants";
+import { z } from "zod";
 
 export const baseActivitySchema = z.object({
   id: z.string().uuid().optional(),
@@ -47,6 +47,7 @@ export const bulkHoldingRowSchema = z.object({
   totalValue: z.number().optional(),
   assetId: z.string().optional(),
   dataSource: z.string().optional(),
+  isManual: z.boolean().optional().default(false),
 });
 
 export const bulkHoldingsFormSchema = baseActivitySchema.extend({
@@ -84,8 +85,10 @@ export const cashActivitySchema = baseActivitySchema.extend({
     ActivityType.WITHDRAWAL,
     ActivityType.TRANSFER_IN,
     ActivityType.TRANSFER_OUT,
+    ActivityType.TRANSFER,
   ]),
   assetId: z.string().optional(),
+  toAccountId: z.string().optional(),
   amount: z.coerce
     .number({
       required_error: 'Please enter a valid amount.',
@@ -151,4 +154,6 @@ export const newActivitySchema = z
     }),
   );
 
-export type NewActivityFormValues = z.infer<typeof newActivitySchema>;
+export type NewActivityFormValues = z.infer<typeof newActivitySchema> & {
+  showCurrencySelect?: boolean;
+};

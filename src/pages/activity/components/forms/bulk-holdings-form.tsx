@@ -16,9 +16,9 @@ import {
   FormMessage,
   MoneyInput,
   QuantityInput,
-} from '@wealthfolio/ui';
-import { memo, useCallback, useMemo, useState } from 'react';
-import { useFieldArray, useFormContext, useWatch } from 'react-hook-form';
+} from "@wealthfolio/ui";
+import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
 export interface BulkHoldingRow {
   id: string;
@@ -33,6 +33,7 @@ export interface BulkHoldingRow {
 
 interface BulkHoldingsFormProps {
   onAccountChange?: (account: Account | null) => void;
+  onManualHoldingsChange?: (manualHoldings: Set<string>) => void;
 }
 
 // Memoized row component to prevent unnecessary re-renders
@@ -47,6 +48,7 @@ const HoldingRow = memo(
     onSelectRow,
     setFocus,
     canRemove,
+    setManualHoldings,
   }: {
     index: number;
     field: BulkHoldingRow;
@@ -55,8 +57,9 @@ const HoldingRow = memo(
     isLast: boolean;
     isSelected: boolean;
     onSelectRow: (id: string) => void;
-    setFocus: (name: string) => void;
+    setFocus: any;
     canRemove: boolean;
+    setManualHoldings: React.Dispatch<React.SetStateAction<Set<string>>>;
   }) => {
     const { control, setValue } = useFormContext();
 
@@ -149,13 +152,26 @@ const HoldingRow = memo(
                 render={({ field: tickerField }) => (
                   <TickerSearchInput
                     ref={tickerField.ref}
-                    onSelectResult={(symbol: string) => {
+                    onSelectResult={(symbol: string, isManual?: boolean) => {
                       tickerField.onChange(symbol);
                       handleTickerSelect(symbol);
+
+                      // If this is a manual holding, track it
+                      if (isManual) {
+                        setManualHoldings((prev: Set<string>) => new Set(prev).add(field.id));
+                      } else {
+                        // If it's not manual, remove it from manual holdings if it was there
+                        setManualHoldings((prev: Set<string>) => {
+                          const newSet = new Set(prev);
+                          newSet.delete(field.id);
+                          return newSet;
+                        });
+                      }
                     }}
                     value={tickerField.value}
                     placeholder="Search ticker..."
                     className="focus:border-input focus:bg-background h-9 truncate border-none bg-transparent text-sm focus:border"
+                    allowFreeText={true}
                   />
                 )}
               />
@@ -228,7 +244,10 @@ const HoldingRow = memo(
 
 HoldingRow.displayName = 'HoldingRow';
 
-export const BulkHoldingsForm = ({ onAccountChange }: BulkHoldingsFormProps) => {
+export const BulkHoldingsForm = ({
+  onAccountChange,
+  onManualHoldingsChange,
+}: BulkHoldingsFormProps) => {
   const { control, setFocus } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -237,6 +256,14 @@ export const BulkHoldingsForm = ({ onAccountChange }: BulkHoldingsFormProps) => 
 
   const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [selectedRowId, setSelectedRowId] = useState<string | null>(null);
+  const [manualHoldings, setManualHoldings] = useState<Set<string>>(new Set());
+
+  // Call the callback when manualHoldings changes
+  useEffect(() => {
+    if (onManualHoldingsChange) {
+      onManualHoldingsChange(manualHoldings);
+    }
+  }, [manualHoldings, onManualHoldingsChange]);
 
   // Handle account selection with improved focus management
   const handleAccountSelect = useCallback(
@@ -257,10 +284,10 @@ export const BulkHoldingsForm = ({ onAccountChange }: BulkHoldingsFormProps) => 
   const addRow = useCallback(() => {
     const newIndex = fields.length;
     append({
-      id: `holding-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`, // More unique ID
-      ticker: '',
-      name: '',
-      assetId: '',
+      id: `holding-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`, // More unique ID
+      ticker: "",
+      name: "",
+      assetId: "",
     });
 
     // Use requestAnimationFrame for smoother focus transition
@@ -358,6 +385,7 @@ export const BulkHoldingsForm = ({ onAccountChange }: BulkHoldingsFormProps) => 
                 onSelectRow={handleRowSelect}
                 setFocus={setFocus}
                 canRemove={fields.length > 1}
+                setManualHoldings={setManualHoldings}
               />
             ))}
           </div>
