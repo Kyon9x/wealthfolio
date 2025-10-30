@@ -429,7 +429,7 @@ export const AssetProfilePage = () => {
                 {(formData.sectors.length > 0 || formData.countries.length > 0) && (
                   <Separator orientation="vertical" />
                 )}
-                {isEditing && (
+                {isEditing ? (
                   <>
                     <Button variant="default" size="icon" className="min-w-10" onClick={handleSave}>
                       <Icons.Check className="h-4 w-4" />

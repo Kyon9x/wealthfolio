@@ -150,3 +150,24 @@ pub async fn import_quotes_csv(
 
     Ok(result)
 }
+
+#[tauri::command]
+pub async fn validate_quotes_csv(
+    quotes: Vec<QuoteImport>,
+    _state: State<'_, Arc<ServiceContext>>,
+) -> Result<Vec<QuoteImport>, String> {
+    debug!("Validating {} quotes from CSV", quotes.len());
+    // Basic validation: ensure quotes have required fields
+    for quote in &quotes {
+        if quote.symbol.is_empty() {
+            return Err("Quote symbol cannot be empty".to_string());
+        }
+    }
+    Ok(quotes)
+}
+
+#[tauri::command]
+pub async fn get_quote_import_template() -> Result<String, String> {
+    debug!("Generating quote import template");
+    Ok("symbol,date,close,volume,currency,dataSource\nAPPL,2024-01-01,150.00,1000000,USD,YAHOO\nGOOGL,2024-01-01,140.00,800000,USD,YAHOO".to_string())
+}
