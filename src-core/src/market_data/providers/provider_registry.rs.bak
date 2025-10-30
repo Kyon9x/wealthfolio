@@ -11,7 +11,7 @@ use crate::market_data::providers::market_data_provider::{AssetProfiler, MarketD
 use crate::market_data::providers::marketdata_app_provider::MarketDataAppProvider;
 use crate::market_data::providers::metal_price_api_provider::MetalPriceApiProvider;
 use crate::market_data::providers::alpha_vantage_provider::AlphaVantageProvider;
-use crate::market_data::providers::vn_market_provider::{VnMarketProvider};
+use crate::market_data::providers::vn_market_provider::{VnMarketProvider, VnMarketConfig};
 use crate::market_data::providers::yahoo_provider::YahooProvider;
 use crate::secrets::SecretManager;
 use log::{debug, info, warn};

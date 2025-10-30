@@ -1,62 +1,54 @@
 use async_trait::async_trait;
 use chrono::{NaiveDate, NaiveDateTime};
 use std::collections::{HashMap, HashSet};
+use std::time::SystemTime;
 
 use crate::errors::Result;
-use crate::market_data::market_data_model::{MarketDataProviderSetting, UpdateMarketDataProviderSetting};
+use crate::market_data::market_data_model::{
+    MarketDataProviderSetting, UpdateMarketDataProviderSetting, QuoteRequest, ImportValidationStatus,
+};
 use super::market_data_model::{Quote, QuoteSummary, LatestQuotePair, MarketDataProviderInfo, QuoteDb, QuoteImport};
 use super::providers::models::AssetProfile;
 
 #[async_trait]
 pub trait MarketDataServiceTrait: Send + Sync {
     async fn search_symbol(&self, query: &str) -> Result<Vec<QuoteSummary>>;
-    fn get_latest_quote_for_symbol(&self, symbol: &str) -> Result<Quote>;
-    fn get_latest_quotes_for_symbols(
-        &self,
-        symbols: &[String],
-    ) -> Result<HashMap<String, Quote>>;
-    fn get_all_historical_quotes(&self) -> Result<HashMap<String, Vec<(NaiveDate, Quote)>>>;
-    async fn get_asset_profile(&self, symbol: &str, data_source: Option<String>) -> Result<AssetProfile>;
-    fn get_historical_quotes_for_symbol(&self, symbol: &str, data_source: &str) -> Result<Vec<Quote>>;
-    async fn add_quote(&self, quote: &Quote) -> Result<Quote>;
-    async fn update_quote(&self, quote: Quote) -> Result<Quote>;
-    async fn delete_quote(&self, quote_id: &str) -> Result<()>;
-    async fn get_historical_quotes_from_provider(
+    
+    // New async methods
+    async fn get_latest_quote(
         &self,
         symbol: &str,
-        start_date: NaiveDate,
-        end_date: NaiveDate,
-        data_source: Option<String>,
+        currency: &str,
+    ) -> Result<Option<Quote>>;
+    
+    async fn get_latest_quotes_bulk(
+        &self,
+        quote_requests: &[QuoteRequest],
     ) -> Result<Vec<Quote>>;
-    async fn sync_market_data(&self) -> Result<((), Vec<(String, String, Option<String>)>)>;
-    async fn resync_market_data(&self, symbols: Option<Vec<String>>) -> Result<((), Vec<(String, String, Option<String>)>)>;
-    fn get_latest_quotes_pair_for_symbols(
+    
+    async fn get_historical_quotes(
         &self,
-        symbol_source_pairs: &[(String, String)],
-    ) -> Result<HashMap<String, LatestQuotePair>>;
-    fn get_historical_quotes_for_symbols_in_range(
-        &self,
-        symbols: &HashSet<String>,
-        start_date: NaiveDate,
-        end_date: NaiveDate,
+        symbol: &str,
+        start: SystemTime,
+        end: SystemTime,
+        currency: &str,
     ) -> Result<Vec<Quote>>;
-    /// Fetches historical quotes for the needed symbols and date range, grouped by date.
-    async fn get_daily_quotes(
-        &self,
-        asset_ids: &HashSet<String>,
-        start_date: NaiveDate,
-        end_date: NaiveDate,
-    ) -> Result<HashMap<NaiveDate, HashMap<String, Quote>>>;
-    async fn get_market_data_providers_info(&self) -> Result<Vec<MarketDataProviderInfo>>;
-    async fn get_market_data_providers_settings(&self) -> Result<Vec<MarketDataProviderSetting>>;
-    async fn update_market_data_provider_settings(
-        &self,
-        provider_id: String,
-        priority: i32,
-        enabled: bool,
-    ) -> Result<MarketDataProviderSetting>;
+    
+    async fn import_quotes(&self, quotes: Vec<QuoteImport>) -> Result<Vec<ImportValidationStatus>>;
+    
 
-    // --- Quote Import Methods ---
+    async fn get_asset_profile(&self, symbol: &str) -> Result<Option<AssetProfile>>;
+    async fn validate_quote_import(&self, quote_import: &QuoteImport) -> ImportValidationStatus;
+    
+    async fn get_provider_settings(&self) -> Result<Vec<MarketDataProviderSetting>>;
+    
+    async fn update_provider_setting(
+        &self,
+        update: UpdateMarketDataProviderSetting,
+    ) -> Result<()>;
+    
+    async fn get_provider_info(&self) -> Result<Vec<MarketDataProviderInfo>>;
+    
     async fn import_quotes_from_csv(&self, quotes: Vec<QuoteImport>, overwrite: bool) -> Result<Vec<QuoteImport>>;
     async fn bulk_upsert_quotes(&self, quotes: Vec<Quote>) -> Result<usize>;
 }

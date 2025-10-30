@@ -1,5 +1,4 @@
 use async_trait::async_trait;
-use uuid::Uuid;
 use chrono::{DateTime, Duration, Local, NaiveDate, NaiveDateTime, TimeZone, Utc};
 use log::{debug, error};
 use rust_decimal::Decimal;
@@ -279,92 +278,6 @@ impl MarketDataServiceTrait for MarketDataService {
         }
 
         Ok(validation_results)
-    }
-
-    async fn import_quotes_from_csv(
-        &self,
-        mut quotes: Vec<QuoteImport>,
-        overwrite: bool,
-    ) -> Result<Vec<QuoteImport>> {
-        for quote in quotes.iter_mut() {
-            // Parse date string to NaiveDateTime
-            let parsed_date = match NaiveDate::parse_from_str(&quote.date, "%Y-%m-%d") {
-                Ok(date) => date.and_hms_opt(0, 0, 0),
-                Err(_) => {
-                    quote.validation_status = ImportValidationStatus::Error(
-                        format!("Invalid date format: {}", quote.date)
-                    );
-                    quote.error_message = Some(format!("Invalid date format: {}", quote.date));
-                    continue;
-                }
-            };
-
-            let naive_datetime = match parsed_date {
-                Some(dt) => dt,
-                None => {
-                    quote.validation_status = ImportValidationStatus::Error(
-                        "Failed to create datetime".to_string()
-                    );
-                    quote.error_message = Some("Failed to create datetime".to_string());
-                    continue;
-                }
-            };
-
-            // Check if quote exists if not overwriting
-            if !overwrite {
-                match self.repository.quote_exists(&quote.symbol, naive_datetime).await {
-                    Ok(true) => {
-                        quote.validation_status = ImportValidationStatus::Warning(
-                            "Quote already exists".to_string()
-                        );
-                        quote.error_message = Some("Quote already exists (use overwrite to replace)".to_string());
-                        continue;
-                    }
-                    Ok(false) => {}
-                    Err(e) => {
-                        quote.validation_status = ImportValidationStatus::Error(
-                            format!("Database error: {}", e)
-                        );
-                        quote.error_message = Some(format!("Database error: {}", e));
-                        continue;
-                    }
-                }
-            }
-
-            // Create Quote from QuoteImport
-            let new_quote = Quote {
-                id: Uuid::new_v4().to_string(),
-                created_at: Utc::now(),
-                data_source: "CSV".to_string(),
-                date: naive_datetime,
-                symbol: quote.symbol.clone(),
-                open: quote.open.unwrap_or(Decimal::ZERO),
-                high: quote.high.unwrap_or(Decimal::ZERO),
-                low: quote.low.unwrap_or(Decimal::ZERO),
-                volume: quote.volume.unwrap_or(Decimal::ZERO),
-                close: quote.close,
-                adjclose: quote.close,
-            };
-
-            // Save the quote
-            match self.repository.save_quote(&new_quote).await {
-                Ok(_) => {
-                    quote.validation_status = ImportValidationStatus::Valid;
-                }
-                Err(e) => {
-                    quote.validation_status = ImportValidationStatus::Error(
-                        format!("Failed to save: {}", e)
-                    );
-                    quote.error_message = Some(format!("Failed to save: {}", e));
-                }
-            }
-        }
-
-        Ok(quotes)
-    }
-
-    async fn bulk_upsert_quotes(&self, quotes: &[Quote]) -> Result<()> {
-        self.repository.bulk_upsert_quotes(quotes).await
     }
 
     async fn validate_quote_import(&self, quote_import: &QuoteImport) -> ImportValidationStatus {

@@ -29,7 +29,6 @@ impl Default for Settings {
             menu_bar_visible: true,
             is_pro: false,
             sync_enabled: true,
-            vn_market_service_url: "http://127.0.0.1:8765".to_string(),
         }
     }
 }

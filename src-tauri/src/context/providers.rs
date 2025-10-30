@@ -61,7 +61,7 @@ pub async fn initialize_context(
     let instance_id = Arc::new(settings.instance_id.clone());
 
     let market_data_service: Arc<dyn MarketDataServiceTrait> =
-        Arc::new(MarketDataService::new(market_data_repo.clone(), asset_repository.clone()).await?);
+        Arc::new(MarketDataService::new(market_data_repo.clone(), asset_repository.clone(), Some(settings_service.clone())).await?);
 
     let asset_service = Arc::new(AssetService::new(
         asset_repository.clone(),

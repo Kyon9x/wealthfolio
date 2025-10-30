@@ -10,9 +10,23 @@ use crate::market_data::providers::models::AssetProfile;
 use crate::market_data::market_data_model::DataSource;
 
 const BASE_URL: &str = "http://127.0.0.1:8765";
+#[derive(Debug, Clone)]
+pub struct VnMarketConfig {
+    pub base_url: String,
+}
+
+impl Default for VnMarketConfig {
+    fn default() -> Self {
+        Self {
+            base_url: BASE_URL.to_string(),
+        }
+    }
+}
+
 
 pub struct VnMarketProvider {
     client: Client,
+    config: VnMarketConfig,
 }
 
 impl VnMarketProvider {
@@ -22,7 +36,13 @@ impl VnMarketProvider {
                 .no_proxy()
                 .build()
                 .unwrap_or_else(|_| Client::new()),
+            config: VnMarketConfig::default(),
         }
+    }
+
+    pub fn with_base_url(mut self, base_url: String) -> Self {
+        self.config.base_url = base_url;
+        self
     }
 
     /// Normalize symbol by stripping .VN suffix for VN Market Service API calls
@@ -125,7 +145,7 @@ impl MarketDataProvider for VnMarketProvider {
         fallback_currency: String,
     ) -> Result<Vec<ModelQuote>, MarketDataError> {
         let normalized_symbol = Self::normalize_symbol(symbol);
-        let url = format!("{}/history/{}", BASE_URL, normalized_symbol);
+        let url = format!("{}/history/{}", self.config.base_url, normalized_symbol);
         
         let response = self.client
             .get(&url)
@@ -214,7 +234,7 @@ impl AssetProfiler for VnMarketProvider {
     async fn get_asset_profile(&self, symbol: &str) -> Result<AssetProfile, MarketDataError> {
         let normalized_symbol = Self::normalize_symbol(symbol);
         // Use unified search endpoint to get proper asset_type information
-        let url = format!("{}/search?query={}", BASE_URL, normalized_symbol);
+        let url = format!("{}/search?query={}", self.config.base_url, normalized_symbol);
         
         let response = self.client
             .get(&url)
@@ -301,7 +321,7 @@ impl AssetProfiler for VnMarketProvider {
             return Ok(Vec::new());
         }
         
-        let url = format!("{}/search", BASE_URL);
+        let url = format!("{}/search", self.config.base_url);
         
         let response = self.client
             .get(&url)

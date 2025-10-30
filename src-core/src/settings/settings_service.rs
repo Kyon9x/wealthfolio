@@ -6,7 +6,7 @@ use async_trait::async_trait;
 use log::{debug, error};
 use std::sync::Arc;
 
-// Define the trait for SettingsService
+// Define trait for SettingsService
 #[async_trait]
 pub trait SettingsServiceTrait: Send + Sync {
     fn get_settings(&self) -> Result<Settings>;
@@ -20,6 +20,8 @@ pub trait SettingsServiceTrait: Send + Sync {
     fn is_auto_update_check_enabled(&self) -> Result<bool>;
 
     fn is_sync_enabled(&self) -> Result<bool>;
+    fn get_vn_market_service_url(&self) -> Result<String>;
+    async fn update_vn_market_service_url(&self, new_url: &str) -> Result<()>;
 }
 
 pub struct SettingsService {
@@ -27,7 +29,7 @@ pub struct SettingsService {
     fx_service: Arc<dyn FxServiceTrait>,
 }
 
-// Implement the trait for SettingsService
+// Implement trait for SettingsService
 #[async_trait]
 impl SettingsServiceTrait for SettingsService {
     fn get_settings(&self) -> Result<Settings> {
@@ -111,6 +113,32 @@ impl SettingsServiceTrait for SettingsService {
             }
             Err(e) => Err(e),
         }
+    }
+
+    fn get_vn_market_service_url(&self) -> Result<String> {
+        // Priority 1: Environment variable
+        if let Ok(url) = std::env::var("VN_MARKET_SERVICE_URL") {
+            if !url.is_empty() {
+                return Ok(url);
+            }
+        }
+        
+        // Priority 2: Database setting
+        match self.settings_repository.get_setting("vn_market_service_url") {
+            Ok(value) => Ok(if value.is_empty() { "http://127.0.0.1:8765".to_string() } else { value }),
+            Err(Error::Database(DatabaseError::QueryFailed(diesel::result::Error::NotFound))) => {
+                // Priority 3: Default URL
+                Ok("http://127.0.0.1:8765".to_string())
+            }
+            Err(e) => Err(e),
+        }
+    }
+
+    async fn update_vn_market_service_url(&self, new_url: &str) -> Result<()> {
+        self.settings_repository
+            .update_setting("vn_market_service_url", new_url)
+            .await?;
+        Ok(())
     }
 }
 

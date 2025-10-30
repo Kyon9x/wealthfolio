@@ -172,19 +172,8 @@ pub fn main() {
         .build(tauri::generate_context!())
         .expect("error while running wealthfolio application");
 
-    app.run(|app_handle, event| {
-        if let tauri::RunEvent::Exit = event {
-            // Attempt to stop VN Market Service on app exit
-            use tauri_plugin_shell::ShellExt;
-            if let Err(e) = app_handle.shell().command("pkill")
-                .args(["-f", "uvicorn app.main:app"])
-                .spawn()
-            {
-                log::warn!("Failed to stop VN Market Service: {}", e);
-            } else {
-                log::info!("VN Market Service stopped");
-            }
-        }
+    app.run(|_app_handle, _event| {
+        // App event handling
     });
 }
 
@@ -243,97 +232,6 @@ fn spawn_background_tasks(
         if let Ok(is_enabled) = update_context.settings_service().is_auto_update_check_enabled() {
             if is_enabled {
                 check_for_update(update_handle, &*instance_id_update, false).await;
-            }
-        }
-    });
-
-    // Start VN Market Service
-    let vn_market_handle = handle.clone();
-    spawn(async move {
-        use tauri_plugin_shell::ShellExt;
-
-        // Get the app's resource directory to determine the correct working directory
-        let app_dir = match std::env::current_dir() {
-            Ok(dir) => dir,
-            Err(e) => {
-                log::error!("Failed to get current directory: {}", e);
-                return;
-            }
-        };
-
-        let service_dir = app_dir.join("services/vn-market-service");
-
-        if !service_dir.exists() {
-            log::warn!("VN Market Service directory not found at {:?}. Vietnamese market data will not be available.", service_dir);
-            return;
-        }
-
-        log::info!("Starting VN Market Service from directory: {:?}", service_dir);
-
-        // Check if port 8765 is already in use
-        match vn_market_handle.shell().command("lsof")
-            .args(["-i", ":8765"])
-            .output()
-            .await
-        {
-            Ok(output) => {
-                if output.status.success() && !output.stdout.is_empty() {
-                    log::info!("VN Market Service is already running on port 8765");
-                    return;
-                }
-            }
-            Err(e) => {
-                log::debug!("Could not check if port 8765 is in use: {}", e);
-            }
-        }
-
-        // Start the service using the start.sh script (which activates virtual environment)
-        let start_script = service_dir.join("start.sh");
-
-        let start_script_str = match start_script.to_str() {
-            Some(path) => path,
-            None => {
-                log::error!("Invalid path for start.sh script: {:?}", start_script);
-                return;
-            }
-        };
-
-        match vn_market_handle.shell()
-            .command("bash")
-            .args([start_script_str])
-            .current_dir(&service_dir)
-            .spawn()
-        {
-            Ok((mut rx, child)) => {
-                log::info!("VN Market Service process spawned with PID: {}", child.pid());
-
-                // Spawn a task to read stdout/stderr
-                tauri::async_runtime::spawn(async move {
-                    while let Some(event) = rx.recv().await {
-                        match event {
-                            CommandEvent::Stdout(line) => {
-                                log::info!("VN Market Service: {}", String::from_utf8_lossy(&line));
-                            }
-                            CommandEvent::Stderr(line) => {
-                                log::error!("VN Market Service error: {}", String::from_utf8_lossy(&line));
-                            }
-                            CommandEvent::Error(err) => {
-                                log::error!("VN Market Service command error: {}", err);
-                            }
-                            CommandEvent::Terminated(status) => {
-                                log::warn!("VN Market Service terminated with status: {:?}", status);
-                                break;
-                            }
-                            _ => {}
-                        }
-                    }
-                });
-
-                log::info!("VN Market Service started successfully on port 8765");
-            }
-            Err(e) => {
-                log::error!("Failed to start VN Market Service: {}. Vietnamese market data will not be available.", e);
-                log::error!("Make sure start.sh is executable and virtual environment is set up: cd services/vn-market-service && python3 -m venv .venv && source .venv/bin/activate && pip3 install -r requirements.txt");
             }
         }
     });
