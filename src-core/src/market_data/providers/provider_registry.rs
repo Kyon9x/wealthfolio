@@ -224,12 +224,34 @@ impl ProviderRegistry {
             .collect()
     }
 
+    fn contains_vn_indicator(query: &str) -> bool {
+        query.to_uppercase().contains("VN")
+    }
+
     pub async fn search_ticker(&self, query: &str) -> Result<Vec<QuoteSummary>, MarketDataError> {
         let mut all_results = Vec::new();
         let mut errors = Vec::new();
 
-        // Try each profiler in order
-        for profiler_id in &self.ordered_profiler_ids {
+        // Determine profiler search order based on VN indicator in query
+        let search_order = if Self::contains_vn_indicator(query) {
+            // If query contains "VN", prioritize VN_MARKET
+            let mut reordered = Vec::new();
+            if self.ordered_profiler_ids.contains(&DATA_SOURCE_VN_MARKET.to_string()) {
+                reordered.push(DATA_SOURCE_VN_MARKET.to_string());
+            }
+            for profiler_id in &self.ordered_profiler_ids {
+                if profiler_id != DATA_SOURCE_VN_MARKET {
+                    reordered.push(profiler_id.clone());
+                }
+            }
+            reordered
+        } else {
+            // Use default priority order
+            self.ordered_profiler_ids.clone()
+        };
+
+        // Try each profiler in determined order
+        for profiler_id in &search_order {
             if let Some(profiler) = self.asset_profilers.get(profiler_id) {
                 match profiler.search_ticker(query).await {
                     Ok(mut results) => {
@@ -239,7 +261,12 @@ impl ProviderRegistry {
                             profiler_id
                         );
                         all_results.append(&mut results);
-                        break; // Stop at first successful result
+                        
+                        // Only break if we got results OR if this is a VN-prioritized search
+                        // and we're at VN_MARKET (even with 0 results, respect VN priority)
+                        if !results.is_empty() || (Self::contains_vn_indicator(query) && profiler_id == DATA_SOURCE_VN_MARKET) {
+                            break;
+                        }
                     }
                     Err(e) => {
                         warn!(
@@ -265,5 +292,34 @@ impl ProviderRegistry {
         all_results.truncate(10); // Limit to top 10 results
 
         Ok(all_results)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_contains_vn_indicator() {
+        // Queries with VN indicator
+        assert!(ProviderRegistry::contains_vn_indicator("VN"));
+        assert!(ProviderRegistry::contains_vn_indicator("vn"));
+        assert!(ProviderRegistry::contains_vn_indicator("MBB.VN"));
+        assert!(ProviderRegistry::contains_vn_indicator("FPT.vn"));
+        assert!(ProviderRegistry::contains_vn_indicator("VN30"));
+        assert!(ProviderRegistry::contains_vn_indicator("VNINDEX"));
+        assert!(ProviderRegistry::contains_vn_indicator("vn_gold"));
+        assert!(ProviderRegistry::contains_vn_indicator("VN_OIL"));
+        assert!(ProviderRegistry::contains_vn_indicator("HNX"));
+        assert!(ProviderRegistry::contains_vn_indicator("UPCOM"));
+
+        // Queries without VN indicator
+        assert!(!ProviderRegistry::contains_vn_indicator("FPT"));
+        assert!(!ProviderRegistry::contains_vn_indicator("GOLD"));
+        assert!(!ProviderRegistry::contains_vn_indicator("SILVER"));
+        assert!(!ProviderRegistry::contains_vn_indicator("AAPL"));
+        assert!(!ProviderRegistry::contains_vn_indicator("MSFT"));
+        assert!(!ProviderRegistry::contains_vn_indicator(""));
+        assert!(!ProviderRegistry::contains_vn_indicator("XAU"));
     }
 }
