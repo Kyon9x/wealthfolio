@@ -125,10 +125,14 @@ impl ProviderRegistry {
                     }
                 }
                 DATA_SOURCE_VN_MARKET => {
+                    let default_url = std::env::var("VN_MARKET_SERVICE_URL")
+                        .unwrap_or_else(|_| "http://127.0.0.1:8765".to_string());
                     let vn_url = if let Some(ref settings) = settings_service {
-                        settings.get_vn_market_service_url().unwrap_or_else(|_| "http://127.0.0.1:8765".to_string())
+                        settings
+                            .get_vn_market_service_url()
+                            .unwrap_or(default_url.clone())
                     } else {
-                        "http://127.0.0.1:8765".to_string()
+                        default_url
                     };
 
                     let provider = VnMarketProvider::new().with_base_url(vn_url);
@@ -232,6 +236,20 @@ impl ProviderRegistry {
         self.ordered_data_provider_ids
             .iter()
             .filter_map(|id| self.data_providers.get(id).cloned())
+            .collect()
+    }
+
+    pub async fn get_all_providers_with_ids(
+        &self,
+    ) -> Vec<(String, Arc<dyn MarketDataProvider + Send + Sync>)> {
+        self.ordered_data_provider_ids
+            .iter()
+            .filter_map(|id| {
+                self.data_providers
+                    .get(id)
+                    .cloned()
+                    .map(|provider| (id.clone(), provider))
+            })
             .collect()
     }
 
