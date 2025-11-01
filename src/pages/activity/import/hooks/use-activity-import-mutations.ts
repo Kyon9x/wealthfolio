@@ -13,6 +13,7 @@ export function useActivityImportMutations({
   const confirmImportMutation = useMutation({
     mutationFn: importActivities,
     onSuccess: async (result: unknown) => {
+      console.log("Import result:", result);
       // Call the provided onSuccess callback if it exists
       if (onSuccess) {
         // Ensure we pass an array of activities to the callback
@@ -35,9 +36,15 @@ export function useActivityImportMutations({
             : "An error occurred during import";
         onError(errMsg);
       } else {
+        const errorMessage =
+          error && typeof error === "object" && "message" in error
+            ? String((error as { message?: unknown }).message)
+            : "An error occurred during import";
+
         toast({
-          title: "Uh oh! Something went wrong.",
-          description: "Please try again or report an issue if the problem persists.",
+          title: "Import failed",
+          description:
+            errorMessage || "Please try again or report an issue if the problem persists.",
           variant: "destructive",
         });
       }
