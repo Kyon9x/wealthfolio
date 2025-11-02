@@ -350,6 +350,7 @@ impl ProviderRegistry {
                 DataSource::AlphaVantage => DATA_SOURCE_ALPHA_VANTAGE.to_string(),
                 DataSource::MetalPriceApi => DATA_SOURCE_METAL_PRICE_API.to_string(),
                 DataSource::MarketDataApp => DATA_SOURCE_MARKET_DATA_APP.to_string(),
+                DataSource::VnMarket => DATA_SOURCE_VN_MARKET.to_string(),
                 DataSource::Manual => {
                     warn!("Manual data source requested for sync, skipping: {}", quote_request.symbol);
                     continue;
