@@ -614,8 +614,8 @@ impl MarketDataService {
                 .map(|req| (req.symbol.clone(), req.currency.clone()))
                 .collect();
 
-        let sync_plan =
-            self.calculate_sync_plan(refetch_all, &symbols_with_currencies, end_date)?;
+            let sync_plan =
+                self.calculate_sync_plan(refetch_all, &symbols_with_currencies, end_date)?;
 
         if sync_plan.is_empty() {
             debug!("All tracked symbols are already up to date; nothing to fetch from providers.");
@@ -661,11 +661,20 @@ impl MarketDataService {
                     .map(|(symbol, _)| symbol.clone())
                     .collect();
 
+                let quote_requests: Vec<QuoteRequest> = group_symbols
+                    .into_iter()
+                    .map(|(symbol, currency)| QuoteRequest {
+                        symbol,
+                        currency,
+                        data_source: DataSource::Yahoo,
+                    })
+                    .collect();
+
                 match self
                     .provider_registry
                     .read()
                     .await
-                    .historical_quotes_bulk(&group_symbols, start_time, end_date)
+                    .historical_quotes_bulk(&quote_requests, start_time, end_date)
                     .await
                 {
                     Ok((quotes, provider_failures)) => {
@@ -712,6 +721,7 @@ impl MarketDataService {
             } else {
                 debug!("Successfully saved {} filled quotes.", all_quotes.len());
             }
+        }
         }
 
         Ok(((), failed_syncs))
