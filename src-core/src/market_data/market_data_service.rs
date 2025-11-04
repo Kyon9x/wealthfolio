@@ -663,10 +663,19 @@ impl MarketDataService {
 
                 let quote_requests: Vec<QuoteRequest> = group_symbols
                     .into_iter()
-                    .map(|(symbol, currency)| QuoteRequest {
-                        symbol,
-                        currency,
-                        data_source: DataSource::Yahoo,
+                    .map(|(symbol, currency)| {
+                        // Find the original quote request for this symbol to get its data source
+                        let data_source = public_requests
+                            .iter()
+                            .find(|req| req.symbol == symbol)
+                            .map(|req| req.data_source.clone())
+                            .unwrap_or(DataSource::Yahoo); // Fallback to Yahoo if not found
+                        
+                        QuoteRequest {
+                            symbol,
+                            currency,
+                            data_source,
+                        }
                     })
                     .collect();
 
