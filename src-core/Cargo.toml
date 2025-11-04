@@ -9,10 +9,6 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[features]
-default = []
-wealthfolio-pro = []
-
 [dependencies]
 anyhow = "1"
 log = "0.4"

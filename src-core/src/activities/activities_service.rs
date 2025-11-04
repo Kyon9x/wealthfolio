@@ -11,7 +11,6 @@ use crate::market_data::market_data_model::{Quote, DataSource};
 use crate::Result;
 use crate::assets::AssetServiceTrait;
 use crate::fx::FxServiceTrait;
-use crate::Result;
 use uuid::Uuid;
 use chrono::DateTime;
 
@@ -41,68 +40,7 @@ impl ActivityService {
             market_data_service,
         }
     }
-}
 
-impl ActivityService {
-    async fn prepare_new_activity(&self, mut activity: NewActivity) -> Result<NewActivity> {
-        let account: Account = self.account_service.get_account(&activity.account_id)?;
-
-        let asset_context_currency = if !activity.currency.is_empty() {
-            activity.currency.clone()
-        } else {
-            account.currency.clone()
-        };
-
-        let asset = self
-            .asset_service
-            .get_or_create_asset(&activity.asset_id, Some(asset_context_currency))
-            .await?;
-
-        if activity.currency.is_empty() {
-            activity.currency = asset.currency.clone();
-        }
-
-        if activity.currency != account.currency {
-            self.fx_service
-                .register_currency_pair(account.currency.as_str(), activity.currency.as_str())
-                .await?;
-        }
-
-        Ok(activity)
-    }
-
-    async fn prepare_update_activity(
-        &self,
-        mut activity: ActivityUpdate,
-    ) -> Result<ActivityUpdate> {
-        let account: Account = self.account_service.get_account(&activity.account_id)?;
-
-        let asset_context_currency = if !activity.currency.is_empty() {
-            activity.currency.clone()
-        } else {
-            account.currency.clone()
-        };
-
-        let asset = self
-            .asset_service
-            .get_or_create_asset(&activity.asset_id, Some(asset_context_currency))
-            .await?;
-
-        if activity.currency.is_empty() {
-            activity.currency = asset.currency.clone();
-        }
-
-        if activity.currency != account.currency {
-            self.fx_service
-                .register_currency_pair(account.currency.as_str(), activity.currency.as_str())
-                .await?;
-        }
-
-        Ok(activity)
-    }
-}
-
-impl ActivityService {
     async fn prepare_new_activity(&self, mut activity: NewActivity) -> Result<NewActivity> {
         let account: Account = self.account_service.get_account(&activity.account_id)?;
 

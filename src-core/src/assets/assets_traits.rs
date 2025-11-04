@@ -13,6 +13,7 @@ pub trait AssetServiceTrait: Send + Sync {
     ) -> Result<Asset>;
     fn load_cash_assets(&self, base_currency: &str) -> Result<Vec<Asset>>;
     async fn create_cash_asset(&self, currency: &str) -> Result<Asset>;
+    async fn create_manual_asset(&self, symbol: &str, currency: String) -> Result<Asset>;
     async fn get_or_create_asset(
         &self,
         asset_id: &str,
