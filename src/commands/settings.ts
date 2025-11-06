@@ -12,7 +12,7 @@ export const getSettings = async (): Promise<Settings> => {
         throw new Error(`Unsupported`);
     }
   } catch (error) {
-    logger.error("Error fetching settings:", error);
+    logger.error(`Error fetching settings: ${error instanceof Error ? error.message : String(error)}`);
     // Return default settings instead of empty object
     return {
       theme: "dark",

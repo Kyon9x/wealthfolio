@@ -408,6 +408,7 @@ impl ProviderRegistry {
         // Return empty array instead of error to allow frontend to show "Add manual asset" option
         info!("No results found for query '{}' from any provider. Returning empty results.", query);
         Ok(vec![])
+    }
 
     /// Search all providers in parallel and return combined results with provider IDs
     pub async fn search_ticker_parallel(
@@ -447,9 +448,9 @@ impl ProviderRegistry {
 
         // Flatten results: Vec<Vec<(provider_id, QuoteSummary)>> -> Vec<(provider_id, QuoteSummary)>
         let combined: Vec<(String, QuoteSummary)> = all_results
-            .into_iter()
-            .flatten()
-        .collect();
+        .into_iter()
+        .flatten()
+            .collect();
 
         info!("Parallel search completed: {} total results from all providers", combined.len());
         Ok(combined)

@@ -3,13 +3,8 @@ use std::sync::Arc;
 use axum::{extract::{Path, State, Query, RawQuery}, routing::{get, post, put, delete}, Json, Router};
 use tower_http::{cors::{Any, CorsLayer}, trace::TraceLayer, timeout::TimeoutLayer, request_id::{MakeRequestUuid, PropagateRequestIdLayer, SetRequestIdLayer}};
 use utoipa::OpenApi;
-<<<<<<< HEAD
-use crate::{error::{ApiResult, ApiError}, models::{Account, NewAccount, AccountUpdate}, config::Config, main_lib::AppState};
-use crate::addons::{self, *};
-=======
 use crate::{error::ApiResult, models::{Account, NewAccount, AccountUpdate}, config::Config, main_lib::AppState};
 use wealthfolio_core::addons::{self, *};
->>>>>>> sub-main
 use axum::http::StatusCode;
 use wealthfolio_core::{
     accounts::AccountServiceTrait,
