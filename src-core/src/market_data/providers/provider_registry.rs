@@ -408,13 +408,12 @@ impl ProviderRegistry {
         // Return empty array instead of error to allow frontend to show "Add manual asset" option
         info!("No results found for query '{}' from any provider. Returning empty results.", query);
         Ok(vec![])
-    }
 
     /// Search all providers in parallel and return combined results with provider IDs
     pub async fn search_ticker_parallel(
-        &self,
-        query: &str,
-    ) -> Result<Vec<(String, QuoteSummary)>, MarketDataError> {
+            &self,
+            query: &str,
+        ) -> Result<Vec<(String, QuoteSummary)>, MarketDataError> {
         use futures::future::join_all;
 
         let profilers = self.get_enabled_profilers();
@@ -423,25 +422,25 @@ impl ProviderRegistry {
         let search_futures: Vec<_> = profilers
             .iter()
             .map(|(provider_id, profiler)| {
-                let id = (*provider_id).clone();
-                let query_str = query.to_string();
-                let profiler_clone = Arc::clone(profiler);
+            let id = (*provider_id).clone();
+            let query_str = query.to_string();
+        let profiler_clone = Arc::clone(profiler);
 
-                async move {
+        async move {
                     match profiler_clone.search_ticker(&query_str).await {
-                        Ok(results) => {
-                            info!("Provider '{}' found {} results for '{}'", id, results.len(), query_str);
-                            // Tag each result with provider ID for priority sorting
-                            results.into_iter().map(|r| (id.clone(), r)).collect::<Vec<_>>()
-                        }
-                        Err(e) => {
-                            debug!("Provider '{}' search failed: {:?}", id, e);
-                            vec![]
-                        }
-                    }
-                }
-            })
-            .collect();
+                Ok(results) => {
+                info!("Provider '{}' found {} results for '{}'", id, results.len(), query_str);
+            // Tag each result with provider ID for priority sorting
+        results.into_iter().map(|r| (id.clone(), r)).collect::<Vec<_>>()
+        }
+        Err(e) => {
+            debug!("Provider '{}' search failed: {:?}", id, e);
+            vec![]
+        }
+        }
+        }
+        })
+        .collect();
 
         // Execute all searches in parallel
         let all_results = join_all(search_futures).await;
@@ -450,9 +449,9 @@ impl ProviderRegistry {
         let combined: Vec<(String, QuoteSummary)> = all_results
             .into_iter()
             .flatten()
-            .collect();
+        .collect();
 
         info!("Parallel search completed: {} total results from all providers", combined.len());
         Ok(combined)
-    }
+        }
 }
