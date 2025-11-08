@@ -1,5 +1,43 @@
 {
   "title": "Cài đặt",
+  "navigation": {
+    "general": {
+      "title": "Chung",
+      "subtitle": "Đơn vị tiền tệ và tùy chọn chung"
+    },
+    "appearance": {
+      "title": "Giao diện",
+      "subtitle": "Chủ đề, kiểu chữ và mật độ"
+    },
+    "accounts": {
+      "title": "Tài khoản",
+      "subtitle": "Tài khoản đầu tư và tiết kiệm"
+    },
+    "limits": {
+      "title": "Giới hạn",
+      "subtitle": "Giới hạn đóng góp và quy tắc"
+    },
+    "goals": {
+      "title": "Mục tiêu",
+      "subtitle": "Lập kế hoạch và theo dõi mục tiêu"
+    },
+    "marketData": {
+      "title": "Dữ liệu thị trường",
+      "subtitle": "Nhà cung cấp và cập nhật dữ liệu"
+    },
+    "addons": {
+      "title": "Tiện ích",
+      "subtitle": "Mở rộng Wealthfolio với các tính năng"
+    },
+    "exports": {
+      "title": "Xuất dữ liệu",
+      "subtitle": "Sao lưu và xuất dữ liệu của bạn"
+    },
+    "about": {
+      "title": "Về ứng dụng",
+      "subtitle": "Về Wealthfolio"
+    }
+  },
   "appearance": {
     "title": "Giao diện",
     "description": "Tùy chỉnh giao diện ứng dụng",
@@ -27,11 +65,229 @@
   },
   "accounts": {
     "title": "Tài khoản",
-    "description": "Quản lý tài khoản đầu tư của bạn"
+    "description": " Quản lý tài khoản đầu tư và tiết kiệm của bạn.",
+    "addButton": "Thêm tài khoản",
+    "addAccountButton": "Thêm một tài khoản",
+    "empty": {
+      "title": "Chưa có tài khoản nào!",
+      "description": "Bạn chưa có tài khoản nào. Bắt đầu thêm tài khoản đầu tư của bạn."
+    },
+    "item": {
+      "disabled": "Đã vô hiệu hóa"
+    },
+    "form": {
+      "addTitle": "Thêm tài khoản",
+      "updateTitle": "Cập nhật tài khoản",
+      "addDescription": " Thêm tài khoản đầu tư để theo dõi.",
+      "updateDescription": "Cập nhật thông tin tài khoản",
+      "fields": {
+        "name": {
+          "label": "Tên tài khoản",
+          "placeholder": "Tên hiển thị tài khoản"
+        },
+        "group": {
+          "label": "Nhóm tài khoản",
+          "placeholder": "Hưu trí, 401K, RRSP, TFSA,..."
+        },
+        "accountType": {
+          "label": "Loại tài khoản",
+          "placeholder": "Chọn loại tài khoản",
+          "sheetTitle": "Chọn loại tài khoản",
+          "sheetDescription": "Chọn loại tài khoản phù hợp nhất.",
+          "options": {
+            "securities": "Chứng khoán",
+            "cash": "Tiền mặt",
+            "crypto": "Tiền điện tử"
+          }
+        },
+        "currency": {
+          "label": "Đơn vị tiền tệ"
+        },
+        "isDefault": {
+          "label": " Tài khoản mặc định"
+        },
+        "isActive": {
+          "label": " Đang hoạt động"
+        }
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "add": "Thêm tài khoản",
+        "update": "Cập nhật tài khoản"
+      }
+    }
   },
   "general": {
     "title": "Chung",
-    "description": "Cài đặt ứng dụng chung"
+    "description": "Quản lý các cài đặt và tùy chọn ứng dụng chung.",
+    "baseCurrency": {
+      "title": "Đơn vị tiền tệ",
+      "description": "Chọn đơn vị tiền tệ cơ sở cho danh mục đầu tư của bạn.",
+      "selectPlaceholder": "Vui lòng chọn đơn vị tiền tệ cơ sở.",
+      "saveButton": "Lưu đơn vị tiền tệ"
+    },
+    "exchangeRates": {
+      "title": "Tỷ giá hối đoái",
+      "description": "Quản lý tỷ giá hối đoái cho các loại tiền tệ trong danh mục của bạn.",
+      "addButton": "Thêm tỷ giá",
+      "columns": {
+        "from": "Từ",
+        "to": "Đến",
+        "source": "Nguồn",
+        "rate": "Tỷ giá",
+        "lastUpdated": "Cập nhật lần cuối"
+      },
+      "empty": {
+        "title": "Chưa có tỷ giá nào được định nghĩa",
+        "button": "Thêm tỷ giá"
+      },
+      "delete": {
+        "title": "Xóa tỷ giá hối đoái",
+        "description": "Bạn có chắc chắn muốn xóa tỷ giá này không?",
+        "button": "Xóa"
+      },
+      "viewHistory": "Xem lịch sử"
+    },
+    "autoUpdate": {
+      "title": "Cập nhật tự động",
+      "enableLabel": "Bật kiểm tra cập nhật tự động",
+      "enableDescription": "Khi được bật, Wealthfolio sẽ tự động kiểm tra cập nhật khi ứng dụng khởi động. Bạn vẫn có thể kiểm tra cập nhật thủ công từ menu Trợ giúp.",
+      "toast": {
+        "successTitle": "Đã cập nhật cài đặt",
+        "successDescription": "Cài đặt cập nhật tự động đã được lưu thành công.",
+        "errorTitle": "Lỗi",
+        "errorDescription": "Không thể cập nhật cài đặt tự động. Vui lòng thử lại."
+      }
+    }
+  },
+  "goals": {
+    "title": "Mục tiêu",
+    "description": " Quản lý các mục tiêu đầu tư và tiết kiệm của bạn.",
+    "addButton": "Thêm mục tiêu",
+    "addGoalButton": "Thêm một mục tiêu",
+    "goalsHeading": "Mục tiêu",
+    "allocationsHeading": "Phân bổ",
+    "allocationsDescription": "Nhấp vào ô để chỉ định phần trăm phân bổ của từng tài khoản cho mục tiêu của bạn.",
+    "empty": {
+      "title": "Chưa có mục tiêu nào!",
+      "description": "Bạn chưa có mục tiêu nào. Bắt đầu thêm mục tiêu đầu tư của bạn."
+    },
+    "form": {
+      "addTitle": "Thêm mục tiêu",
+      "updateTitle": "Cập nhật mục tiêu",
+      "addDescription": " Thêm mục tiêu đầu tư để theo dõi.",
+      "updateDescription": "Cập nhật thông tin mục tiêu",
+      "fields": {
+        "title": {
+          "label": "Tên mục tiêu",
+          "placeholder": "Tiêu đề hiển thị mục tiêu"
+        },
+        "description": {
+          "label": "Mô tả mục tiêu",
+          "placeholder": "Mô tả ngắn gọn mục tiêu"
+        },
+        "targetAmount": {
+          "label": "Số tiền mục tiêu",
+          "placeholder": "Số tiền mục tiêu"
+        },
+        "isAchieved": {
+          "label": " Đã đạt mục tiêu"
+        }
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "add": "Thêm mục tiêu",
+        "update": "Cập nhật mục tiêu"
+      }
+    },
+    "operations": {
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "openMenu": "Mở"
+    },
+    "delete": {
+      "title": "Bạn có chắc chắn muốn xóa mục tiêu này và các hoạt động liên quan?",
+      "description": "Hành động này không thể hoàn tác.",
+      "button": "Xóa"
+    },
+    "allocations": {
+      "tableHeader": "Mục tiêu \\ Tài khoản",
+      "totalRow": "Tổng cộng",
+      "saveButton": "Lưu phân bổ",
+      "toast": {
+        "errorTitle": "Tổng phân bổ cho một tài khoản không được vượt quá 100%."
+      }
+    }
+  },
+  "contributionLimits": {
+    "title": "Giới hạn đóng góp",
+    "description": "Quản lý giới hạn đóng góp của bạn.",
+    "addButton": "Thêm giới hạn",
+    "addLimitButton": "Thêm một giới hạn đóng góp",
+    "currentYear": "Năm hiện tại",
+    "previousYears": "Các năm trước",
+    "showPreviousYears": "Hiển thị các năm trước",
+    "hidePreviousYears": "Ẩn các năm trước",
+    "daysLeft": "ngày còn lại",
+    "completed": "đã hoàn thành",
+    "overLimit": "vượt giới hạn",
+    "contributed": "Đã đóng góp",
+    "loading": "Đang tải...",
+    "empty": {
+      "title": "Không có giới hạn đóng góp cho {{year}}!",
+      "description": "Bạn không có giới hạn đóng góp nào cho năm hiện tại. Bắt đầu thêm giới hạn đóng góp của bạn."
+    },
+    "form": {
+      "addTitle": "Thêm giới hạn đóng góp",
+      "updateTitle": "Cập nhật giới hạn đóng góp",
+      "addDescription": "Thêm một giới hạn đóng góp mới.",
+      "updateDescription": "Cập nhật thông tin giới hạn đóng góp",
+      "fields": {
+        "groupName": {
+          "label": "Tên nhóm",
+          "placeholder": "ví dụ: TFSA, 401(k), RRSP",
+          "description": "Tên của nhóm giới hạn đóng góp"
+        },
+        "limitAmount": {
+          "label": "Số tiền giới hạn",
+          "placeholder": "ví dụ: 6,000.00",
+          "description": "Số tiền đóng góp tối đa được phép"
+        },
+        "contributionYear": {
+          "label": "Năm",
+          "placeholder": "ví dụ: 2024"
+        },
+        "startDate": {
+          "label": "Ngày bắt đầu"
+        },
+        "endDate": {
+          "label": "Ngày kết thúc"
+        },
+        "dateNote": "Ngày mặc định từ ngày 1 tháng 1 đến ngày 31 tháng 12 của năm đã chọn"
+      },
+      "buttons": {
+        "cancel": "Hủy",
+        "save": "Lưu",
+        "update": "Cập nhật",
+        "saving": "Đang lưu...",
+        "updating": "Đang cập nhật..."
+      }
+    },
+    "operations": {
+      "edit": "Chỉnh sửa",
+      "delete": "Xóa",
+      "openMenu": "Mở"
+    },
+    "delete": {
+      "title": "Bạn có chắc chắn muốn xóa giới hạn đóng góp này?",
+      "description": "Hành động này không thể hoàn tác.",
+      "button": "Xóa"
+    },
+    "accountSelection": {
+      "title": "Chọn tài khoản",
+      "saveButton": "Lưu tài khoản đã chọn",
+      "saving": "Đang lưu..."
+    }
   },
   "about": {
     "title": "Về ứng dụng",

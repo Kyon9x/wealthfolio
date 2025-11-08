@@ -1,5 +1,43 @@
 {
   "title": "Settings",
+  "navigation": {
+    "general": {
+      "title": "General",
+      "subtitle": "Currency and general preferences"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Theme, typography, and density"
+    },
+    "accounts": {
+      "title": "Accounts",
+      "subtitle": "Investment and savings accounts"
+    },
+    "limits": {
+      "title": "Limits",
+      "subtitle": "Contribution limits and rules"
+    },
+    "goals": {
+      "title": "Goals",
+      "subtitle": "Plan and track objectives"
+    },
+    "marketData": {
+      "title": "Market Data",
+      "subtitle": "Providers and data update"
+    },
+    "addons": {
+      "title": "Add-ons",
+      "subtitle": "Extend Wealthfolio with features"
+    },
+    "exports": {
+      "title": "Data Export",
+      "subtitle": "Backup and export your data"
+    },
+    "about": {
+      "title": "About",
+      "subtitle": "About Wealthfolio"
+    }
+  },
   "appearance": {
     "title": "Appearance",
     "description": "Customize the look and feel of the application",
@@ -27,11 +65,229 @@
   },
   "accounts": {
     "title": "Accounts",
-    "description": "Manage your investment accounts"
+    "description": " Manage your investment and saving accounts.",
+    "addButton": "Add account",
+    "addAccountButton": "Add an account",
+    "empty": {
+      "title": "No account added!",
+      "description": "You don't have any account yet. Start adding your investment accounts."
+    },
+    "item": {
+      "disabled": "Disabled"
+    },
+    "form": {
+      "addTitle": "Add Account",
+      "updateTitle": "Update Account",
+      "addDescription": " Add an investment account to track.",
+      "updateDescription": "Update account information",
+      "fields": {
+        "name": {
+          "label": "Account Name",
+          "placeholder": "Account display name"
+        },
+        "group": {
+          "label": "Account Group",
+          "placeholder": "Retirement, 401K, RRSP, TFSA,..."
+        },
+        "accountType": {
+          "label": "Account Type",
+          "placeholder": "Select an account type",
+          "sheetTitle": "Select Account Type",
+          "sheetDescription": "Choose the account type that best matches.",
+          "options": {
+            "securities": "Securities",
+            "cash": "Cash",
+            "crypto": "Crypto"
+          }
+        },
+        "currency": {
+          "label": "Currency"
+        },
+        "isDefault": {
+          "label": " Default Account"
+        },
+        "isActive": {
+          "label": " Is Active"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "add": "Add Account",
+        "update": "Update Account"
+      }
+    }
   },
   "general": {
     "title": "General",
-    "description": "General application settings"
+    "description": "Manage the general application settings and preferences.",
+    "baseCurrency": {
+      "title": "Base Currency",
+      "description": "Select your portfolio base currency.",
+      "selectPlaceholder": "Please select a base currency.",
+      "saveButton": "Save Currency"
+    },
+    "exchangeRates": {
+      "title": "Exchange Rates",
+      "description": "Manage exchange rates for currencies in your portfolio.",
+      "addButton": "Add rate",
+      "columns": {
+        "from": "From",
+        "to": "To",
+        "source": "Source",
+        "rate": "Rate",
+        "lastUpdated": "Last Updated"
+      },
+      "empty": {
+        "title": "No exchange rates defined yet",
+        "button": "Add rate"
+      },
+      "delete": {
+        "title": "Delete Exchange Rate",
+        "description": "Are you sure you want to delete this exchange rate?",
+        "button": "Delete"
+      },
+      "viewHistory": "View history"
+    },
+    "autoUpdate": {
+      "title": "Automatic Updates",
+      "enableLabel": "Enable automatic update checks",
+      "enableDescription": "When enabled, Wealthfolio will automatically check for updates when the application starts. You can still manually check for updates from the Help menu.",
+      "toast": {
+        "successTitle": "Settings updated",
+        "successDescription": "Auto-update settings have been saved successfully.",
+        "errorTitle": "Error",
+        "errorDescription": "Failed to update auto-update settings. Please try again."
+      }
+    }
+  },
+  "goals": {
+    "title": "Goals",
+    "description": " Manage your investment and saving goals.",
+    "addButton": "Add goal",
+    "addGoalButton": "Add a goal",
+    "goalsHeading": "Goals",
+    "allocationsHeading": "Allocations",
+    "allocationsDescription": "Click on a cell to specify the percentage of each account's allocation to your goals.",
+    "empty": {
+      "title": "No goals added!",
+      "description": "You don't have any goals yet. Start adding your investment goals."
+    },
+    "form": {
+      "addTitle": "Add Goal",
+      "updateTitle": "Update Goal",
+      "addDescription": " Add an investment goal to track.",
+      "updateDescription": "Update goal information",
+      "fields": {
+        "title": {
+          "label": "Goal Name",
+          "placeholder": "Goal display title"
+        },
+        "description": {
+          "label": "Goal description",
+          "placeholder": "Goal short description"
+        },
+        "targetAmount": {
+          "label": "Target amount",
+          "placeholder": "Target amount"
+        },
+        "isAchieved": {
+          "label": " Goal Achieved"
+        }
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "add": "Add Goal",
+        "update": "Update Goal"
+      }
+    },
+    "operations": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "openMenu": "Open"
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this goal and related activities?",
+      "description": "This action cannot be undone.",
+      "button": "Delete"
+    },
+    "allocations": {
+      "tableHeader": "Goals \\ Accounts",
+      "totalRow": "Total",
+      "saveButton": "Save Allocations",
+      "toast": {
+        "errorTitle": "Total allocation for an account can't exceed 100%."
+      }
+    }
+  },
+  "contributionLimits": {
+    "title": "Contribution Limits",
+    "description": "Manage your contribution limits.",
+    "addButton": "Add limit",
+    "addLimitButton": "Add a contribution limit",
+    "currentYear": "Current Year",
+    "previousYears": "Previous Years",
+    "showPreviousYears": "Show Previous Years",
+    "hidePreviousYears": "Hide Previous Years",
+    "daysLeft": "days left",
+    "completed": "completed",
+    "overLimit": "over limit",
+    "contributed": "Contributed",
+    "loading": "Loading...",
+    "empty": {
+      "title": "No contribution limits for {{year}}!",
+      "description": "You don't have any contribution limits for the current year. Start adding your contribution limits."
+    },
+    "form": {
+      "addTitle": "Add Contribution Limit",
+      "updateTitle": "Update Contribution Limit",
+      "addDescription": "Add a new contribution limit.",
+      "updateDescription": "Update contribution limit information",
+      "fields": {
+        "groupName": {
+          "label": "Group Name",
+          "placeholder": "e.g., TFSA, 401(k), RRSP",
+          "description": "Name of the contribution limit group"
+        },
+        "limitAmount": {
+          "label": "Limit Amount",
+          "placeholder": "e.g., 6,000.00",
+          "description": "Maximum contribution amount allowed"
+        },
+        "contributionYear": {
+          "label": "Year",
+          "placeholder": "e.g., 2024"
+        },
+        "startDate": {
+          "label": "Start Date"
+        },
+        "endDate": {
+          "label": "End Date"
+        },
+        "dateNote": "Dates default to January 1st through December 31st of the selected year"
+      },
+      "buttons": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "update": "Update",
+        "saving": "Saving...",
+        "updating": "Updating..."
+      }
+    },
+    "operations": {
+      "edit": "Edit",
+      "delete": "Delete",
+      "openMenu": "Open"
+    },
+    "delete": {
+      "title": "Are you sure you want to delete this contribution limit?",
+      "description": "This action cannot be undone.",
+      "button": "Delete"
+    },
+    "accountSelection": {
+      "title": "Select Accounts",
+      "saveButton": "Save Selected Accounts",
+      "saving": "Saving..."
+    }
   },
   "about": {
     "title": "About",
