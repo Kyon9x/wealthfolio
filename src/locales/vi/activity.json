@@ -72,7 +72,12 @@
       "validating": "Đang xác thực...",
       "readingFile": "Đang đọc tệp",
       "readingFileDesc": "Vui lòng đợi trong khi ứng dụng xử lý dữ liệu của bạn.",
-      "readingFileMessage": "Đang đọc tệp..."
+      "readingFileMessage": "Đang đọc tệp...",
+      "removeFile": "Xóa tệp",
+      "processingFile": "Đang xử lý tệp...",
+      "clickToUpload": "Nhấn để tải lên",
+      "orDrop": "hoặc kéo thả",
+      "csvOnly": "Chỉ CSV"
     },
     "mapping": {
       "fields": "Trường",
@@ -88,7 +93,8 @@
       "pleaseGoBack": "Vui lòng quay lại và tải lên tệp hợp lệ.",
       "back": "Quay lại",
       "next": "Tiếp theo",
-      "saving": "Đang lưu..."
+      "saving": "Đang lưu...",
+      "ofMapped": "/ {{total}} đã ánh xạ"
     },
     "preview": {
       "issuesWithActivities": "Có vấn đề với {{count}} / {{total}} hoạt động",
@@ -127,6 +133,34 @@
     "error": {
       "errorOccurred": "Đã xảy ra lỗi khi xử lý nhập của bạn",
       "noValidActivities": "Không có hoạt động hợp lệ để nhập"
+    },
+    "csvViewer": {
+      "status": "Trạng thái",
+      "error": "Lỗi",
+      "valid": "Hợp lệ",
+      "lineNumber": "Số dòng",
+      "csvContent": "Nội dung CSV",
+      "csvFile": "Tệp CSV",
+      "lines": "dòng",
+      "emptyFile": "Tệp trống",
+      "validationErrors": "Lỗi xác thực",
+      "emptyLine": "dòng trống",
+      "noContentFound": "Không tìm thấy nội dung"
+    },
+    "mappingEditor": {
+      "totalRows": "tổng số dòng",
+      "totalRow": "tổng số dòng",
+      "activityPreview": "Xem trước hoạt động",
+      "filePreview": "Xem trước tệp"
+    },
+    "mappingTable": {
+      "selectColumn": "Chọn cột",
+      "optional": "Tùy chọn",
+      "ignore": "Bỏ qua",
+      "accountCurrency": "Tiền tệ tài khoản",
+      "defaultAccount": "Tài khoản mặc định",
+      "mapTo": "Ánh xạ sang...",
+      "selectAccount": "Chọn tài khoản"
     }
   }
 }

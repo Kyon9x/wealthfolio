@@ -72,7 +72,12 @@
       "validating": "Validating...",
       "readingFile": "Reading the file",
       "readingFileDesc": "Please wait while the application processes your data.",
-      "readingFileMessage": "Reading the file..."
+      "readingFileMessage": "Reading the file...",
+      "removeFile": "Remove File",
+      "processingFile": "Processing file...",
+      "clickToUpload": "Click to upload",
+      "orDrop": "or drop",
+      "csvOnly": "CSV only"
     },
     "mapping": {
       "fields": "Fields",
@@ -88,7 +93,8 @@
       "pleaseGoBack": "Please go back and upload a valid file.",
       "back": "Back",
       "next": "Next",
-      "saving": "Saving..."
+      "saving": "Saving...",
+      "ofMapped": "of {{total}} mapped"
     },
     "preview": {
       "issuesWithActivities": "There are issues with {{count}} of {{total}} activities",
@@ -127,6 +133,34 @@
     "error": {
       "errorOccurred": "An error occurred while processing your import",
       "noValidActivities": "No valid activities to import"
+    },
+    "csvViewer": {
+      "status": "Status",
+      "error": "Error",
+      "valid": "Valid",
+      "lineNumber": "Line Number",
+      "csvContent": "CSV Content",
+      "csvFile": "CSV File",
+      "lines": "lines",
+      "emptyFile": "Empty file",
+      "validationErrors": "Validation Errors",
+      "emptyLine": "empty line",
+      "noContentFound": "No content found"
+    },
+    "mappingEditor": {
+      "totalRows": "total rows",
+      "totalRow": "total row",
+      "activityPreview": "Activity Preview",
+      "filePreview": "File Preview"
+    },
+    "mappingTable": {
+      "selectColumn": "Select column",
+      "optional": "Optional",
+      "ignore": "Ignore",
+      "accountCurrency": "Account Currency",
+      "defaultAccount": "Default Account",
+      "mapTo": "Map to...",
+      "selectAccount": "Select Account"
     }
   }
 }
