@@ -76,9 +76,9 @@ export function AppRoutes() {
           <Route path="accounts/:id" element={<AccountPage />} />
           <Route path="income" element={<IncomePage />} />
           <Route path="performance" element={<PerformancePage />} />
-          <Route path="swingfolio" element={<SwingfolioDashboardPage />} />
-          <Route path="swingfolio/activities" element={<SwingfolioActivitySelectorPage />} />
-          <Route path="swingfolio/settings" element={<SwingfolioSettingsPage />} />
+          <Route path="trading" element={<SwingfolioDashboardPage />} />
+          <Route path="trading/activities" element={<SwingfolioActivitySelectorPage />} />
+          <Route path="trading/settings" element={<SwingfolioSettingsPage />} />
           {/* Dynamic addon routes */}
           {dynamicRoutes.map(({ path, component: Component }) => (
             <Route

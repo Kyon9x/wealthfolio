@@ -97,7 +97,7 @@ export default function ActivitySelectorPage() {
     updatePreferences({
       selectedActivityIds: Array.from(selectedActivities),
     });
-    navigate("/swingfolio");
+    navigate("/trading");
   };
 
   const selectedCount = selectedActivities.size;

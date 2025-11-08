@@ -67,11 +67,11 @@ export default function DashboardPage() {
   const { preferences } = useSwingPreferences();
 
   const handleNavigateToActivities = () => {
-    navigate("/swingfolio/activities");
+    navigate("/trading/activities");
   };
 
   const handleNavigateToSettings = () => {
-    navigate("/swingfolio/settings");
+    navigate("/trading/settings");
   };
 
   if (isLoading) {

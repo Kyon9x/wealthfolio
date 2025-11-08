@@ -47,7 +47,7 @@ export default function SettingsPage() {
         heading="Swingfolio Settings"
         text={pageDescription}
         actions={
-          <Button variant="outline" onClick={() => navigate("/swingfolio")}>
+          <Button variant="outline" onClick={() => navigate("/trading")}>
             <Icons.ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>

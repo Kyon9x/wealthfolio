@@ -43,8 +43,8 @@ const staticNavigation: NavigationProps = {
     },
     {
       icon: <Icons.Swingfolio className="size-6" />,
-      title: "Swingfolio",
-      href: "/swingfolio",
+      title: "Trading",
+      href: "/trading",
     },
   ],
   secondary: [
