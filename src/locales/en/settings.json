@@ -292,5 +292,153 @@
   "about": {
     "title": "About",
     "description": "About Wealthfolio"
+  },
+  "marketData": {
+    "title": "Market Data",
+    "description": "Manage settings for your market data providers.",
+    "buttons": {
+      "import": "Import",
+      "refetchAll": "Refetch all",
+      "update": "Update",
+      "refetching": "Refetching...",
+      "saveKey": "Save Key"
+    },
+    "loading": "Loading provider settings...",
+    "error": "Error loading settings",
+    "noProviders": "No market data providers configured. This might be an initialization issue.",
+    "providers": {
+      "disabled": "Disabled",
+      "apiKeyRequired": "API Key Required",
+      "configure": "Configure Settings",
+      "enableToConfigure": "Enable provider to configure",
+      "apiKey": {
+        "label": "API Key",
+        "placeholder": "Enter API Key",
+        "placeholderSet": "API Key is Set",
+        "showKey": "Show API key",
+        "hideKey": "Hide API key",
+        "hintSet": "An API key is set. Enter a new key to update, or leave blank and save to clear the key.",
+        "hintNotSet": "No API key set. Enter a key and save."
+      },
+      "priority": {
+        "label": "Priority",
+        "placeholder": "e.g., 1 or 2",
+        "hint": "Lower number means higher priority (e.g., 1 is higher than 10)."
+      }
+    },
+    "confirm": {
+      "title": "Are you sure?",
+      "message": "This will refetch all market data history and recalculate the portfolio.",
+      "refetch": "Refetch",
+      "cancel": "Cancel"
+    },
+    "import": {
+      "title": "Import Historical Quotes",
+      "description": "Upload CSV files to backfill market data for your portfolio.",
+      "backToProviders": "Back to providers",
+      "section": {
+        "title": "Import Historical Quotes",
+        "description": "Import historical market data from CSV files to fill gaps in your portfolio data",
+        "startOver": "Start Over"
+      },
+      "steps": {
+        "uploadValidate": "Upload & Validate",
+        "preview": "Preview Data",
+        "results": "Import Results"
+      },
+      "form": {
+        "title": "Select CSV File",
+        "description": "Choose a CSV file containing historical quote data to import",
+        "clickToUpload": "Click to upload",
+        "orDrop": "or drop",
+        "csvOnly": "CSV only",
+        "processingFile": "Processing file...",
+        "removeFile": "Remove File",
+        "overwriteExisting": "Overwrite existing quotes with the same symbol and date",
+        "validateButton": "Validate File",
+        "validating": "Validating...",
+        "fileSize": "KB"
+      },
+      "summary": {
+        "title": "Import Summary",
+        "description": "Review the validation results before proceeding with the import",
+        "totalRows": "Total Rows",
+        "valid": "Valid",
+        "invalid": "Invalid",
+        "duplicates": "Duplicates",
+        "importButton": "Import {{count}} Valid Quotes"
+      },
+      "progress": {
+        "title": "Import Progress",
+        "importing": "Importing quotes...",
+        "completed": "Import completed",
+        "progressLabel": "Progress",
+        "total": "Total",
+        "successful": "Successful",
+        "failed": "Failed",
+        "imported": "{{count}} imported",
+        "failedCount": "{{count}} failed",
+        "cancelButton": "Cancel Import"
+      },
+      "preview": {
+        "title": "Preview Data ({{count}} rows)",
+        "description": "Review the first {{maxRows}} rows of your CSV data",
+        "showing": "Showing first {{shown}} of {{total}} rows",
+        "columns": {
+          "symbol": "Symbol",
+          "date": "Date",
+          "open": "Open",
+          "high": "High",
+          "low": "Low",
+          "close": "Close",
+          "volume": "Volume",
+          "currency": "Currency",
+          "status": "Status"
+        }
+      },
+      "help": {
+        "buttonText": "How to Import Quotes?",
+        "title": "Importing Historical Quotes",
+        "description": "Import historical market data from CSV files to fill gaps in your portfolio data for assets where external data sources only provide recent quotes.",
+        "steps": {
+          "step1": "Prepare your CSV file with OHLCV data format",
+          "step2": "Upload and validate your CSV file",
+          "step3": "Review validation results and sample data",
+          "step4": "Import quotes with optional duplicate handling"
+        },
+        "tips": {
+          "usage": {
+            "title": "💡 Tip:",
+            "text": "Use this feature when external data providers only have quotes from recent years, but you have transaction history from earlier periods."
+          },
+          "requiredFields": {
+            "title": "📊 Required fields:",
+            "text": "Only symbol and close price are required. Open, high, low, volume, and currency are optional but recommended for complete data."
+          },
+          "autoFormatting": {
+            "title": "⚡ Auto-formatting:",
+            "text": "Multiple date formats are supported (YYYY-MM-DD, DD/MM/YYYY, MM/DD/YYYY). Currency symbols are automatically handled."
+          },
+          "important": {
+            "title": "⚠️ Important:",
+            "text": "Large imports may take time. The system will show progress and handle errors gracefully."
+          }
+        },
+        "csvFormat": {
+          "title": "Required CSV Format:",
+          "comment1": "# Required columns: symbol, date, close",
+          "comment2": "# Optional: open, high, low, volume, currency",
+          "comment3": "# Alternative date formats supported:"
+        },
+        "validation": {
+          "title": "Data Validation:",
+          "symbol": "Symbol: Must be a valid ticker symbol",
+          "date": "Date: Must be a valid date (multiple formats supported)",
+          "prices": "Prices: Must be valid decimal numbers",
+          "currency": "Currency: 3-letter currency code (defaults to USD)",
+          "duplicates": "Duplicates: Existing quotes can be overwritten or skipped"
+        }
+      }
+    }
   }
 }

@@ -2,6 +2,15 @@
   "title": "Activity",
   "addActivity": "Add Activity",
   "importActivities": "Import Activities",
+  "page": {
+    "title": "Activity",
+    "addActivities": "Add Activities",
+    "importFromCsv": "Import from CSV",
+    "addHoldings": "Add Holdings",
+    "addTransaction": "Add Transaction",
+    "import": "Import",
+    "add": "Add"
+  },
   "types": {
     "BUY": "Buy",
     "SELL": "Sell",
@@ -40,5 +49,84 @@
   "empty": {
     "title": "No activities yet",
     "description": "Start adding activities to track your portfolio"
+  },
+  "import": {
+    "title": "Import Activities",
+    "steps": {
+      "selectAccount": "Select Account & File",
+      "configureMappings": "Configure Mappings",
+      "previewImport": "Preview & Import",
+      "importResults": "Import Results"
+    },
+    "accountSelection": {
+      "selectAccount": "Select Account",
+      "selectAccountHelp": "Make sure to select the account you want to import activities for",
+      "uploadCsvFile": "Upload CSV File",
+      "uploadCsvFileHelp": "Upload a CSV file containing your investment activities. The file should include headers in the first row.",
+      "noAccountSelected": "No account selected",
+      "fileContainsErrors": "File contains errors",
+      "invalidCsvFormat": "Invalid CSV Format",
+      "unknownError": "Unknown error",
+      "cancel": "Cancel",
+      "next": "Next",
+      "validating": "Validating...",
+      "readingFile": "Reading the file",
+      "readingFileDesc": "Please wait while the application processes your data.",
+      "readingFileMessage": "Reading the file..."
+    },
+    "mapping": {
+      "fields": "Fields",
+      "fieldsMapped": "{{count}} of {{total}} mapped",
+      "activities": "Activities",
+      "activitiesMapped": "{{count}} of {{total}} mapped",
+      "symbols": "Symbols",
+      "symbolsMapped": "{{count}} of {{total}} mapped",
+      "accounts": "Accounts",
+      "accountsMapped": "{{count}} of {{total}} mapped",
+      "noUnmappedAccountIds": "No unmapped account IDs found",
+      "noDataAvailable": "No CSV data available",
+      "pleaseGoBack": "Please go back and upload a valid file.",
+      "back": "Back",
+      "next": "Next",
+      "saving": "Saving..."
+    },
+    "preview": {
+      "issuesWithActivities": "There are issues with {{count}} of {{total}} activities",
+      "issuesDesc": "Please review the errors below. You can either go back to fix the issues or proceed with only the valid entries.",
+      "allActivitiesValid": "All {{count}} activities are valid",
+      "allActivitiesValidDesc": "Your data is ready to be imported.",
+      "activityPreview": "Activity Preview",
+      "filePreview": "File Preview",
+      "importProgress": "Import Progress",
+      "importProgressDesc": "Please wait while the application processes your data.",
+      "processingImport": "Processing Import...",
+      "cancel": "Cancel",
+      "back": "Back",
+      "importActivities": "Import Activities",
+      "importValidActivities": "Import {{count}} Valid Activities",
+      "confirmImporting": "Confirm importing {{count}} activities",
+      "importingActivities": "Importing Activities...",
+      "importError": "Import Error",
+      "tryAgain": "Try Again",
+      "noDataAvailable": "No Data Available",
+      "noDataDesc": "No CSV data available. Please go back and upload a valid file.",
+      "goBack": "Go Back"
+    },
+    "result": {
+      "importFailed": "Import Failed",
+      "importFailedDesc": "Due to validation errors, none of the activities were imported. Please review the errors below, fix the issues in your file, and try again.",
+      "importSuccessful": "Import Successful!",
+      "importSuccessfulDesc": "All <strong>{{count}}</strong> {{activityText}} have been successfully added to your account.",
+      "activity": "activity",
+      "activities": "activities",
+      "back": "Back",
+      "importAnotherFile": "Import Another File",
+      "viewAllActivities": "View All Activities",
+      "validatingData": "Validating imported data..."
+    },
+    "error": {
+      "errorOccurred": "An error occurred while processing your import",
+      "noValidActivities": "No valid activities to import"
+    }
   }
 }

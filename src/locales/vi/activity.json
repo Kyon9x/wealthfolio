@@ -1,7 +1,16 @@
 {
   "title": "Hoạt động",
-  "addActivity": "Thêm hoạt động",
-  "importActivities": "Nhập hoạt động",
+  "addActivity": "Thêm",
+  "importActivities": "Nhập",
+  "page": {
+    "title": "Hoạt động",
+    "addActivities": "Thêm hoạt động",
+    "importFromCsv": "Nhập từ CSV",
+    "addHoldings": "Thêm tài sản",
+    "addTransaction": "Thêm giao dịch",
+    "import": "Nhập",
+    "add": "Thêm"
+  },
   "types": {
     "BUY": "Mua",
     "SELL": "Bán",
@@ -40,5 +49,84 @@
   "empty": {
     "title": "Chưa có hoạt động nào",
     "description": "Bắt đầu thêm hoạt động để theo dõi danh mục của bạn"
+  },
+  "import": {
+    "title": "Nhập hoạt động",
+    "steps": {
+      "selectAccount": "Chọn tài khoản & Tệp",
+      "configureMappings": "Cấu hình ánh xạ",
+      "previewImport": "Xem trước & Nhập",
+      "importResults": "Kết quả nhập"
+    },
+    "accountSelection": {
+      "selectAccount": "Chọn tài khoản",
+      "selectAccountHelp": "Đảm bảo chọn tài khoản mà bạn muốn nhập hoạt động",
+      "uploadCsvFile": "Tải lên tệp CSV",
+      "uploadCsvFileHelp": "Tải lên tệp CSV chứa các hoạt động đầu tư của bạn. Tệp phải có tiêu đề ở dòng đầu tiên.",
+      "noAccountSelected": "Chưa chọn tài khoản",
+      "fileContainsErrors": "Tệp có lỗi",
+      "invalidCsvFormat": "Định dạng CSV không hợp lệ",
+      "unknownError": "Lỗi không xác định",
+      "cancel": "Hủy",
+      "next": "Tiếp theo",
+      "validating": "Đang xác thực...",
+      "readingFile": "Đang đọc tệp",
+      "readingFileDesc": "Vui lòng đợi trong khi ứng dụng xử lý dữ liệu của bạn.",
+      "readingFileMessage": "Đang đọc tệp..."
+    },
+    "mapping": {
+      "fields": "Trường",
+      "fieldsMapped": "{{count}} / {{total}} đã ánh xạ",
+      "activities": "Hoạt động",
+      "activitiesMapped": "{{count}} / {{total}} đã ánh xạ",
+      "symbols": "Mã chứng khoán",
+      "symbolsMapped": "{{count}} / {{total}} đã ánh xạ",
+      "accounts": "Tài khoản",
+      "accountsMapped": "{{count}} / {{total}} đã ánh xạ",
+      "noUnmappedAccountIds": "Không có ID tài khoản chưa ánh xạ",
+      "noDataAvailable": "Không có dữ liệu CSV",
+      "pleaseGoBack": "Vui lòng quay lại và tải lên tệp hợp lệ.",
+      "back": "Quay lại",
+      "next": "Tiếp theo",
+      "saving": "Đang lưu..."
+    },
+    "preview": {
+      "issuesWithActivities": "Có vấn đề với {{count}} / {{total}} hoạt động",
+      "issuesDesc": "Vui lòng xem lại các lỗi bên dưới. Bạn có thể quay lại để sửa lỗi hoặc tiếp tục chỉ với các mục hợp lệ.",
+      "allActivitiesValid": "Tất cả {{count}} hoạt động đều hợp lệ",
+      "allActivitiesValidDesc": "Dữ liệu của bạn đã sẵn sàng để nhập.",
+      "activityPreview": "Xem trước hoạt động",
+      "filePreview": "Xem trước tệp",
+      "importProgress": "Tiến trình nhập",
+      "importProgressDesc": "Vui lòng đợi trong khi ứng dụng xử lý dữ liệu của bạn.",
+      "processingImport": "Đang xử lý nhập...",
+      "cancel": "Hủy",
+      "back": "Quay lại",
+      "importActivities": "Nhập hoạt động",
+      "importValidActivities": "Nhập {{count}} hoạt động hợp lệ",
+      "confirmImporting": "Xác nhận nhập {{count}} hoạt động",
+      "importingActivities": "Đang nhập hoạt động...",
+      "importError": "Lỗi nhập",
+      "tryAgain": "Thử lại",
+      "noDataAvailable": "Không có dữ liệu",
+      "noDataDesc": "Không có dữ liệu CSV. Vui lòng quay lại và tải lên tệp hợp lệ.",
+      "goBack": "Quay lại"
+    },
+    "result": {
+      "importFailed": "Nhập thất bại",
+      "importFailedDesc": "Do lỗi xác thực, không có hoạt động nào được nhập. Vui lòng xem lại các lỗi bên dưới, sửa các vấn đề trong tệp của bạn và thử lại.",
+      "importSuccessful": "Nhập thành công!",
+      "importSuccessfulDesc": "Tất cả <strong>{{count}}</strong> {{activityText}} đã được thêm vào tài khoản của bạn.",
+      "activity": "hoạt động",
+      "activities": "hoạt động",
+      "back": "Quay lại",
+      "importAnotherFile": "Nhập tệp khác",
+      "viewAllActivities": "Xem tất cả hoạt động",
+      "validatingData": "Đang xác thực dữ liệu đã nhập..."
+    },
+    "error": {
+      "errorOccurred": "Đã xảy ra lỗi khi xử lý nhập của bạn",
+      "noValidActivities": "Không có hoạt động hợp lệ để nhập"
+    }
   }
 }
