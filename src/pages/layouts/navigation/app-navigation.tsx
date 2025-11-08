@@ -41,6 +41,11 @@ const staticNavigation: NavigationProps = {
       title: "Activities",
       href: "/activities",
     },
+    {
+      icon: <Icons.Swingfolio className="size-6" />,
+      title: "Swingfolio",
+      href: "/swingfolio",
+    },
   ],
   secondary: [
     {
