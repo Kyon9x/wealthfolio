@@ -10,10 +10,10 @@ export function useSwingActivities() {
     queryKey: ["swing-activities", preferences.selectedAccounts, preferences.includeDividends],
     queryFn: async (): Promise<SwingActivity[]> => {
       try {
-        // Use search API with filters for BUY/SELL activities, and optionally DIVIDEND
-        const activityTypes = ["BUY", "SELL"];
+        // Use search API with filters for BUY/SELL/ADD_HOLDING activities, and optionally DIVIDEND
+        const activityTypes = ["BUY", "SELL", "ADD_HOLDING"];
         if (preferences.includeDividends) {
-          activityTypes.push("DIVIDEND");
+        activityTypes.push("DIVIDEND");
         }
 
         // Since searchActivities expects single accountId but we have multiple,

@@ -115,25 +115,25 @@ export default function ActivitySelectorPage() {
   if (error || !activities) {
     return (
       <Page>
-        <PageHeader
-          heading="Select Activities"
-          text={pageDescription}
-          actions={
-            <Button variant="outline" onClick={() => navigate("/swingfolio")}>
-              <Icons.ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
-            </Button>
-          }
-        />
+      <PageHeader
+      heading="Select Activities"
+      text={pageDescription}
+      actions={
+      <Button variant="outline" onClick={() => navigate("/trading")}>
+      <Icons.ArrowLeft className="mr-2 h-4 w-4" />
+      Back to Dashboard
+      </Button>
+      }
+      />
         <PageContent>
           <div className="flex h-[calc(100vh-200px)] items-center justify-center">
             <div className="text-center">
               <Icons.AlertCircle className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
               <h3 className="mb-2 text-lg font-semibold">Failed to load activities</h3>
               <p className="text-muted-foreground mb-4">
-                {error?.message || "Unable to load trading activities"}
+              {error?.message || "Unable to load trading activities"}
               </p>
-              <Button onClick={() => navigate("/swingfolio")}>Back to Dashboard</Button>
+              <Button onClick={() => navigate("/trading")}>Back to Dashboard</Button>
             </div>
           </div>
         </PageContent>
@@ -142,11 +142,11 @@ export default function ActivitySelectorPage() {
   }
 
   const headerActions = (
-    <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-      <Button variant="outline" onClick={() => navigate("/swingfolio")}>
-        <Icons.ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Dashboard
-      </Button>
+  <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+  <Button variant="outline" onClick={() => navigate("/trading")}>
+  <Icons.ArrowLeft className="mr-2 h-4 w-4" />
+  Back to Dashboard
+  </Button>
       <Button onClick={handleSaveSelection} disabled={isUpdating}>
         {isUpdating ? (
           <Icons.Spinner className="mr-2 h-4 w-4 animate-spin" />

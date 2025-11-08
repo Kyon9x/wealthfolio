@@ -108,9 +108,9 @@ export default function SettingsPage() {
                 </SelectContent>
               </Select>
               <p className="text-muted-foreground mt-1 text-xs">
-                Default time period when opening dashboard
+              Default time period when opening dashboard
               </p>
-            </div>
+              </div>
           </CardContent>
         </Card>
 

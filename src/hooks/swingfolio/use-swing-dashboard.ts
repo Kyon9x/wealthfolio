@@ -98,8 +98,8 @@ export function useSwingDashboard(period: PeriodType) {
 
       // Update ALL open positions with current market prices (never filtered by period)
       const updatedOpenPositions = updateOpenPositionsWithMarketPrices(
-        openPositions,
-        holdings || [],
+      openPositions,
+      holdings || [],
       );
 
       // Get date range for selected period (only for historical data)
@@ -158,6 +158,7 @@ export function useSwingDashboard(period: PeriodType) {
     gcTime: 10 * 60 * 1000, // 10 minutes
   });
 }
+
 
 /**
  * Filter activities based on user preferences

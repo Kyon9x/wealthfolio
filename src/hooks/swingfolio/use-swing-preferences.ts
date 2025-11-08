@@ -2,13 +2,13 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { SwingTradePreferences } from "@/types/swingfolio";
 
 const DEFAULT_PREFERENCES: SwingTradePreferences = {
-  selectedActivityIds: [],
-  includeSwingTag: true,
-  selectedAccounts: [],
-  lotMatchingMethod: "FIFO",
-  defaultDateRange: "YTD",
-  includeFees: true,
-  includeDividends: false,
+selectedActivityIds: [],
+includeSwingTag: true,
+selectedAccounts: [],
+lotMatchingMethod: "FIFO",
+defaultDateRange: "YTD",
+includeFees: true,
+includeDividends: false,
 };
 
 const PREFERENCES_KEY = "swingfolio_preferences";
