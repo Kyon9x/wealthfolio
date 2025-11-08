@@ -1,6 +1,6 @@
 import type { ActivityDetails } from "@/lib/types";
-import { differenceInDays } from "date-fns";
 import type { ClosedTrade, OpenPosition, TradeMatchResult } from "@/types/swingfolio";
+import { differenceInDays } from "date-fns";
 
 interface Lot {
   activity: ActivityDetails;
@@ -48,7 +48,8 @@ export class TradeMatcher {
 
     // Separate trading activities from dividends
     const tradingActivities = parsedActivities.filter(
-      (a) => a.activityType === "BUY" || a.activityType === "SELL",
+      (a) =>
+        a.activityType === "BUY" || a.activityType === "SELL" || a.activityType === "ADD_HOLDING",
     );
     const dividendActivities = parsedActivities.filter((a) => a.activityType === "DIVIDEND");
 
@@ -155,7 +156,7 @@ export class TradeMatcher {
     let averageLot: AverageLot | null = null;
 
     for (const activity of activities) {
-      if (activity.activityType === "BUY") {
+      if (activity.activityType === "BUY" || activity.activityType === "ADD_HOLDING") {
         // Add to average lot
         if (!averageLot) {
           averageLot = this.createNewAverageLot(activity, symbol);
@@ -281,7 +282,7 @@ export class TradeMatcher {
     const lots: Lot[] = [];
 
     for (const activity of activities) {
-      if (activity.activityType === "BUY") {
+      if (activity.activityType === "BUY" || activity.activityType === "ADD_HOLDING") {
         const lot: Lot = {
           activity: activity,
           remainingQuantity: activity.quantity,

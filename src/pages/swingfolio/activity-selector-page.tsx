@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from "react";
+import { useSwingActivities } from "@/hooks/swingfolio/use-swing-activities";
+import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 import {
   Badge,
   Button,
@@ -19,10 +20,9 @@ import {
   SelectValue,
   Skeleton,
 } from "@wealthfolio/ui";
-import { useNavigate } from "react-router-dom";
-import { useSwingActivities } from "@/hooks/swingfolio/use-swing-activities";
-import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 import { format } from "date-fns";
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function ActivitySelectorPage() {
   const navigate = useNavigate();
@@ -97,7 +97,7 @@ export default function ActivitySelectorPage() {
     updatePreferences({
       selectedActivityIds: Array.from(selectedActivities),
     });
-    navigate("/swingfolio");
+    navigate("/trading");
   };
 
   const selectedCount = selectedActivities.size;
@@ -119,7 +119,7 @@ export default function ActivitySelectorPage() {
           heading="Select Activities"
           text={pageDescription}
           actions={
-            <Button variant="outline" onClick={() => navigate("/swingfolio")}>
+            <Button variant="outline" onClick={() => navigate("/trading")}>
               <Icons.ArrowLeft className="mr-2 h-4 w-4" />
               Back to Dashboard
             </Button>
@@ -133,7 +133,7 @@ export default function ActivitySelectorPage() {
               <p className="text-muted-foreground mb-4">
                 {error?.message || "Unable to load trading activities"}
               </p>
-              <Button onClick={() => navigate("/swingfolio")}>Back to Dashboard</Button>
+              <Button onClick={() => navigate("/trading")}>Back to Dashboard</Button>
             </div>
           </div>
         </PageContent>
@@ -143,7 +143,7 @@ export default function ActivitySelectorPage() {
 
   const headerActions = (
     <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-      <Button variant="outline" onClick={() => navigate("/swingfolio")}>
+      <Button variant="outline" onClick={() => navigate("/trading")}>
         <Icons.ArrowLeft className="mr-2 h-4 w-4" />
         Back to Dashboard
       </Button>

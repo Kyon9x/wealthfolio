@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
 import { searchActivities } from "@/commands/activity";
 import type { SwingActivity } from "@/types/swingfolio";
+import { useQuery } from "@tanstack/react-query";
 import { useSwingPreferences } from "./use-swing-preferences";
 
 export function useSwingActivities() {
@@ -10,8 +10,8 @@ export function useSwingActivities() {
     queryKey: ["swing-activities", preferences.selectedAccounts, preferences.includeDividends],
     queryFn: async (): Promise<SwingActivity[]> => {
       try {
-        // Use search API with filters for BUY/SELL activities, and optionally DIVIDEND
-        const activityTypes = ["BUY", "SELL"];
+        // Use search API with filters for BUY/SELL/ADD_HOLDING activities, and optionally DIVIDEND
+        const activityTypes = ["BUY", "SELL", "ADD_HOLDING"];
         if (preferences.includeDividends) {
           activityTypes.push("DIVIDEND");
         }

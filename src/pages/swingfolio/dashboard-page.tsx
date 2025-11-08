@@ -1,3 +1,9 @@
+import { AdaptiveCalendarView } from "@/components/swingfolio/adaptive-calendar-view";
+import { DistributionCharts } from "@/components/swingfolio/distribution-charts";
+import { EquityCurveChart } from "@/components/swingfolio/equity-curve-chart";
+import { OpenTradesTable } from "@/components/swingfolio/open-trades-table";
+import { useSwingDashboard } from "@/hooks/swingfolio/use-swing-dashboard";
+import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 import {
   AnimatedToggleGroup,
   Button,
@@ -15,12 +21,6 @@ import {
 } from "@wealthfolio/ui";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AdaptiveCalendarView } from "@/components/swingfolio/adaptive-calendar-view";
-import { DistributionCharts } from "@/components/swingfolio/distribution-charts";
-import { EquityCurveChart } from "@/components/swingfolio/equity-curve-chart";
-import { OpenTradesTable } from "@/components/swingfolio/open-trades-table";
-import { useSwingDashboard } from "@/hooks/swingfolio/use-swing-dashboard";
-import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 
 const periods = [
   { value: "1M" as const, label: "1M" },
@@ -67,11 +67,11 @@ export default function DashboardPage() {
   const { preferences } = useSwingPreferences();
 
   const handleNavigateToActivities = () => {
-    navigate("/swingfolio/activities");
+    navigate("/trading/activities");
   };
 
   const handleNavigateToSettings = () => {
-    navigate("/swingfolio/settings");
+    navigate("/trading/settings");
   };
 
   if (isLoading) {

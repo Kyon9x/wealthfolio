@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { PerformanceCalculator, TradeMatcher } from "@/lib/swingfolio";
 import type { Holding } from "@/lib/types";
-import type { SwingDashboardData, ClosedTrade, OpenPosition } from "@/types/swingfolio";
+import type { ClosedTrade, OpenPosition, SwingDashboardData } from "@/types/swingfolio";
+import { useQuery } from "@tanstack/react-query";
+import { endOfDay, startOfDay, startOfYear, subMonths, subYears } from "date-fns";
+import { useMemo } from "react";
+import { useCurrencyConversion } from "./use-currency-conversion";
+import { useHoldings } from "./use-holdings";
 import { useSwingActivities } from "./use-swing-activities";
 import { useSwingPreferences } from "./use-swing-preferences";
-import { useHoldings } from "./use-holdings";
-import { TradeMatcher, PerformanceCalculator } from "@/lib/swingfolio";
-import { useCurrencyConversion } from "./use-currency-conversion";
-import { startOfDay, endOfDay, startOfYear, subMonths, subYears } from "date-fns";
 
 type PeriodType = "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL";
 type ChartPeriodType = "daily" | "weekly" | "monthly";

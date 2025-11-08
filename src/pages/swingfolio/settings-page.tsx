@@ -1,3 +1,4 @@
+import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 import {
   Button,
   Card,
@@ -17,7 +18,6 @@ import {
   SelectValue,
 } from "@wealthfolio/ui";
 import { useNavigate } from "react-router-dom";
-import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 
 export default function SettingsPage() {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ export default function SettingsPage() {
         heading="Swingfolio Settings"
         text={pageDescription}
         actions={
-          <Button variant="outline" onClick={() => navigate("/swingfolio")}>
+          <Button variant="outline" onClick={() => navigate("/trading")}>
             <Icons.ArrowLeft className="mr-2 h-4 w-4" />
             Back to Dashboard
           </Button>

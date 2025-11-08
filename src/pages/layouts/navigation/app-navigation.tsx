@@ -15,6 +15,48 @@ export interface NavigationProps {
   addons?: NavLink[];
 }
 
+const staticNavigation: NavigationProps = {
+  primary: [
+    {
+      icon: <Icons.Dashboard className="size-6" />,
+      title: "Dashboard",
+      href: "/dashboard",
+    },
+    {
+      icon: <Icons.Holdings className="size-6" />,
+      title: "Holdings",
+      href: "/holdings",
+    },
+    {
+      icon: <Icons.Performance className="size-6" />,
+      title: "Performance",
+      href: "/performance",
+    },
+    {
+      icon: <Icons.Income className="size-6" />,
+      title: "Income",
+      href: "/income",
+    },
+    {
+      icon: <Icons.Activity className="size-6" />,
+      title: "Activities",
+      href: "/activities",
+    },
+    {
+      icon: <Icons.Swingfolio className="size-6" />,
+      title: "Trading",
+      href: "/trading",
+    },
+  ],
+  secondary: [
+    {
+      icon: <Icons.Settings className="size-6" />,
+      title: "Settings",
+      href: "/settings",
+    },
+  ],
+};
+
 export function useNavigation() {
   const { t } = useTranslation("common");
   const [dynamicItems, setDynamicItems] = useState<NavigationProps["primary"]>([]);
