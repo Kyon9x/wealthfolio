@@ -1,0 +1,28 @@
+{
+  "title": "Tài khoản",
+  "addAccount": "Thêm tài khoản",
+  "types": {
+    "SECURITIES": "Chứng khoán",
+    "BANK": "Ngân hàng",
+    "CRYPTO": "Tiền điện tử"
+  },
+  "form": {
+    "name": "Tên tài khoản",
+    "type": "Loại tài khoản",
+    "currency": "Tiền tệ",
+    "balance": "Số dư",
+    "group": "Nhóm",
+    "isDefault": "Đặt làm mặc định"
+  },
+  "table": {
+    "name": "Tên",
+    "type": "Loại",
+    "balance": "Số dư",
+    "currency": "Tiền tệ",
+    "performance": "Hiệu suất"
+  },
+  "empty": {
+    "title": "Chưa có tài khoản nào",
+    "description": "Tạo tài khoản để bắt đầu theo dõi đầu tư của bạn"
+  }
+}

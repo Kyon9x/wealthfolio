@@ -1,0 +1,40 @@
+{
+  "title": "Settings",
+  "appearance": {
+    "title": "Appearance",
+    "description": "Customize the look and feel of the application",
+    "theme": {
+      "label": "Theme",
+      "description": "Select your preferred theme for the application",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
+    "font": {
+      "label": "Font Family",
+      "description": "Choose the font family used throughout the interface",
+      "mono": "Monospace",
+      "sans": "Sans Serif"
+    },
+    "language": {
+      "label": "Language",
+      "description": "Select your preferred language for the application interface"
+    },
+    "menuBar": {
+      "label": "Show menu bar",
+      "description": "Toggle to display the application menu bar."
+    }
+  },
+  "accounts": {
+    "title": "Accounts",
+    "description": "Manage your investment accounts"
+  },
+  "general": {
+    "title": "General",
+    "description": "General application settings"
+  },
+  "about": {
+    "title": "About",
+    "description": "About Wealthfolio"
+  }
+}

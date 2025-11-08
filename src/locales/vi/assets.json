@@ -1,0 +1,30 @@
+{
+  "title": "Tài sản",
+  "search": "Tìm kiếm tài sản...",
+  "details": {
+    "overview": "Tổng quan",
+    "price": "Giá",
+    "change": "Thay đổi",
+    "volume": "Khối lượng",
+    "marketCap": "Vốn hóa thị trường",
+    "high": "Cao nhất",
+    "low": "Thấp nhất",
+    "open": "Mở cửa",
+    "close": "Đóng cửa"
+  },
+  "chart": {
+    "title": "Biểu đồ giá",
+    "period": {
+      "1D": "1 Ngày",
+      "1W": "1 Tuần",
+      "1M": "1 Tháng",
+      "3M": "3 Tháng",
+      "1Y": "1 Năm",
+      "ALL": "Tất cả"
+    }
+  },
+  "empty": {
+    "title": "Không tìm thấy tài sản",
+    "description": "Không thể tìm thấy tài sản được yêu cầu"
+  }
+}

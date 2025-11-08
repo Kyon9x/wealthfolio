@@ -1,0 +1,44 @@
+{
+  "title": "Hoạt động",
+  "addActivity": "Thêm hoạt động",
+  "importActivities": "Nhập hoạt động",
+  "types": {
+    "BUY": "Mua",
+    "SELL": "Bán",
+    "DIVIDEND": "Cổ tức",
+    "INTEREST": "Lãi",
+    "DEPOSIT": "Nạp tiền",
+    "WITHDRAWAL": "Rút tiền",
+    "TRANSFER_IN": "Chuyển đến",
+    "TRANSFER_OUT": "Chuyển đi",
+    "CONVERSION_IN": "Chuyển đổi vào",
+    "CONVERSION_OUT": "Chuyển đổi ra",
+    "FEE": "Phí",
+    "TAX": "Thuế",
+    "SPLIT": "Tách cổ phiếu"
+  },
+  "form": {
+    "type": "Loại hoạt động",
+    "date": "Ngày",
+    "account": "Tài khoản",
+    "symbol": "Mã",
+    "quantity": "Số lượng",
+    "unitPrice": "Đơn giá",
+    "fee": "Phí",
+    "currency": "Tiền tệ",
+    "comment": "Ghi chú"
+  },
+  "table": {
+    "date": "Ngày",
+    "type": "Loại",
+    "symbol": "Mã",
+    "quantity": "Số lượng",
+    "unitPrice": "Đơn giá",
+    "fee": "Phí",
+    "total": "Tổng"
+  },
+  "empty": {
+    "title": "Chưa có hoạt động nào",
+    "description": "Bắt đầu thêm hoạt động để theo dõi danh mục của bạn"
+  }
+}

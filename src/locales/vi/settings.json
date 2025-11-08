@@ -1,0 +1,40 @@
+{
+  "title": "Cài đặt",
+  "appearance": {
+    "title": "Giao diện",
+    "description": "Tùy chỉnh giao diện ứng dụng",
+    "theme": {
+      "label": "Chủ đề",
+      "description": "Chọn chủ đề ưa thích cho ứng dụng",
+      "light": "Sáng",
+      "dark": "Tối",
+      "system": "Hệ thống"
+    },
+    "font": {
+      "label": "Phông chữ",
+      "description": "Chọn phông chữ sử dụng trong giao diện",
+      "mono": "Monospace",
+      "sans": "Sans Serif"
+    },
+    "language": {
+      "label": "Ngôn ngữ",
+      "description": "Chọn ngôn ngữ ưa thích cho giao diện ứng dụng"
+    },
+    "menuBar": {
+      "label": "Hiển thị thanh menu",
+      "description": "Bật/tắt hiển thị thanh menu ứng dụng."
+    }
+  },
+  "accounts": {
+    "title": "Tài khoản",
+    "description": "Quản lý tài khoản đầu tư của bạn"
+  },
+  "general": {
+    "title": "Chung",
+    "description": "Cài đặt ứng dụng chung"
+  },
+  "about": {
+    "title": "Về ứng dụng",
+    "description": "Về Wealthfolio"
+  }
+}

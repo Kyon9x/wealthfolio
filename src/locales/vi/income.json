@@ -1,0 +1,31 @@
+{
+  "title": "Thu nhập",
+  "addIncome": "Thêm thu nhập",
+  "types": {
+    "dividend": "Cổ tức",
+    "interest": "Lãi",
+    "other": "Khác"
+  },
+  "form": {
+    "source": "Nguồn",
+    "amount": "Số tiền",
+    "date": "Ngày",
+    "type": "Loại",
+    "recurring": "Định kỳ"
+  },
+  "table": {
+    "date": "Ngày",
+    "source": "Nguồn",
+    "type": "Loại",
+    "amount": "Số tiền"
+  },
+  "summary": {
+    "total": "Tổng thu nhập",
+    "thisMonth": "Tháng này",
+    "thisYear": "Năm nay"
+  },
+  "empty": {
+    "title": "Chưa có thu nhập nào",
+    "description": "Theo dõi thu nhập đầu tư của bạn tại đây"
+  }
+}

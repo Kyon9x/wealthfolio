@@ -1,0 +1,24 @@
+{
+  "title": "Holdings",
+  "table": {
+    "symbol": "Symbol",
+    "name": "Name",
+    "quantity": "Quantity",
+    "averagePrice": "Average Price",
+    "currentPrice": "Current Price",
+    "marketValue": "Market Value",
+    "bookValue": "Book Value",
+    "gain": "Gain/Loss",
+    "gainPercent": "Gain/Loss %",
+    "allocation": "Allocation"
+  },
+  "filters": {
+    "all": "All Holdings",
+    "gains": "Gains",
+    "losses": "Losses"
+  },
+  "empty": {
+    "title": "No holdings yet",
+    "description": "Start adding activities to see your holdings"
+  }
+}

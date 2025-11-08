@@ -1,0 +1,31 @@
+{
+  "title": "Income",
+  "addIncome": "Add Income",
+  "types": {
+    "dividend": "Dividend",
+    "interest": "Interest",
+    "other": "Other"
+  },
+  "form": {
+    "source": "Source",
+    "amount": "Amount",
+    "date": "Date",
+    "type": "Type",
+    "recurring": "Recurring"
+  },
+  "table": {
+    "date": "Date",
+    "source": "Source",
+    "type": "Type",
+    "amount": "Amount"
+  },
+  "summary": {
+    "total": "Total Income",
+    "thisMonth": "This Month",
+    "thisYear": "This Year"
+  },
+  "empty": {
+    "title": "No income recorded",
+    "description": "Track your investment income here"
+  }
+}

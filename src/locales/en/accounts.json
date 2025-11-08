@@ -1,0 +1,28 @@
+{
+  "title": "Accounts",
+  "addAccount": "Add Account",
+  "types": {
+    "SECURITIES": "Securities",
+    "BANK": "Bank",
+    "CRYPTO": "Cryptocurrency"
+  },
+  "form": {
+    "name": "Account Name",
+    "type": "Account Type",
+    "currency": "Currency",
+    "balance": "Balance",
+    "group": "Group",
+    "isDefault": "Set as default"
+  },
+  "table": {
+    "name": "Name",
+    "type": "Type",
+    "balance": "Balance",
+    "currency": "Currency",
+    "performance": "Performance"
+  },
+  "empty": {
+    "title": "No accounts yet",
+    "description": "Create an account to start tracking your investments"
+  }
+}

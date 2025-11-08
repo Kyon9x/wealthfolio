@@ -1,0 +1,44 @@
+{
+  "title": "Activity",
+  "addActivity": "Add Activity",
+  "importActivities": "Import Activities",
+  "types": {
+    "BUY": "Buy",
+    "SELL": "Sell",
+    "DIVIDEND": "Dividend",
+    "INTEREST": "Interest",
+    "DEPOSIT": "Deposit",
+    "WITHDRAWAL": "Withdrawal",
+    "TRANSFER_IN": "Transfer In",
+    "TRANSFER_OUT": "Transfer Out",
+    "CONVERSION_IN": "Conversion In",
+    "CONVERSION_OUT": "Conversion Out",
+    "FEE": "Fee",
+    "TAX": "Tax",
+    "SPLIT": "Split"
+  },
+  "form": {
+    "type": "Activity Type",
+    "date": "Date",
+    "account": "Account",
+    "symbol": "Symbol",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "fee": "Fee",
+    "currency": "Currency",
+    "comment": "Comment"
+  },
+  "table": {
+    "date": "Date",
+    "type": "Type",
+    "symbol": "Symbol",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "fee": "Fee",
+    "total": "Total"
+  },
+  "empty": {
+    "title": "No activities yet",
+    "description": "Start adding activities to track your portfolio"
+  }
+}

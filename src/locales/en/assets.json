@@ -1,0 +1,30 @@
+{
+  "title": "Assets",
+  "search": "Search assets...",
+  "details": {
+    "overview": "Overview",
+    "price": "Price",
+    "change": "Change",
+    "volume": "Volume",
+    "marketCap": "Market Cap",
+    "high": "High",
+    "low": "Low",
+    "open": "Open",
+    "close": "Close"
+  },
+  "chart": {
+    "title": "Price Chart",
+    "period": {
+      "1D": "1 Day",
+      "1W": "1 Week",
+      "1M": "1 Month",
+      "3M": "3 Months",
+      "1Y": "1 Year",
+      "ALL": "All Time"
+    }
+  },
+  "empty": {
+    "title": "Asset not found",
+    "description": "The requested asset could not be found"
+  }
+}

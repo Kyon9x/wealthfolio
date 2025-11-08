@@ -1,0 +1,24 @@
+{
+  "title": "Danh mục đầu tư",
+  "table": {
+    "symbol": "Mã",
+    "name": "Tên",
+    "quantity": "Số lượng",
+    "averagePrice": "Giá trung bình",
+    "currentPrice": "Giá hiện tại",
+    "marketValue": "Giá trị thị trường",
+    "bookValue": "Giá trị sổ sách",
+    "gain": "Lãi/lỗ",
+    "gainPercent": "% Lãi/lỗ",
+    "allocation": "Phân bổ"
+  },
+  "filters": {
+    "all": "Tất cả",
+    "gains": "Lãi",
+    "losses": "Lỗ"
+  },
+  "empty": {
+    "title": "Chưa có danh mục đầu tư",
+    "description": "Bắt đầu thêm hoạt động để xem danh mục của bạn"
+  }
+}
