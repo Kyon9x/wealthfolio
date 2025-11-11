@@ -1,15 +1,10 @@
 {
   "activitySelector": {
     "heading": "Chọn Giao Dịch",
-    "description": "Chọn các hoạt động giao dịch để đưa vào phân tích danh mục swing của bạn",
+    "description": "Chọn các hoạt động giao dịch để đưa vào danh mục phân tích và theo dõi hiệu suất giao dịch của bạn",
     "backToDashboard": "Quay Lại",
     "saveSelection": "Lưu Lựa Chọn",
     "savingSettings": "Đang lưu cài đặt...",
-    "autoSelection": {
-      "title": "Tùy Chọn Tự Động",
-      "includeSwingTag": "Tự động bao gồm các hoạt động được gắn thẻ \"Swing\"",
-      "tagDescription": "Các hoạt động có \"swing\" trong bình luận sẽ được tự động bao gồm"
-    },
     "manualSelection": {
       "title": "Chọn Thủ Công",
       "selectedCount": "{{filtered}} trong {{total}} được chọn",
@@ -87,7 +82,7 @@
     },
     "charts": {
       "equityCurve": {
-        "title": "Đường Cong Vốn {{period}}",
+        "title": "Biểu đồ vốn {{period}}",
         "periodDisplay": "{{selectedPeriod}} → {{periodType}}"
       }
     },
@@ -97,24 +92,24 @@
       "positions": "vị thế"
     },
     "emptyState": {
-      "heading": "Chưa Chọn Hoạt Động Swing Trading",
-      "message": "Chọn các hoạt động MUA và BÁN để bắt đầu theo dõi hiệu suất swing trading của bạn",
+      "heading": "Chưa Chọn Hoạt Động Giao Dịch",
+      "message": "Chọn các hoạt động MUA và BÁN để bắt đầu theo dõi hiệu suất giao dịch của bạn",
       "button": "Chọn Giao Dịch"
     },
     "error": {
       "heading": "Không thể tải bảng điều khiển",
-      "message": "Không thể tải dữ liệu swing trading"
+      "message": "Không thể tải dữ liệu giao dịch"
     }
   },
   "settings": {
-    "heading": "Cài Đặt Swingfolio",
-    "description": "Cấu hình tùy chọn phân tích swing trading của bạn",
+    "heading": "Cài Đặt Giao Dịch",
+    "description": "Cấu hình tùy chọn phân tích giao dịch của bạn",
     "backToDashboard": "Quay Lại Bảng Điều Khiển",
     "savingSettings": "Đang lưu cài đặt...",
     "close": "Đóng",
     "autoSelection": {
       "title": "Tùy Chọn Tự Động",
-      "includeSwingTag": "Tự động bao gồm các hoạt động được gắn thẻ \"Swing\"",
+      "includeSwingTag": "Tự động bao gồm các hoạt động được gắn thẻ \"swing\"",
       "tagDescription": "Các hoạt động có \"swing\" trong bình luận sẽ được tự động bao gồm"
     },
     "tradeMatching": {
@@ -244,7 +239,7 @@
       },
       "emptyState": {
         "title": "Không Có Vị Thế Đang Mở",
-        "description": "Bạn không có vị thế swing trading đang mở. Mua một số chứng khoán để bắt đầu theo dõi."
+        "description": "Bạn không có vị thế giao dịch đang mở. Mua một số chứng khoán để bắt đầu theo dõi."
       }
     }
   }

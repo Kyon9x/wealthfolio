@@ -1,15 +1,10 @@
 {
   "activitySelector": {
     "heading": "Select Activities",
-    "description": "Choose which trading activities to include in your swing portfolio analysis",
-    "backToDashboard": "Back to Dashboard",
+    "description": "Choose which trading activities to include in your trading portfolio analysis",
+    "backToDashboard": "Back to Tradings",
     "saveSelection": "Save Selection",
     "savingSettings": "Saving settings...",
-    "autoSelection": {
-      "title": "Auto-Selection Options",
-      "includeSwingTag": "Automatically include activities tagged with \"Swing\"",
-      "tagDescription": "Activities with \"swing\" in their comment will be automatically included"
-    },
     "manualSelection": {
       "title": "Manual Selection",
       "selectedCount": "{{filtered}} of {{total}} selected",
@@ -97,24 +92,24 @@
       "positions": "positions"
     },
     "emptyState": {
-      "heading": "No Swing Trading Activities Selected",
-      "message": "Select BUY and SELL activities to start tracking your swing trading performance",
+      "heading": "No Trading Activities Selected",
+      "message": "Select BUY and SELL activities to start tracking your trading performance",
       "button": "Select Activities"
     },
     "error": {
       "heading": "Failed to load dashboard",
-      "message": "Unable to load swing trading data"
+      "message": "Unable to load trading data"
     }
   },
   "settings": {
-    "heading": "Swingfolio Settings",
-    "description": "Configure your swing trading analysis preferences",
+    "heading": "Trading Settings",
+    "description": "Configure your trading analysis preferences",
     "backToDashboard": "Back to Dashboard",
     "savingSettings": "Saving settings...",
     "close": "Close",
     "autoSelection": {
       "title": "Auto-Selection Options",
-      "includeSwingTag": "Automatically include activities tagged with \"Swing\"",
+      "includeSwingTag": "Automatically include activities tagged with \"swing\"",
       "tagDescription": "Activities with \"swing\" in their comment will be automatically included"
     },
     "tradeMatching": {
