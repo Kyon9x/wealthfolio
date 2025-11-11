@@ -21,6 +21,7 @@ import {
   YAxis,
 } from "@wealthfolio/ui/chart";
 import type { TradeDistribution } from "@/types/swingfolio";
+import { useTranslation } from "react-i18next";
 
 interface DistributionChartsProps {
   distribution: TradeDistribution;
@@ -28,6 +29,7 @@ interface DistributionChartsProps {
 }
 
 export function DistributionCharts({ distribution, currency }: DistributionChartsProps) {
+  const { t } = useTranslation("trading");
   // Prepare data for charts
   const symbolData = Object.entries(distribution.bySymbol)
     .map(([symbol, data]) => ({
@@ -74,7 +76,7 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
       {/* P/L by Symbol */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">P/L by Symbol</CardTitle>
+          <CardTitle className="text-lg">{t("components.distribution.plBySymbol.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {hasSymbolData ? (
@@ -119,7 +121,9 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
                           </>
                         );
                       }}
-                      labelFormatter={(label) => `Symbol: ${label}`}
+                      labelFormatter={(label) =>
+                        `${t("components.distribution.labels.symbol")}: ${label}`
+                      }
                     />
                   }
                 />
@@ -139,8 +143,8 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
               <EmptyPlaceholder
                 className="mx-auto flex max-w-[420px] items-center justify-center"
                 icon={<Icons.BarChart className="h-10 w-10" />}
-                title="No Symbol Data"
-                description="No completed trades in this period to analyze P/L by symbol. Switch to a different time period or wait for more trading activity."
+                title={t("components.distribution.plBySymbol.emptyTitle")}
+                description={t("components.distribution.plBySymbol.emptyDescription")}
               />
             </div>
           )}
@@ -150,7 +154,7 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
       {/* P/L by Holding Period */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-lg">P/L by Holding Period</CardTitle>
+          <CardTitle className="text-lg">{t("components.distribution.plByPeriod.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {hasHoldingPeriodData ? (
@@ -189,7 +193,7 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
                             />
                             <div className="flex flex-1 items-center justify-between gap-2">
                               <span className="text-muted-foreground">
-                                {name === "pl" ? "P/L" : name}
+                                {name === "pl" ? t("components.distribution.labels.pl") : name}
                               </span>
                               <span className="text-foreground font-mono font-medium tabular-nums">
                                 {formattedValue}
@@ -198,7 +202,9 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
                           </>
                         );
                       }}
-                      labelFormatter={(label) => `Period: ${label}`}
+                      labelFormatter={(label) =>
+                        `${t("components.distribution.labels.period")}: ${label}`
+                      }
                     />
                   }
                 />
@@ -218,8 +224,8 @@ export function DistributionCharts({ distribution, currency }: DistributionChart
               <EmptyPlaceholder
                 className="mx-auto flex max-w-[420px] items-center justify-center"
                 icon={<Icons.Clock className="h-10 w-10" />}
-                title="No Holding Period Data"
-                description="No completed trades in this period to analyze P/L by holding period. This chart shows performance across different time horizons."
+                title={t("components.distribution.plByPeriod.emptyTitle")}
+                description={t("components.distribution.plByPeriod.emptyDescription")}
               />
             </div>
           )}

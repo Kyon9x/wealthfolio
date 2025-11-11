@@ -15,6 +15,7 @@ import {
   isToday,
 } from "date-fns";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "react-i18next";
 
 interface AdaptiveCalendarViewProps {
   calendar: CalendarMonth[];
@@ -83,6 +84,7 @@ function DailyCalendarView({
   onYearChange,
   currency,
 }: Omit<AdaptiveCalendarViewProps, "selectedPeriod">) {
+  const { t } = useTranslation("trading");
   const currentMonth = selectedYear.getMonth();
   const currentYear = selectedYear.getFullYear();
 
@@ -133,12 +135,14 @@ function DailyCalendarView({
     <div>
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Daily Trading Calendar</h3>
+          <h3 className="text-lg font-semibold">{t("components.calendar.daily.title")}</h3>
           <div className="text-muted-foreground flex items-center gap-1 text-sm">
-            <span>Monthly P/L:</span>
+            <span>{t("components.calendar.daily.monthlyPL")}</span>
             <GainAmount value={monthlyPL} currency={currency} />
             <span>•</span>
-            <span>{monthlyTrades} trades</span>
+            <span>
+              {monthlyTrades} {t("components.calendar.daily.trades")}
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -167,7 +171,7 @@ function DailyCalendarView({
               {/* Header row */}
               <thead>
                 <tr className="border-border/50 border-b">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day, index) => (
+                  {["sun", "mon", "tue", "wed", "thu", "fri", "sat"].map((day, index) => (
                     <th
                       key={day}
                       className={cn(
@@ -175,7 +179,7 @@ function DailyCalendarView({
                         index < 6 && "border-border/50 border-r",
                       )}
                     >
-                      {day}
+                      {t(`components.calendar.daily.days.${day}` as any)}
                     </th>
                   ))}
                 </tr>
@@ -282,6 +286,7 @@ function YearlyCalendarView({
   onYearChange,
   currency,
 }: Omit<AdaptiveCalendarViewProps, "selectedPeriod">) {
+  const { t } = useTranslation("trading");
   // Filter calendar data for selected year
   const yearlyData = calendar.filter((cal) => cal.year === selectedYear.getFullYear());
 
@@ -310,12 +315,14 @@ function YearlyCalendarView({
     <div>
       <div className="mb-4 flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Yearly Trading Calendar</h3>
+          <h3 className="text-lg font-semibold">{t("components.calendar.yearly.title")}</h3>
           <div className="text-muted-foreground flex items-center gap-1 text-sm">
-            <span>Yearly P/L:</span>
+            <span>{t("components.calendar.yearly.yearlyPL")}</span>
             <GainAmount value={yearlyPL} currency={currency} />
             <span>•</span>
-            <span>{yearlyTrades} trades</span>
+            <span>
+              {yearlyTrades} {t("components.calendar.yearly.trades")}
+            </span>
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -360,19 +367,19 @@ function YearlyCalendarView({
                         );
                       }
 
-                      const monthNames = [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sep",
-                        "Oct",
-                        "Nov",
-                        "Dec",
+                      const monthKeys = [
+                        "jan",
+                        "feb",
+                        "mar",
+                        "apr",
+                        "may",
+                        "jun",
+                        "jul",
+                        "aug",
+                        "sep",
+                        "oct",
+                        "nov",
+                        "dec",
                       ];
                       const isCurrentMonth =
                         new Date().getMonth() + 1 === month.month &&
@@ -396,7 +403,9 @@ function YearlyCalendarView({
                           >
                             {/* Month Name */}
                             <div className="mb-2 text-center text-sm font-semibold">
-                              {monthNames[month.month - 1]}
+                              {t(
+                                `components.calendar.yearly.months.${monthKeys[month.month - 1]}` as any,
+                              )}
                             </div>
 
                             {/* P/L and Trade Count */}
@@ -405,11 +414,16 @@ function YearlyCalendarView({
                                 <>
                                   <GainAmount value={month.monthlyPL} currency={currency} />
                                   <div className="text-muted-foreground text-xs">
-                                    {month.totalTrades} trade{month.totalTrades !== 1 ? "s" : ""}
+                                    {month.totalTrades}{" "}
+                                    {month.totalTrades !== 1
+                                      ? t("components.calendar.yearly.trades")
+                                      : t("components.calendar.yearly.trade")}
                                   </div>
                                 </>
                               ) : (
-                                <div className="text-muted-foreground/60 text-xs">No trades</div>
+                                <div className="text-muted-foreground/60 text-xs">
+                                  {t("components.calendar.yearly.noTrades")}
+                                </div>
                               )}
                             </div>
                           </div>

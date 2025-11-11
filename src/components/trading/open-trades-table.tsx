@@ -13,20 +13,23 @@ import {
 } from "@wealthfolio/ui";
 import { TickerAvatar } from "./ticker-avatar";
 import type { OpenPosition } from "@/types/swingfolio";
+import { useTranslation } from "react-i18next";
 
 interface OpenTradesTableProps {
   positions: OpenPosition[];
 }
 
 export function OpenTradesTable({ positions }: OpenTradesTableProps) {
+  const { t } = useTranslation("trading");
+
   if (positions.length === 0) {
     return (
       <div className="flex h-[300px] w-full items-center justify-center">
         <EmptyPlaceholder
           className="mx-auto flex max-w-[400px] items-center justify-center"
           icon={<Icons.TrendingUp className="h-10 w-10" />}
-          title="No Open Positions"
-          description="You don't have any open swing trading positions at the moment. Closed trades will appear in your performance metrics."
+          title={t("components.openTrades.emptyState.title")}
+          description={t("components.openTrades.emptyState.description")}
         />
       </div>
     );
@@ -39,13 +42,21 @@ export function OpenTradesTable({ positions }: OpenTradesTableProps) {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[60px]"></TableHead>
-              <TableHead>Symbol</TableHead>
-              <TableHead className="text-right">Quantity</TableHead>
-              <TableHead className="text-right">Avg Cost</TableHead>
-              <TableHead className="text-right">Current</TableHead>
-              <TableHead className="text-right">P/L</TableHead>
-              <TableHead className="text-right">Return %</TableHead>
-              <TableHead className="text-center">Days</TableHead>
+              <TableHead>{t("components.openTrades.table.symbol")}</TableHead>
+              <TableHead className="text-right">
+                {t("components.openTrades.table.quantity")}
+              </TableHead>
+              <TableHead className="text-right">
+                {t("components.openTrades.table.avgCost")}
+              </TableHead>
+              <TableHead className="text-right">
+                {t("components.openTrades.table.current")}
+              </TableHead>
+              <TableHead className="text-right">{t("components.openTrades.table.pl")}</TableHead>
+              <TableHead className="text-right">
+                {t("components.openTrades.table.returnPercent")}
+              </TableHead>
+              <TableHead className="text-center">{t("components.openTrades.table.days")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>

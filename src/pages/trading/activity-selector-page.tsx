@@ -22,9 +22,11 @@ import {
 } from "@wealthfolio/ui";
 import { format } from "date-fns";
 import React, { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 export default function ActivitySelectorPage() {
+  const { t } = useTranslation("trading");
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedAccount, setSelectedAccount] = useState<string>("all");
@@ -109,19 +111,16 @@ export default function ActivitySelectorPage() {
     return <ActivitySelectorSkeleton />;
   }
 
-  const pageDescription =
-    "Choose which trading activities to include in your swing portfolio analysis";
-
   if (error || !activities) {
     return (
       <Page>
         <PageHeader
-          heading="Select Activities"
-          text={pageDescription}
+          heading={t("activitySelector.heading")}
+          text={t("activitySelector.description")}
           actions={
             <Button variant="outline" onClick={() => navigate("/trading")}>
               <Icons.ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Dashboard
+              {t("activitySelector.backToDashboard")}
             </Button>
           }
         />
@@ -129,11 +128,13 @@ export default function ActivitySelectorPage() {
           <div className="flex h-[calc(100vh-200px)] items-center justify-center">
             <div className="text-center">
               <Icons.AlertCircle className="text-muted-foreground mx-auto mb-4 h-12 w-12" />
-              <h3 className="mb-2 text-lg font-semibold">Failed to load activities</h3>
+              <h3 className="mb-2 text-lg font-semibold">{t("activitySelector.error.heading")}</h3>
               <p className="text-muted-foreground mb-4">
-                {error?.message || "Unable to load trading activities"}
+                {error?.message || t("activitySelector.error.message")}
               </p>
-              <Button onClick={() => navigate("/trading")}>Back to Dashboard</Button>
+              <Button onClick={() => navigate("/trading")}>
+                {t("activitySelector.error.backButton")}
+              </Button>
             </div>
           </div>
         </PageContent>
@@ -145,7 +146,7 @@ export default function ActivitySelectorPage() {
     <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
       <Button variant="outline" onClick={() => navigate("/trading")}>
         <Icons.ArrowLeft className="mr-2 h-4 w-4" />
-        Back to Dashboard
+        {t("activitySelector.backToDashboard")}
       </Button>
       <Button onClick={handleSaveSelection} disabled={isUpdating}>
         {isUpdating ? (
@@ -153,18 +154,22 @@ export default function ActivitySelectorPage() {
         ) : (
           <Icons.Save className="mr-2 h-4 w-4" />
         )}
-        Save Selection
+        {isUpdating ? t("activitySelector.savingSettings") : t("activitySelector.saveSelection")}
       </Button>
     </div>
   );
 
   return (
     <Page>
-      <PageHeader heading="Select Activities" text={pageDescription} actions={headerActions} />
+      <PageHeader
+        heading={t("activitySelector.heading")}
+        text={t("activitySelector.description")}
+        actions={headerActions}
+      />
       <PageContent>
         <Card>
           <CardHeader>
-            <CardTitle>Auto-Selection Options</CardTitle>
+            <CardTitle>{t("activitySelector.autoSelection.title")}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex items-center space-x-2">
@@ -174,11 +179,11 @@ export default function ActivitySelectorPage() {
                 onCheckedChange={handleToggleSwingTag}
               />
               <label htmlFor="swing-tag" className="text-sm font-medium">
-                Automatically include activities tagged with &quot;Swing&quot;
+                {t("activitySelector.autoSelection.includeSwingTag")}
               </label>
             </div>
             <p className="text-muted-foreground mt-2 text-xs">
-              Activities with &quot;swing&quot; in their comment will be automatically included
+              {t("activitySelector.autoSelection.tagDescription")}
             </p>
           </CardContent>
         </Card>
@@ -186,13 +191,18 @@ export default function ActivitySelectorPage() {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Manual Selection</span>
+              <span>{t("activitySelector.manualSelection.title")}</span>
               <div className="text-muted-foreground flex items-center gap-2 text-sm">
                 <span>
-                  {filteredSelectedCount} of {filteredActivities.length} selected
+                  {t("activitySelector.manualSelection.selectedCount", {
+                    filtered: filteredSelectedCount,
+                    total: filteredActivities.length,
+                  })}
                 </span>
                 <span>•</span>
-                <span>{selectedCount} total selected</span>
+                <span>
+                  {t("activitySelector.manualSelection.totalSelected", { count: selectedCount })}
+                </span>
               </div>
             </CardTitle>
           </CardHeader>
@@ -200,7 +210,7 @@ export default function ActivitySelectorPage() {
             <div className="flex flex-col gap-4 lg:flex-row">
               <div className="flex-1">
                 <Input
-                  placeholder="Search by symbol or name..."
+                  placeholder={t("activitySelector.manualSelection.searchPlaceholder")}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="max-w-sm"
@@ -209,10 +219,12 @@ export default function ActivitySelectorPage() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
                 <Select value={selectedAccount} onValueChange={setSelectedAccount}>
                   <SelectTrigger className="w-[200px]">
-                    <SelectValue placeholder="All Accounts" />
+                    <SelectValue placeholder={t("activitySelector.manualSelection.allAccounts")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Accounts</SelectItem>
+                    <SelectItem value="all">
+                      {t("activitySelector.manualSelection.allAccounts")}
+                    </SelectItem>
                     {accounts.map((account) => (
                       <SelectItem key={account.id} value={account.name}>
                         {account.name}
@@ -222,12 +234,14 @@ export default function ActivitySelectorPage() {
                 </Select>
                 <Select value={selectedType} onValueChange={setSelectedType}>
                   <SelectTrigger className="w-[150px]">
-                    <SelectValue placeholder="All Types" />
+                    <SelectValue placeholder={t("activitySelector.manualSelection.allTypes")} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="BUY">Buy</SelectItem>
-                    <SelectItem value="SELL">Sell</SelectItem>
+                    <SelectItem value="all">
+                      {t("activitySelector.manualSelection.allTypes")}
+                    </SelectItem>
+                    <SelectItem value="BUY">{t("activitySelector.types.buy")}</SelectItem>
+                    <SelectItem value="SELL">{t("activitySelector.types.sell")}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -235,10 +249,10 @@ export default function ActivitySelectorPage() {
 
             <div className="flex flex-wrap items-center gap-2">
               <Button variant="outline" size="sm" onClick={handleSelectAll}>
-                Select All Filtered
+                {t("activitySelector.manualSelection.selectAllFiltered")}
               </Button>
               <Button variant="outline" size="sm" onClick={handleDeselectAll}>
-                Deselect All Filtered
+                {t("activitySelector.manualSelection.deselectAllFiltered")}
               </Button>
             </div>
 
@@ -262,13 +276,13 @@ export default function ActivitySelectorPage() {
                           }}
                         />
                       </th>
-                      <th className="p-3 text-left">Date</th>
-                      <th className="p-3 text-left">Type</th>
-                      <th className="p-3 text-left">Symbol</th>
-                      <th className="p-3 text-left">Quantity</th>
-                      <th className="p-3 text-left">Price</th>
-                      <th className="p-3 text-left">Account</th>
-                      <th className="p-3 text-left">Tags</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.date")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.type")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.symbol")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.quantity")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.price")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.account")}</th>
+                      <th className="p-3 text-left">{t("activitySelector.table.tags")}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -310,12 +324,12 @@ export default function ActivitySelectorPage() {
                           <div className="flex gap-1">
                             {activity.hasSwingTag && (
                               <Badge variant="outline" className="text-xs">
-                                Swing
+                                {t("activitySelector.table.tagSwing")}
                               </Badge>
                             )}
                             {activity.isSelected && (
                               <Badge variant="default" className="text-xs">
-                                Selected
+                                {t("activitySelector.table.tagSelected")}
                               </Badge>
                             )}
                           </div>
@@ -329,7 +343,7 @@ export default function ActivitySelectorPage() {
 
             {filteredActivities.length === 0 && (
               <div className="text-muted-foreground py-8 text-center">
-                No activities match your current filters
+                {t("activitySelector.emptyState")}
               </div>
             )}
           </CardContent>

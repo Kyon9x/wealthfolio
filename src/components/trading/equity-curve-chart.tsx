@@ -11,6 +11,7 @@ import {
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, XAxis, YAxis } from "@wealthfolio/ui/chart";
 import { format, parseISO } from "date-fns";
 import type { EquityPoint } from "@/types/swingfolio";
+import { useTranslation } from "react-i18next";
 
 interface EquityCurveChartProps {
   data: EquityPoint[];
@@ -24,6 +25,7 @@ export function EquityCurveChart({
   currency,
   periodType = "monthly",
 }: EquityCurveChartProps) {
+  const { t } = useTranslation("trading");
   // Transform data for chart - calculate period P/L from cumulative values
   const chartData = data.map((point, index) => {
     const prevCumulative = index > 0 ? data[index - 1].cumulativeRealizedPL : 0;
@@ -46,14 +48,13 @@ export function EquityCurveChart({
         <EmptyPlaceholder
           className="mx-auto flex max-w-[420px] items-center justify-center"
           icon={<Icons.TrendingUp className="h-10 w-10" />}
-          title="No data available"
-          description="There is no equity curve data for selected period. Try selecting a different time range or check selected activities."
+          title={t("components.equityCurve.emptyState.title")}
+          description={t("components.equityCurve.emptyState.description")}
         />
       </div>
     );
   }
 
-  const periodLabel = periodType === "daily" ? "Daily" : "Monthly";
   const dateFormat = periodType === "daily" ? "MMM dd" : "MMM yy";
   const tooltipDateFormat = periodType === "daily" ? "MMMM dd, yyyy" : "MMMM yyyy";
 
@@ -62,11 +63,14 @@ export function EquityCurveChart({
       <ChartContainer
         config={{
           periodPL: {
-            label: `${periodLabel} P/L`,
+            label:
+              periodType === "daily"
+                ? t("components.equityCurve.labels.dailyPL")
+                : t("components.equityCurve.labels.monthlyPL"),
             color: "var(--chart-1)",
           },
           cumulativeRealizedPL: {
-            label: "Cumulative Equity",
+            label: t("components.equityCurve.labels.cumulativeEquity"),
             color: "var(--primary)",
           },
         }}
@@ -102,9 +106,11 @@ export function EquityCurveChart({
                       <div className="flex flex-1 items-center justify-between">
                         <span className="text-muted-foreground">
                           {name === "periodPL"
-                            ? `${periodLabel} P/L`
+                            ? periodType === "daily"
+                              ? t("components.equityCurve.labels.dailyPL")
+                              : t("components.equityCurve.labels.monthlyPL")
                             : name === "cumulativeRealizedPL"
-                              ? "Cumulative Equity"
+                              ? t("components.equityCurve.labels.cumulativeEquity")
                               : name}
                         </span>
                         <span className="text-foreground ml-2 font-mono font-medium tabular-nums">

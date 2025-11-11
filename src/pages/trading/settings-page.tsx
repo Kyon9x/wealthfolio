@@ -17,9 +17,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@wealthfolio/ui";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
 export default function SettingsPage() {
+  const { t } = useTranslation("trading");
   const navigate = useNavigate();
   const { preferences, updatePreferences, isUpdating } = useSwingPreferences();
 
@@ -39,17 +41,15 @@ export default function SettingsPage() {
     updatePreferences({ includeDividends: checked });
   };
 
-  const pageDescription = "Configure your swing trading analysis preferences";
-
   return (
     <Page>
       <PageHeader
-        heading="Swingfolio Settings"
-        text={pageDescription}
+        heading={t("settings.heading")}
+        text={t("settings.description")}
         actions={
           <Button variant="outline" onClick={() => navigate("/trading")}>
             <Icons.ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Dashboard
+            {t("settings.backToDashboard")}
           </Button>
         }
       />
@@ -57,28 +57,29 @@ export default function SettingsPage() {
       <PageContent className="max-w-2xl">
         <Card>
           <CardHeader>
-            <CardTitle>Trade Matching</CardTitle>
+            <CardTitle>{t("settings.tradeMatching.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="lot-method">Lot Matching Method</Label>
+              <Label htmlFor="lot-method">{t("settings.tradeMatching.lotMethod")}</Label>
               <Select value={preferences.lotMatchingMethod} onValueChange={handleLotMethodChange}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="FIFO">FIFO (First In, First Out)</SelectItem>
-                  <SelectItem value="LIFO">LIFO (Last In, First Out)</SelectItem>
-                  <SelectItem value="AVERAGE">Average Cost</SelectItem>
+                  <SelectItem value="FIFO">{t("settings.tradeMatching.fifo")}</SelectItem>
+                  <SelectItem value="LIFO">{t("settings.tradeMatching.lifo")}</SelectItem>
+                  <SelectItem value="AVERAGE">{t("settings.tradeMatching.average")}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-muted-foreground mt-1 text-xs">
-                Method used to match buy and sell orders for P/L calculation:
+                {t("settings.tradeMatching.description")}
                 <br />
-                • FIFO: Matches oldest purchases first
+                {t("settings.tradeMatching.fifoDesc")}
                 <br />
-                • LIFO: Matches newest purchases first
-                <br />• Average Cost: Uses weighted average price of all purchases
+                {t("settings.tradeMatching.lifoDesc")}
+                <br />
+                {t("settings.tradeMatching.averageDesc")}
               </p>
             </div>
           </CardContent>
@@ -86,11 +87,11 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Display Settings</CardTitle>
+            <CardTitle>{t("settings.displaySettings.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <Label htmlFor="default-range">Default Date Range</Label>
+              <Label htmlFor="default-range">{t("settings.displaySettings.defaultRange")}</Label>
               <Select
                 value={preferences.defaultDateRange}
                 onValueChange={handleDefaultDateRangeChange}
@@ -99,16 +100,16 @@ export default function SettingsPage() {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="1M">1 Month</SelectItem>
-                  <SelectItem value="3M">3 Months</SelectItem>
-                  <SelectItem value="6M">6 Months</SelectItem>
-                  <SelectItem value="YTD">Year to Date</SelectItem>
-                  <SelectItem value="1Y">1 Year</SelectItem>
-                  <SelectItem value="ALL">All Time</SelectItem>
+                  <SelectItem value="1M">{t("settings.displaySettings.1M")}</SelectItem>
+                  <SelectItem value="3M">{t("settings.displaySettings.3M")}</SelectItem>
+                  <SelectItem value="6M">{t("settings.displaySettings.6M")}</SelectItem>
+                  <SelectItem value="YTD">{t("settings.displaySettings.YTD")}</SelectItem>
+                  <SelectItem value="1Y">{t("settings.displaySettings.1Y")}</SelectItem>
+                  <SelectItem value="ALL">{t("settings.displaySettings.ALL")}</SelectItem>
                 </SelectContent>
               </Select>
               <p className="text-muted-foreground mt-1 text-xs">
-                Default time period when opening dashboard
+                {t("settings.displaySettings.description")}
               </p>
             </div>
           </CardContent>
@@ -116,7 +117,7 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Calculation Settings</CardTitle>
+            <CardTitle>{t("settings.calculationSettings.title")}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center space-x-2">
@@ -125,10 +126,10 @@ export default function SettingsPage() {
                 checked={preferences.includeFees}
                 onCheckedChange={handleIncludeFeesChange}
               />
-              <Label htmlFor="include-fees">Include fees in P/L calculations</Label>
+              <Label htmlFor="include-fees">{t("settings.calculationSettings.includeFees")}</Label>
             </div>
             <p className="text-muted-foreground text-xs">
-              When enabled, trading fees will be subtracted from realized P/L
+              {t("settings.calculationSettings.feesDescription")}
             </p>
 
             <div className="flex items-center space-x-2">
@@ -137,10 +138,12 @@ export default function SettingsPage() {
                 checked={preferences.includeDividends}
                 onCheckedChange={handleIncludeDividendsChange}
               />
-              <Label htmlFor="include-dividends">Include dividends in performance</Label>
+              <Label htmlFor="include-dividends">
+                {t("settings.calculationSettings.includeDividends")}
+              </Label>
             </div>
             <p className="text-muted-foreground text-xs">
-              When enabled, dividend payments will be included in total returns
+              {t("settings.calculationSettings.dividendsDescription")}
             </p>
           </CardContent>
         </Card>
@@ -148,7 +151,7 @@ export default function SettingsPage() {
         {isUpdating && (
           <div className="text-muted-foreground flex items-center gap-2 text-sm">
             <Icons.Spinner className="h-4 w-4 animate-spin" />
-            Saving settings...
+            {t("settings.savingSettings")}
           </div>
         )}
       </PageContent>

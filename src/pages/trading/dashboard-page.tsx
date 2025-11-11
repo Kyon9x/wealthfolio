@@ -1,7 +1,7 @@
-import { AdaptiveCalendarView } from "@/components/swingfolio/adaptive-calendar-view";
-import { DistributionCharts } from "@/components/swingfolio/distribution-charts";
-import { EquityCurveChart } from "@/components/swingfolio/equity-curve-chart";
-import { OpenTradesTable } from "@/components/swingfolio/open-trades-table";
+import { AdaptiveCalendarView } from "@/components/trading/adaptive-calendar-view";
+import { DistributionCharts } from "@/components/trading/distribution-charts";
+import { EquityCurveChart } from "@/components/trading/equity-curve-chart";
+import { OpenTradesTable } from "@/components/trading/open-trades-table";
 import { useSwingDashboard } from "@/hooks/swingfolio/use-swing-dashboard";
 import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
 import {
@@ -20,43 +20,62 @@ import {
   Skeleton,
 } from "@wealthfolio/ui";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
-const periods = [
-  { value: "1M" as const, label: "1M" },
-  { value: "3M" as const, label: "3M" },
-  { value: "6M" as const, label: "6M" },
-  { value: "YTD" as const, label: "YTD" },
-  { value: "1Y" as const, label: "1Y" },
-  { value: "ALL" as const, label: "ALL" },
-];
-
 // Chart period type is now automatically determined based on selected period
-const getChartPeriodDisplay = (period: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL") => {
+const getChartPeriodDisplay = (
+  period: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any,
+) => {
   switch (period) {
     case "1M":
-      return { type: "Daily", description: "Daily P/L and cumulative equity performance" };
+      return {
+        type: t("dashboard.chartPeriod.daily"),
+        description: t("dashboard.chartPeriod.dailyDescription"),
+      };
     case "3M":
-      return { type: "Weekly", description: "Weekly P/L and cumulative equity performance" };
+      return {
+        type: t("dashboard.chartPeriod.weekly"),
+        description: t("dashboard.chartPeriod.weeklyDescription"),
+      };
     default:
-      return { type: "Monthly", description: "Monthly P/L and cumulative equity performance" };
+      return {
+        type: t("dashboard.chartPeriod.monthly"),
+        description: t("dashboard.chartPeriod.monthlyDescription"),
+      };
   }
 };
 
 const PeriodSelector: React.FC<{
   selectedPeriod: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL";
   onPeriodSelect: (period: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL") => void;
-}> = ({ selectedPeriod, onPeriodSelect }) => (
-  <AnimatedToggleGroup
-    items={periods}
-    value={selectedPeriod}
-    onValueChange={onPeriodSelect}
-    variant="secondary"
-    size="sm"
-  />
-);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  t: any;
+}> = ({ selectedPeriod, onPeriodSelect, t }) => {
+  const periods = [
+    { value: "1M" as const, label: t("dashboard.periods.1M") },
+    { value: "3M" as const, label: t("dashboard.periods.3M") },
+    { value: "6M" as const, label: t("dashboard.periods.6M") },
+    { value: "YTD" as const, label: t("dashboard.periods.YTD") },
+    { value: "1Y" as const, label: t("dashboard.periods.1Y") },
+    { value: "ALL" as const, label: t("dashboard.periods.ALL") },
+  ];
+
+  return (
+    <AnimatedToggleGroup
+      items={periods}
+      value={selectedPeriod}
+      onValueChange={onPeriodSelect}
+      variant="secondary"
+      size="sm"
+    />
+  );
+};
 
 export default function DashboardPage() {
+  const { t } = useTranslation("trading");
   const navigate = useNavigate();
   const [selectedPeriod, setSelectedPeriod] = useState<"1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL">(
     "YTD",
@@ -81,16 +100,18 @@ export default function DashboardPage() {
   if (error || !dashboardData) {
     return (
       <Page>
-        <PageHeader heading="Trading Dashboard" />
+        <PageHeader heading={t("dashboard.heading")} />
         <PageContent>
           <div className="flex h-[calc(100vh-200px)] items-center justify-center">
             <div className="px-4 text-center">
               <Icons.AlertCircle className="text-muted-foreground mx-auto mb-4 h-10 w-10 sm:h-12 sm:w-12" />
-              <h3 className="mb-2 text-base font-semibold sm:text-lg">Failed to load dashboard</h3>
+              <h3 className="mb-2 text-base font-semibold sm:text-lg">
+                {t("dashboard.error.heading")}
+              </h3>
               <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-                {error?.message || "Unable to load swing trading data"}
+                {error?.message || t("dashboard.error.message")}
               </p>
-              <Button onClick={() => refetch()}>Try Again</Button>
+              <Button onClick={() => refetch()}>{t("dashboard.tryAgain")}</Button>
             </div>
           </div>
         </PageContent>
@@ -105,20 +126,20 @@ export default function DashboardPage() {
   if (!hasSelectedActivities) {
     return (
       <Page>
-        <PageHeader heading="Trading Dashboard" />
+        <PageHeader heading={t("dashboard.heading")} />
         <PageContent>
           <div className="flex h-[calc(100vh-200px)] items-center justify-center">
             <div className="px-4 text-center">
               <Icons.BarChart className="text-muted-foreground mx-auto mb-4 h-10 w-10 sm:h-12 sm:w-12" />
               <h3 className="mb-2 text-base font-semibold sm:text-lg">
-                No Swing Trading Activities Selected
+                {t("dashboard.emptyState.heading")}
               </h3>
               <p className="text-muted-foreground mb-4 text-sm sm:text-base">
-                Select BUY and SELL activities to start tracking your swing trading performance
+                {t("dashboard.emptyState.message")}
               </p>
               <Button onClick={handleNavigateToActivities} className="mx-auto">
                 <Icons.Plus className="mr-2 h-4 w-4" />
-                Select Activities
+                {t("dashboard.emptyState.button")}
               </Button>
             </div>
           </div>
@@ -144,14 +165,14 @@ export default function DashboardPage() {
 
   const headerActions = (
     <>
-      <PeriodSelector selectedPeriod={selectedPeriod} onPeriodSelect={setSelectedPeriod} />
+      <PeriodSelector selectedPeriod={selectedPeriod} onPeriodSelect={setSelectedPeriod} t={t} />
       <Button
         variant="outline"
         className="hidden rounded-full sm:inline-flex"
         onClick={handleNavigateToActivities}
       >
         <Icons.ListChecks className="mr-2 h-4 w-4" />
-        <span>Select Activities</span>
+        <span>{t("dashboard.selectActivities")}</span>
       </Button>
       <Button
         variant="outline"
@@ -176,7 +197,7 @@ export default function DashboardPage() {
 
   return (
     <Page>
-      <PageHeader heading="Trading Dashboard" actions={headerActions} />
+      <PageHeader heading={t("dashboard.heading")} actions={headerActions} />
 
       <PageContent>
         <div className="space-y-4 sm:space-y-6">
@@ -188,7 +209,7 @@ export default function DashboardPage() {
               className={`${metrics.totalPL >= 0 ? "border-success/10 bg-success/10" : "border-destructive/10 bg-destructive/10"}`}
             >
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pt-4 pb-3">
-                <CardTitle className="text-sm font-medium">P/L</CardTitle>
+                <CardTitle className="text-sm font-medium">{t("dashboard.kpi.pl.title")}</CardTitle>
                 <GainAmount
                   className="text-xl font-bold sm:text-2xl"
                   value={metrics.totalPL}
@@ -200,7 +221,7 @@ export default function DashboardPage() {
                 <div className="space-y-2 pt-2">
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground text-xs">
-                      Realized ({metrics.totalTrades} trades)
+                      {t("dashboard.kpi.pl.realized", { count: metrics.totalTrades })}
                     </span>
                     <div className="flex items-center gap-2">
                       <GainAmount
@@ -213,7 +234,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground text-xs">
-                      Unrealized ({metrics.openPositions} open)
+                      {t("dashboard.kpi.pl.unrealized", { count: metrics.openPositions })}
                     </span>
                     <div className="flex items-center gap-2">
                       <GainAmount
@@ -231,13 +252,17 @@ export default function DashboardPage() {
             {/* Widget 2: Core Performance */}
             <Card className="border-blue-500/10 bg-blue-500/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Core Performance</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {t("dashboard.kpi.corePerformance.title")}
+                </CardTitle>
                 <Icons.CheckCircle className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Win Rate</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.corePerformance.winRate")}
+                    </span>
                     <GainPercent
                       value={metrics.winRate}
                       className="text-sm font-semibold"
@@ -245,7 +270,9 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Avg Win</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.corePerformance.avgWin")}
+                    </span>
                     <GainAmount
                       value={metrics.averageWin}
                       currency={metrics.currency}
@@ -254,7 +281,9 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Avg Loss</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.corePerformance.avgLoss")}
+                    </span>
                     <GainAmount
                       value={-metrics.averageLoss}
                       currency={metrics.currency}
@@ -263,7 +292,9 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Total Trades</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.corePerformance.totalTrades")}
+                    </span>
                     <span className="text-sm font-semibold">{metrics.totalTrades}</span>
                   </div>
                 </div>
@@ -273,13 +304,17 @@ export default function DashboardPage() {
             {/* Widget 3: Analytics & Ratios */}
             <Card className="border-purple-500/10 bg-purple-500/10">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Analytics & Ratios</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {t("dashboard.kpi.analytics.title")}
+                </CardTitle>
                 <Icons.BarChart className="text-muted-foreground h-4 w-4" />
               </CardHeader>
               <CardContent>
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Expectancy</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.analytics.expectancy")}
+                    </span>
                     <GainAmount
                       value={metrics.expectancy}
                       currency={metrics.currency}
@@ -288,7 +323,9 @@ export default function DashboardPage() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Profit Factor</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.analytics.profitFactor")}
+                    </span>
                     <span className="text-sm font-semibold">
                       {metrics.profitFactor === Number.POSITIVE_INFINITY
                         ? "∞"
@@ -296,9 +333,12 @@ export default function DashboardPage() {
                     </span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">Avg Hold Time</span>
+                    <span className="text-muted-foreground text-xs">
+                      {t("dashboard.kpi.analytics.avgHoldTime")}
+                    </span>
                     <span className="text-sm font-semibold">
-                      {metrics.averageHoldingDays.toFixed(1)} days
+                      {metrics.averageHoldingDays.toFixed(1)}{" "}
+                      {t("dashboard.kpi.analytics.daysUnit")}
                     </span>
                   </div>
                 </div>
@@ -314,14 +354,19 @@ export default function DashboardPage() {
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                   <div>
                     <CardTitle className="text-base sm:text-lg">
-                      {getChartPeriodDisplay(selectedPeriod).type} Equity Curve
+                      {t("dashboard.charts.equityCurve.title", {
+                        period: getChartPeriodDisplay(selectedPeriod, t).type,
+                      })}
                     </CardTitle>
                     <p className="text-muted-foreground text-xs sm:text-sm">
-                      {getChartPeriodDisplay(selectedPeriod).description}
+                      {getChartPeriodDisplay(selectedPeriod, t).description}
                     </p>
                   </div>
                   <div className="bg-secondary text-muted-foreground self-start rounded-full px-2 py-1 text-xs whitespace-nowrap sm:self-auto">
-                    {selectedPeriod} → {getChartPeriodDisplay(selectedPeriod).type}
+                    {t("dashboard.charts.equityCurve.periodDisplay", {
+                      selectedPeriod: selectedPeriod,
+                      periodType: getChartPeriodDisplay(selectedPeriod, t).type,
+                    })}
                   </div>
                 </div>
               </CardHeader>
@@ -355,9 +400,14 @@ export default function DashboardPage() {
           {/* Open Positions - Full Width on Mobile */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-base sm:text-lg">Open Positions</CardTitle>
+              <CardTitle className="text-base sm:text-lg">
+                {t("dashboard.openPositions.title")}
+              </CardTitle>
               <span className="text-muted-foreground text-sm">
-                {openPositions.length} {openPositions.length === 1 ? "position" : "positions"}
+                {openPositions.length}{" "}
+                {openPositions.length === 1
+                  ? t("dashboard.openPositions.position")
+                  : t("dashboard.openPositions.positions")}
               </span>
             </CardHeader>
             <CardContent className="px-2 sm:px-6">

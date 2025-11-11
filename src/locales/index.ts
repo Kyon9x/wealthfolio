@@ -14,6 +14,7 @@ import enAssets from "./en/assets.json";
 import enErrors from "./en/errors.json";
 import enOnboarding from "./en/onboarding.json";
 import enPerformance from "./en/performance.json";
+import enTrading from "./en/trading.json";
 
 // Import Vietnamese translations
 import viCommon from "./vi/common.json";
@@ -28,6 +29,7 @@ import viAssets from "./vi/assets.json";
 import viErrors from "./vi/errors.json";
 import viOnboarding from "./vi/onboarding.json";
 import viPerformance from "./vi/performance.json";
+import viTrading from "./vi/trading.json";
 
 export const resources = {
   en: {
@@ -43,6 +45,7 @@ export const resources = {
     errors: enErrors,
     onboarding: enOnboarding,
     performance: enPerformance,
+    trading: enTrading,
   },
   vi: {
     common: viCommon,
@@ -57,6 +60,7 @@ export const resources = {
     errors: viErrors,
     onboarding: viOnboarding,
     performance: viPerformance,
+    trading: viTrading,
   },
 } as const;
 
@@ -78,6 +82,7 @@ i18n.use(initReactI18next).init({
     "errors",
     "onboarding",
     "performance",
+    "trading",
   ],
   interpolation: {
     escapeValue: false, // React already escapes
