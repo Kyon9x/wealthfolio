@@ -22,5 +22,17 @@
   "error": {
     "title": "Error calculating performance data"
   },
-  "calculating": "Calculating..."
+  "calculating": "Calculating...",
+  "benchmarkSelector": {
+    "title": "Add Benchmark",
+    "selectTitle": "Select Benchmark",
+    "description": "Choose a benchmark or search for any symbol",
+    "searchPlaceholder": "Search benchmarks or any symbol...",
+    "searching": "Searching...",
+    "noResults": "No benchmarks or symbols found.",
+    "errorSearching": "Error searching for symbols. Please try again.",
+    "groups": {
+      "searchResults": "Search Results"
+    }
+  }
 }
