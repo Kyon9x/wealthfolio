@@ -35,7 +35,46 @@
     "unitPrice": "Unit Price",
     "fee": "Fee",
     "currency": "Currency",
-    "comment": "Comment"
+    "comment": "Comment",
+    "updateActivity": "Update Activity",
+    "updateDescription": "Update the details of your transaction",
+    "addDescription": "Record a new transaction in your account.",
+    "learnMore": "Learn more",
+    "pleaseReviewEntry": "Please Review Your Entry",
+    "transactionType": "Transaction Type",
+    "invalidValue": "Invalid value",
+    "toAccountRequired": "To Account is required for transfers",
+    "toAccountDifferent": "To Account must be different from From Account",
+    "tabs": {
+      "trade": "Trade",
+      "holdings": "Holdings",
+      "cash": "Cash",
+      "income": "Income",
+      "other": "Other"
+    },
+    "cancel": "Cancel"
+  },
+  "delete": {
+    "title": "Are you sure you want to delete this activity?",
+    "description": "This action cannot be undone.",
+    "cancel": "Cancel",
+    "confirm": "Delete"
+  },
+  "pagination": {
+    "loading": "Loading…",
+    "loadMore": "Load more...",
+    "activitiesCount": "{{fetched}} / {{total}} activities"
+  },
+  "controls": {
+    "searchPlaceholder": "Search...",
+    "clearSearch": "Clear search",
+    "filterAccount": "Account",
+    "filterType": "Type",
+    "reset": "Reset",
+    "loading": "Loading…",
+    "activitiesCount": "{{fetched}} / {{total}} activities",
+    "viewMode": "View mode",
+    "editMode": "Edit mode"
   },
   "table": {
     "date": "Date",

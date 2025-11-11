@@ -35,7 +35,46 @@
     "unitPrice": "Đơn giá",
     "fee": "Phí",
     "currency": "Tiền tệ",
-    "comment": "Ghi chú"
+    "comment": "Ghi chú",
+    "updateActivity": "Cập nhật hoạt động",
+    "updateDescription": "Cập nhật chi tiết giao dịch của bạn",
+    "addDescription": "Ghi lại một giao dịch mới trong tài khoản của bạn.",
+    "learnMore": "Tìm hiểu thêm",
+    "pleaseReviewEntry": "Vui lòng xem lại mục nhập của bạn",
+    "transactionType": "Loại giao dịch",
+    "invalidValue": "Giá trị không hợp lệ",
+    "toAccountRequired": "Tài khoản đích là bắt buộc cho chuyển khoản",
+    "toAccountDifferent": "Tài khoản đích phải khác với tài khoản nguồn",
+    "tabs": {
+      "trade": "Giao dịch",
+      "holdings": "Tài sản",
+      "cash": "Tiền mặt",
+      "income": "Thu nhập",
+      "other": "Khác"
+    },
+    "cancel": "Hủy"
+  },
+  "delete": {
+    "title": "Bạn có chắc chắn muốn xóa hoạt động này?",
+    "description": "Hành động này không thể hoàn tác.",
+    "cancel": "Hủy",
+    "confirm": "Xóa"
+  },
+  "pagination": {
+    "loading": "Đang tải…",
+    "loadMore": "Tải thêm...",
+    "activitiesCount": "{{fetched}} / {{total}} hoạt động"
+  },
+  "controls": {
+    "searchPlaceholder": "Tìm kiếm...",
+    "clearSearch": "Xóa tìm kiếm",
+    "filterAccount": "Tài khoản",
+    "filterType": "Loại",
+    "reset": "Đặt lại",
+    "loading": "Đang tải…",
+    "activitiesCount": "{{fetched}} / {{total}} hoạt động",
+    "viewMode": "Chế độ xem",
+    "editMode": "Chế độ chỉnh sửa"
   },
   "table": {
     "date": "Ngày",
