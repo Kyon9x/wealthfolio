@@ -84,7 +84,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     name,
   ) => {
     const formattedValue = formatPercent(Number(value));
-    return [formattedValue + " - ", name.toString()];
+    return [formattedValue, name.toString()];
   };
 
   const tooltipLabelFormatter = (label: string) => format(parseISO(label), "PPP");

@@ -310,17 +310,15 @@ const TickerSearchInput = forwardRef<HTMLButtonElement, SearchProps>(
                       </div>
                     </div>
                   ) : (
-                    <div className="p-4 text-sm">No symbols found</div>
+                    <div className="p-4 text-sm">{t("datagrid.noSymbolsFound")}</div>
                   )}
                 </>
               )}
 
               {isError && (
                 <div className="text-destructive p-4 text-sm">
-                  <div>Something went wrong</div>
-                  <div className="mt-1 text-xs opacity-70">
-                    Try again or check your market data provider settings.
-                  </div>
+                  <div>{t("datagrid.loadFailed")}</div>
+                  <div className="mt-1 text-xs opacity-70">{t("datagrid.loadFailedHint")}</div>
                 </div>
               )}
 

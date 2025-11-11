@@ -289,6 +289,7 @@
     "searchSymbol": "Tìm kiếm mã hoặc công ty...",
     "loading": "Đang tải...",
     "loadFailed": "Không thể tải mã chứng khoán.",
+    "loadFailedHint": "Thử lại hoặc kiểm tra cài đặt nhà cung cấp dữ liệu thị trường.",
     "noSymbolsFound": "Không tìm thấy mã chứng khoán.",
     "addManualAsset": "Thêm tài sản thủ công mới",
     "createManualHolding": "Tạo \"{{symbol}}\" dưới dạng tài sản thủ công",
