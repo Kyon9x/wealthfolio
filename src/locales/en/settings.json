@@ -440,5 +440,82 @@
         }
       }
     }
+  },
+  "exports": {
+    "page": {
+      "title": "Data Export & Backup",
+      "description": "Export your financial data and manage database backups with advanced options.",
+      "tabs": {
+        "backup": "Backup & Restore",
+        "export": "Data Export"
+      },
+      "dataExportTitle": "Data Export",
+      "dataExportDescription": "Export specific data types in various formats for analysis or external use."
+    },
+    "backup": {
+      "title": "Database Backup & Restore",
+      "description": "Create complete database backups and restore from previous backups.",
+      "create": {
+        "title": "Create Backup",
+        "description": "Create a complete backup of your database including WAL and SHM files. Choose your backup location.",
+        "button": "Backup Database",
+        "buttonLoading": "Creating Backup..."
+      },
+      "restore": {
+        "title": "Restore Backup",
+        "description": "Restore your database from a previous backup file. This will replace all current data. Then restart the application to apply changes.",
+        "button": "Restore Database",
+        "buttonLoading": "Restoring..."
+      },
+      "importantNotes": {
+        "title": "Important Notes:",
+        "note1": "Backup includes WAL and SHM files for complete data integrity",
+        "note2": "Restore will replace ALL current data with backup data",
+        "note3": "A pre-restore backup is automatically created before restoration",
+        "note4": "You will be prompted to restart the application after restoration"
+      }
+    },
+    "dataExport": {
+      "formatTitle": "Choose Your Preferred Format",
+      "customizeTitle": "Customize Your Export",
+      "formats": {
+        "csv": {
+          "name": "CSV",
+          "description": "Simple, widely compatible spreadsheet format"
+        },
+        "json": {
+          "name": "JSON",
+          "description": "Structured data for easy programmatic access"
+        },
+        "sqlite": {
+          "name": "SQLite",
+          "description": "Compact, self-contained database file"
+        }
+      },
+      "dataTypes": {
+        "accounts": {
+          "name": "Accounts",
+          "description": "Your financial accounts"
+        },
+        "activities": {
+          "name": "Activities",
+          "description": "Detailed transaction history and logs"
+        },
+        "goals": {
+          "name": "Goals",
+          "description": "Financial objectives and progress tracking"
+        },
+        "portfolioHistory": {
+          "name": "Portfolio History",
+          "description": "Your portfolio's performance over time, including valuations, gains, and cash flow activities."
+        },
+        "full": {
+          "name": "Export the full SQLite Database",
+          "description": "Complete database backup with WAL/SHM files - choose your backup location"
+        }
+      },
+      "exportButton": "Export {{name}}",
+      "exportingButton": "Exporting {{name}}..."
+    }
   }
 }

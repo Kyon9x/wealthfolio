@@ -24,5 +24,21 @@
   "empty": {
     "title": "No accounts yet",
     "description": "Create an account to start tracking your investments"
+  },
+  "page": {
+    "accountFallback": "Account",
+    "switchAccount": "Switch account",
+    "searchPlaceholder": "Search accounts...",
+    "noAccountsFound": "No accounts found.",
+    "switchAccountTitle": "Switch Account",
+    "chooseAccountDescription": "Choose an account to view"
+  },
+  "metrics": {
+    "clickToUpdate": "Click to update the cash balance",
+    "cashBalance": "Cash Balance",
+    "investments": "Investments",
+    "netContribution": "Net Contribution",
+    "costBasis": "Cost Basis",
+    "dateRange": "from {{startDate}} to {{endDate}}"
   }
 }

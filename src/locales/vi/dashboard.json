@@ -49,5 +49,12 @@
     "goalDataNotAvailable": "Dữ liệu mục tiêu chưa có sẵn.",
     "errorLoading": "Không thể tải dữ liệu mục tiêu tiết kiệm.",
     "tryAgain": "Vui lòng thử lại sau."
+  },
+  "portfolioUpdate": {
+    "asOf": "Tính đến:",
+    "updateButton": "Cập nhật danh mục",
+    "updating": "Đang cập nhật danh mục...",
+    "recalculateButton": "Tính toán lại",
+    "recalculating": "Đang tính toán lại..."
   }
 }

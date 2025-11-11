@@ -49,5 +49,12 @@
     "goalDataNotAvailable": "Goal data not yet available.",
     "errorLoading": "Could not load saving goals data.",
     "tryAgain": "Please try again later."
+  },
+  "portfolioUpdate": {
+    "asOf": "As of:",
+    "updateButton": "Update Portfolio",
+    "updating": "Updating portfolio...",
+    "recalculateButton": "Recalculate",
+    "recalculating": "Recalculating..."
   }
 }

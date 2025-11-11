@@ -440,5 +440,82 @@
         }
       }
     }
+  },
+  "exports": {
+    "page": {
+      "title": "Xuất dữ liệu & Sao lưu",
+      "description": "Xuất dữ liệu tài chính và quản lý sao lưu cơ sở dữ liệu với các tùy chọn nâng cao.",
+      "tabs": {
+        "backup": "Sao lưu & Khôi phục",
+        "export": "Xuất dữ liệu"
+      },
+      "dataExportTitle": "Xuất dữ liệu",
+      "dataExportDescription": "Xuất các loại dữ liệu cụ thể ở nhiều định dạng khác nhau để phân tích hoặc sử dụng bên ngoài."
+    },
+    "backup": {
+      "title": "Sao lưu & Khôi phục Cơ sở dữ liệu",
+      "description": "Tạo bản sao lưu hoàn chỉnh cơ sở dữ liệu và khôi phục từ các bản sao lưu trước đó.",
+      "create": {
+        "title": "Tạo bản sao lưu",
+        "description": "Tạo bản sao lưu hoàn chỉnh cơ sở dữ liệu bao gồm các tệp WAL và SHM. Chọn vị trí sao lưu của bạn.",
+        "button": "Sao lưu cơ sở dữ liệu",
+        "buttonLoading": "Đang tạo bản sao lưu..."
+      },
+      "restore": {
+        "title": "Khôi phục bản sao lưu",
+        "description": "Khôi phục cơ sở dữ liệu từ tệp sao lưu trước đó. Điều này sẽ thay thế tất cả dữ liệu hiện tại. Sau đó khởi động lại ứng dụng để áp dụng các thay đổi.",
+        "button": "Khôi phục cơ sở dữ liệu",
+        "buttonLoading": "Đang khôi phục..."
+      },
+      "importantNotes": {
+        "title": "Lưu ý quan trọng:",
+        "note1": "Bản sao lưu bao gồm các tệp WAL và SHM để đảm bảo toàn vẹn dữ liệu",
+        "note2": "Khôi phục sẽ thay thế TẤT CẢ dữ liệu hiện tại bằng dữ liệu sao lưu",
+        "note3": "Một bản sao lưu trước khôi phục được tạo tự động trước khi khôi phục",
+        "note4": "Bạn sẽ được nhắc khởi động lại ứng dụng sau khi khôi phục"
+      }
+    },
+    "dataExport": {
+      "formatTitle": "Chọn định dạng ưa thích",
+      "customizeTitle": "Tùy chỉnh xuất dữ liệu",
+      "formats": {
+        "csv": {
+          "name": "CSV",
+          "description": "Định dạng bảng tính đơn giản, tương thích rộng rãi"
+        },
+        "json": {
+          "name": "JSON",
+          "description": "Dữ liệu có cấu trúc để truy cập lập trình dễ dàng"
+        },
+        "sqlite": {
+          "name": "SQLite",
+          "description": "Tệp cơ sở dữ liệu nhỏ gọn, độc lập"
+        }
+      },
+      "dataTypes": {
+        "accounts": {
+          "name": "Tài khoản",
+          "description": "Các tài khoản tài chính của bạn"
+        },
+        "activities": {
+          "name": "Hoạt động",
+          "description": "Lịch sử giao dịch và nhật ký chi tiết"
+        },
+        "goals": {
+          "name": "Mục tiêu",
+          "description": "Mục tiêu tài chính và theo dõi tiến trình"
+        },
+        "portfolioHistory": {
+          "name": "Lịch sử danh mục đầu tư",
+          "description": "Hiệu suất danh mục đầu tư của bạn theo thời gian, bao gồm định giá, lợi nhuận và hoạt động dòng tiền."
+        },
+        "full": {
+          "name": "Xuất toàn bộ cơ sở dữ liệu SQLite",
+          "description": "Sao lưu cơ sở dữ liệu hoàn chỉnh với các tệp WAL/SHM - chọn vị trí sao lưu của bạn"
+        }
+      },
+      "exportButton": "Xuất {{name}}",
+      "exportingButton": "Đang xuất {{name}}..."
+    }
   }
 }
