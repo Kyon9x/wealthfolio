@@ -25,7 +25,7 @@ import { HoldingsForm } from "./forms/holdings-form";
 import { IncomeForm } from "./forms/income-form";
 import { OtherForm } from "./forms/other-form";
 import { newActivitySchema, type NewActivityFormValues } from "./forms/schemas";
-import { TradeForm } from "./forms/trade-form";
+import { TradeForm } from "@/components/forms/trade-form";
 
 export interface AccountSelectOption {
   value: string;

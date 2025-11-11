@@ -1,9 +1,9 @@
-import { AdaptiveCalendarView } from "@/components/trading/adaptive-calendar-view";
-import { DistributionCharts } from "@/components/trading/distribution-charts";
-import { EquityCurveChart } from "@/components/trading/equity-curve-chart";
-import { OpenTradesTable } from "@/components/trading/open-trades-table";
-import { useSwingDashboard } from "@/hooks/trading/use-swing-dashboard";
-import { useSwingPreferences } from "@/hooks/trading/use-swing-preferences";
+import { AdaptiveCalendarView } from "../components/adaptive-calendar-view";
+import { DistributionCharts } from "../components/distribution-charts";
+import { EquityCurveChart } from "../components/equity-curve-chart";
+import { OpenTradesTable } from "../components/open-trades-table";
+import { useSwingDashboard } from "../hooks/use-swing-dashboard";
+import { useSwingPreferences } from "../hooks/use-swing-preferences";
 import {
   AnimatedToggleGroup,
   Button,

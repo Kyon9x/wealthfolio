@@ -10,14 +10,16 @@ import {
   MoneyInput,
   QuantityInput,
 } from "@wealthfolio/ui";
-import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from "./common";
-import { AccountSelectOption } from "../activity-form";
-import {
-  ActivityTypeSelector,
-  type ActivityType as ActivityTypeUI,
-} from "../activity-type-selector";
-import { CashBalanceWarning } from "../cash-balance-warning";
+import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from "@/pages/activity/components/forms/common";
+import { ActivityTypeSelector, type ActivityType as ActivityTypeUI } from "@/pages/activity/components/activity-type-selector";
+import { CashBalanceWarning } from "@/pages/activity/components/cash-balance-warning";
 import { useTranslation } from "react-i18next";
+
+interface AccountSelectOption {
+  value: string;
+  label: string;
+  currency: string;
+}
 
 export const TradeForm = ({ accounts }: { accounts: AccountSelectOption[] }) => {
   const { control, watch } = useFormContext();

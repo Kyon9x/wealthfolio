@@ -1,3 +1,3 @@
-export * from "./trade-matcher";
-export * from "./performance-calculator";
-export * from "./utils";
+export { PerformanceCalculator } from './performance-calculator';
+export { TradeMatcher } from './trade-matcher';
+export * from './utils';
