@@ -61,14 +61,14 @@ export function useNavigation() {
         href: "/income",
       },
       {
+        icon: <Icons.Trading className="size-6" />,
+        title: t("navigation.trading"),
+        href: "/trading",
+      },
+      {
         icon: <Icons.Activity className="size-6" />,
         title: t("navigation.activities"),
         href: "/activities",
-      },
-      {
-        icon: <Icons.Swingfolio className="size-6" />,
-        title: t("navigation.swingfolio"),
-        href: "/trading",
       },
     ],
     secondary: [
