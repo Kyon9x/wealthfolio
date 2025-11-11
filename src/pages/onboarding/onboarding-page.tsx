@@ -11,17 +11,21 @@ import { OnboardingStep2, OnboardingStep2Handle } from "./onboarding-step2";
 import { OnboardingStep3 } from "./onboarding-step3";
 
 const OnboardingPage = () => {
-  const { t } = useTranslation("onboarding");
+  const { t, i18n } = useTranslation("onboarding");
   const navigate = useNavigate();
-  const { settings, updateSettings } = useSettingsContext();
+  const { settings } = useSettingsContext();
   const [currentStep, setCurrentStep] = useState(1);
   const [isStepValid, setIsStepValid] = useState(true);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>(settings?.language ?? "en");
   const step2Ref = useRef<OnboardingStep2Handle>(null);
   const MAX_STEPS = 3;
 
   const handleLanguageChange = (language: string) => {
-    updateSettings({ language }).catch((error) => {
-      console.error("Failed to update language:", error);
+    // Store language temporarily in local state (don't save to DB yet)
+    setSelectedLanguage(language);
+    // Update i18n immediately for UI preview
+    i18n.changeLanguage(language).catch((error) => {
+      console.error("Failed to change language:", error);
     });
   };
 
@@ -61,7 +65,12 @@ const OnboardingPage = () => {
         return <OnboardingStep1 />;
       case 2:
         return (
-          <OnboardingStep2 ref={step2Ref} onNext={handleNext} onValidityChange={setIsStepValid} />
+          <OnboardingStep2
+            ref={step2Ref}
+            onNext={handleNext}
+            onValidityChange={setIsStepValid}
+            selectedLanguage={selectedLanguage}
+          />
         );
       case 3:
         return <OnboardingStep3 />;
@@ -81,7 +90,7 @@ const OnboardingPage = () => {
             <div className="absolute top-2 right-4 z-10 sm:right-6 lg:right-8">
               <div className="w-24 sm:w-28">
                 <LanguageSelector
-                  value={settings?.language ?? "en"}
+                  value={selectedLanguage}
                   onChange={handleLanguageChange}
                   compact
                 />

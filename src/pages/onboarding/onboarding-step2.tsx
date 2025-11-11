@@ -63,10 +63,11 @@ export interface OnboardingStep2Handle {
 interface OnboardingStep2Props {
   onNext: () => void;
   onValidityChange: (isValid: boolean) => void;
+  selectedLanguage?: string;
 }
 
 export const OnboardingStep2 = forwardRef<OnboardingStep2Handle, OnboardingStep2Props>(
-  ({ onNext, onValidityChange }, ref) => {
+  ({ onNext, onValidityChange, selectedLanguage }, ref) => {
     const { t } = useTranslation("onboarding");
     const { settings, updateSettings } = useSettingsContext();
     const [initialValuesSet, setInitialValuesSet] = useState(false);
@@ -113,7 +114,11 @@ export const OnboardingStep2 = forwardRef<OnboardingStep2Handle, OnboardingStep2
 
     async function onSubmit(data: OnboardingSettingsValues) {
       try {
-        await updateSettings({ baseCurrency: data.baseCurrency, theme: data.theme });
+        await updateSettings({
+          baseCurrency: data.baseCurrency,
+          theme: data.theme,
+          language: selectedLanguage, // Save language when onboarding completes
+        });
         await updateSettings({ onboardingCompleted: true });
         onNext();
       } catch (error) {
