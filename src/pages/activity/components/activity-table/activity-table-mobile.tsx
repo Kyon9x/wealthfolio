@@ -8,7 +8,7 @@ import {
   isIncomeActivity,
   isSplitActivity,
 } from "@/lib/activity-utils";
-import { ActivityTypeNames } from "@/lib/constants";
+import { getActivityTypeName } from "@/lib/constants";
 import { ActivityDetails } from "@/lib/types";
 import { formatDateTime } from "@/lib/utils";
 import { formatAmount, Separator } from "@wealthfolio/ui";
@@ -55,7 +55,7 @@ export const ActivityTableMobile = ({
 
         // Compact View
         if (isCompactView) {
-          const activityTypeLabel = ActivityTypeNames[activity.activityType];
+          const activityTypeLabel = getActivityTypeName(activity.activityType, t);
           return (
             <Card key={activity.id} className="p-3">
               <div className="flex items-center gap-3">

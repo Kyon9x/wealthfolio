@@ -4,7 +4,7 @@ import {
   isCashTransfer,
   isIncomeActivity,
 } from "@/lib/activity-utils";
-import { ActivityType, ActivityTypeNames } from "@/lib/constants";
+import { ActivityType, getActivityTypeName } from "@/lib/constants";
 import {
   Account,
   ActivityBulkMutationRequest,
@@ -169,12 +169,15 @@ export function ActivityDatagrid({
 
   const activityTypeOptions = useMemo(
     () =>
-      (Object.values(ActivityType) as ActivityType[]).map((type) => ({
-        value: type,
-        label: ActivityTypeNames[type],
-        searchValue: `${ActivityTypeNames[type]} ${type}`,
-      })),
-    [],
+      (Object.values(ActivityType) as ActivityType[]).map((type) => {
+        const label = getActivityTypeName(type, t);
+        return {
+          value: type,
+          label,
+          searchValue: `${label} ${type}`,
+        };
+      }),
+    [t],
   );
 
   const accountOptions = useMemo(

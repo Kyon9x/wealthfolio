@@ -18,8 +18,11 @@
     "INTEREST": "Interest",
     "DEPOSIT": "Deposit",
     "WITHDRAWAL": "Withdrawal",
+    "ADD_HOLDING": "Add Holding",
+    "REMOVE_HOLDING": "Remove Holding",
     "TRANSFER_IN": "Transfer In",
     "TRANSFER_OUT": "Transfer Out",
+    "TRANSFER": "Transfer",
     "CONVERSION_IN": "Conversion In",
     "CONVERSION_OUT": "Conversion Out",
     "FEE": "Fee",
@@ -301,6 +304,10 @@
   "empty": {
     "title": "No activities yet",
     "description": "Start adding activities to track your portfolio"
+  },
+  "symbolSelector": {
+    "selectSymbol": "Select symbol...",
+    "searchSymbol": "Search for symbol"
   },
   "import": {
     "title": "Import Activities",

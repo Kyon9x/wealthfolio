@@ -5,8 +5,8 @@
   "page": {
     "title": "Hoạt động",
     "addActivities": "Thêm hoạt động",
-    "importFromCsv": "Nhập từ CSV",
-    "addHoldings": "Thêm tài sản đang có",
+    "importFromCsv": "Nhập từ file CSV",
+    "addHoldings": "Thêm nhiều tài sản",
     "addTransaction": "Thêm giao dịch",
     "import": "Nhập",
     "add": "Thêm"
@@ -18,8 +18,11 @@
     "INTEREST": "Lãi",
     "DEPOSIT": "Nạp tiền",
     "WITHDRAWAL": "Rút tiền",
+    "ADD_HOLDING": "Thêm tài sản",
+    "REMOVE_HOLDING": "Xóa tài sản",
     "TRANSFER_IN": "Chuyển đến",
     "TRANSFER_OUT": "Chuyển đi",
+    "TRANSFER": "Chuyển khoản",
     "CONVERSION_IN": "Chuyển đổi vào",
     "CONVERSION_OUT": "Chuyển đổi ra",
     "FEE": "Phí",
@@ -303,6 +306,10 @@
   "empty": {
     "title": "Chưa có hoạt động nào",
     "description": "Bắt đầu thêm hoạt động để theo dõi danh mục của bạn"
+  },
+  "symbolSelector": {
+    "selectSymbol": "Chọn mã...",
+    "searchSymbol": "Tìm kiếm mã hoặc công ty..."
   },
   "import": {
     "title": "Nhập hoạt động",

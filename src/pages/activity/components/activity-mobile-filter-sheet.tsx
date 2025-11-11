@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/ui/icons";
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { ActivityType, ActivityTypeNames } from "@/lib/constants";
+import { ActivityType, getActivityTypeName } from "@/lib/constants";
 import { Account } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@wealthfolio/ui";
@@ -47,8 +47,8 @@ export const ActivityMobileFilterSheet = ({
     onOpenChange(false);
   };
 
-  const activityTypeOptions = Object.entries(ActivityTypeNames).map(([value, label]) => ({
-    label,
+  const activityTypeOptions = Object.values(ActivityType).map((value) => ({
+    label: getActivityTypeName(value, t),
     value: value as ActivityType,
   }));
 

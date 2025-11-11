@@ -2,7 +2,7 @@ import { debounce } from "lodash";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 
-import { ActivityType, ActivityTypeNames } from "@/lib/constants";
+import { ActivityType, getActivityTypeName } from "@/lib/constants";
 import { Account } from "@/lib/types";
 import { AnimatedToggleGroup, Button, Icons, Input } from "@wealthfolio/ui";
 
@@ -71,11 +71,11 @@ export function ActivityViewControls({
 
   const activityOptions = useMemo(
     () =>
-      (Object.entries(ActivityTypeNames) as [ActivityType, string][]).map(([value, label]) => ({
-        value,
-        label,
+      Object.values(ActivityType).map((value) => ({
+        value: value as ActivityType,
+        label: getActivityTypeName(value as ActivityType, t),
       })),
-    [],
+    [t],
   );
 
   const hasActiveFilters =
