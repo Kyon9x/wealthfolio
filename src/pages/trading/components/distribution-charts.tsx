@@ -20,7 +20,7 @@ import {
   XAxis,
   YAxis,
 } from "@wealthfolio/ui/chart";
-import type { TradeDistribution } from "@/types/swingfolio";
+import type { TradeDistribution } from "../types";
 import { useTranslation } from "react-i18next";
 
 interface DistributionChartsProps {

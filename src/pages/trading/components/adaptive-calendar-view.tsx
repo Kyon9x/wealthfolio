@@ -1,5 +1,5 @@
 import { Button, Icons, GainAmount } from "@wealthfolio/ui";
-import type { CalendarMonth, CalendarDay } from "@/types/swingfolio";
+import type { CalendarMonth, CalendarDay } from "../types";
 import {
   format,
   addYears,

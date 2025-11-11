@@ -1,5 +1,5 @@
 import { getRunEnv, RUN_ENV, invokeTauri, invokeWeb, logger } from "@/adapters";
-import type { SwingTradePreferences, SwingActivity } from "@/types/swingfolio";
+import type { SwingTradePreferences, SwingActivity } from "@/pages/trading/types";
 
 /**
  * Get swing trading preferences for the user

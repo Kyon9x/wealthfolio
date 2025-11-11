@@ -7,7 +7,7 @@ import type {
   TradeDistribution,
   CalendarMonth,
   CalendarDay,
-} from "@/types/swingfolio";
+} from "../types";
 import { format, isWithinInterval, startOfDay, endOfDay } from "date-fns";
 
 /**

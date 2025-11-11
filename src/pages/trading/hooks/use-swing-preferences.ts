@@ -1,4 +1,4 @@
-import type { SwingTradePreferences } from "@/types/swingfolio";
+import type { SwingTradePreferences } from "../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const DEFAULT_PREFERENCES: SwingTradePreferences = {

@@ -1,5 +1,5 @@
 import { searchActivities } from "@/commands/activity";
-import type { SwingActivity } from "@/types/swingfolio";
+import type { SwingActivity } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { useSwingPreferences } from "./use-swing-preferences";
 

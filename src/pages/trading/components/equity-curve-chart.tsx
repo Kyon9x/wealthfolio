@@ -10,7 +10,7 @@ import {
 } from "@wealthfolio/ui";
 import { Bar, CartesianGrid, Cell, ComposedChart, Line, XAxis, YAxis } from "@wealthfolio/ui/chart";
 import { format, parseISO } from "date-fns";
-import type { EquityPoint } from "@/types/swingfolio";
+import type { EquityPoint } from "../types";
 import { useTranslation } from "react-i18next";
 
 interface EquityCurveChartProps {

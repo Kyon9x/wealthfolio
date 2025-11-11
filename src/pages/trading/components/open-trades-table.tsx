@@ -12,7 +12,7 @@ import {
   EmptyPlaceholder,
 } from "@wealthfolio/ui";
 import { TickerAvatar } from "./ticker-avatar";
-import type { OpenPosition } from "@/types/swingfolio";
+import type { OpenPosition } from "../types";
 import { useTranslation } from "react-i18next";
 
 interface OpenTradesTableProps {

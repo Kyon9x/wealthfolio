@@ -3,9 +3,10 @@ import { DistributionCharts } from "../components/distribution-charts";
 import { EquityCurveChart } from "../components/equity-curve-chart";
 import { OpenTradesTable } from "../components/open-trades-table";
 import { PeriodSelector, getChartPeriodDisplay } from "../components/period-selector";
+import { SettingsSheet } from "../components/settings-sheet";
 import { useSwingDashboard } from "../hooks/use-swing-dashboard";
 import { useSwingPreferences } from "../hooks/use-swing-preferences";
-import { KPISummaryCards } from "./components/kpi-summary-cards";
+import { KPISummaryCards } from "../components/kpi-summary-cards";
 import {
   Button,
   Card,
@@ -29,16 +30,13 @@ export default function DashboardPage() {
     "YTD",
   );
   const [selectedYear, setSelectedYear] = useState(new Date());
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const { data: dashboardData, isLoading, error, refetch } = useSwingDashboard(selectedPeriod);
   const { preferences } = useSwingPreferences();
 
   const handleNavigateToActivities = () => {
     navigate("/trading/activities");
-  };
-
-  const handleNavigateToSettings = () => {
-    navigate("/trading/settings");
   };
 
   if (isLoading) {
@@ -135,7 +133,7 @@ export default function DashboardPage() {
       <Button
         variant="outline"
         size="icon"
-        onClick={handleNavigateToSettings}
+        onClick={() => setSettingsOpen(true)}
         className="rounded-full"
       >
         <Icons.Settings className="size-4" />
@@ -224,6 +222,8 @@ export default function DashboardPage() {
           <DistributionCharts distribution={distribution} currency={metrics.currency} />
         </div>
       </PageContent>
+
+      <SettingsSheet open={settingsOpen} onOpenChange={setSettingsOpen} />
     </Page>
   );
 }

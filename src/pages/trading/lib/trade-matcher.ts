@@ -1,5 +1,5 @@
 import type { ActivityDetails } from "@/lib/types";
-import type { ClosedTrade, OpenPosition, TradeMatchResult } from "@/types/swingfolio";
+import type { ClosedTrade, OpenPosition, TradeMatchResult } from "../types";
 import { differenceInDays } from "date-fns";
 
 interface Lot {

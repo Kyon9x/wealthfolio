@@ -1,6 +1,6 @@
 import { PerformanceCalculator, TradeMatcher } from "../lib";
 import type { Holding } from "@/lib/types";
-import type { ClosedTrade, OpenPosition, SwingDashboardData } from "@/types/swingfolio";
+import type { ClosedTrade, OpenPosition, SwingDashboardData } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { endOfDay, startOfDay, startOfYear, subMonths, subYears } from "date-fns";
 import { useMemo } from "react";
