@@ -196,7 +196,7 @@ export function OpenTradesTable({ positions }: OpenTradesTableProps) {
     },
     initialState: {
       pagination: {
-        pageSize: 20,
+        pageSize: 10,
       },
     },
   });

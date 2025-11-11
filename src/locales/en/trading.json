@@ -111,6 +111,12 @@
     "description": "Configure your swing trading analysis preferences",
     "backToDashboard": "Back to Dashboard",
     "savingSettings": "Saving settings...",
+    "close": "Close",
+    "autoSelection": {
+      "title": "Auto-Selection Options",
+      "includeSwingTag": "Automatically include activities tagged with \"Swing\"",
+      "tagDescription": "Activities with \"swing\" in their comment will be automatically included"
+    },
     "tradeMatching": {
       "title": "Trade Matching",
       "lotMethod": "Lot Matching Method",

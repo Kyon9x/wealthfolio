@@ -125,9 +125,17 @@ export function ActivityViewControls({
           title={t("controls.filterType")}
           options={activityOptions}
           selectedValues={new Set(selectedActivityTypes)}
-          onFilterChange={(values: Set<string>) =>
-            onActivityTypesChange(Array.from(values) as ActivityType[])
-          }
+          onFilterChange={(values: Set<string>) => {
+            const selectedTypes = Array.from(values) as ActivityType[];
+            const expandedTypes = selectedTypes.flatMap((type) => {
+              if (type === ActivityType.TRANSFER) {
+                return [ActivityType.TRANSFER, ActivityType.TRANSFER_IN, ActivityType.TRANSFER_OUT];
+              }
+              return [type];
+            });
+            const uniqueTypes = [...new Set(expandedTypes)];
+            onActivityTypesChange(uniqueTypes);
+          }}
         />
 
         {hasActiveFilters ? (

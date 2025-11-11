@@ -57,6 +57,29 @@ export function SettingsSheet({ open, onOpenChange }: SettingsSheetProps) {
         <div className="mt-6 space-y-4">
           <Card>
             <CardHeader>
+              <CardTitle className="text-base">{t("settings.autoSelection.title")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="include-swing-tag"
+                  checked={preferences.includeSwingTag}
+                  onCheckedChange={(checked) =>
+                    updatePreferences({ includeSwingTag: checked as boolean })
+                  }
+                />
+                <Label htmlFor="include-swing-tag">
+                  {t("settings.autoSelection.includeSwingTag")}
+                </Label>
+              </div>
+              <p className="text-muted-foreground text-xs">
+                {t("settings.autoSelection.tagDescription")}
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
               <CardTitle className="text-base">{t("settings.tradeMatching.title")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -161,7 +184,7 @@ export function SettingsSheet({ open, onOpenChange }: SettingsSheetProps) {
 
           <div className="flex justify-end pt-4">
             <Button onClick={() => onOpenChange(false)}>
-              {t("settings.close", { defaultValue: "Close" })}
+              {t("settings.close")}
             </Button>
           </div>
         </div>

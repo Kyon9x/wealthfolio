@@ -111,6 +111,12 @@
     "description": "Cấu hình tùy chọn phân tích swing trading của bạn",
     "backToDashboard": "Quay Lại Bảng Điều Khiển",
     "savingSettings": "Đang lưu cài đặt...",
+    "close": "Đóng",
+    "autoSelection": {
+      "title": "Tùy Chọn Tự Động",
+      "includeSwingTag": "Tự động bao gồm các hoạt động được gắn thẻ \"Swing\"",
+      "tagDescription": "Các hoạt động có \"swing\" trong bình luận sẽ được tự động bao gồm"
+    },
     "tradeMatching": {
       "title": "Khớp Lệnh Giao Dịch",
       "lotMethod": "Phương Pháp Khớp Lô",

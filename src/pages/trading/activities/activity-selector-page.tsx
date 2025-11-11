@@ -91,10 +91,6 @@ export default function ActivitySelectorPage() {
     setSelectedActivities(newSelected);
   };
 
-  const handleToggleSwingTag = (enabled: boolean) => {
-    updatePreferences({ includeSwingTag: enabled });
-  };
-
   const handleSaveSelection = () => {
     updatePreferences({
       selectedActivityIds: Array.from(selectedActivities),
@@ -167,27 +163,6 @@ export default function ActivitySelectorPage() {
         actions={headerActions}
       />
       <PageContent>
-        <Card>
-          <CardHeader>
-            <CardTitle>{t("activitySelector.autoSelection.title")}</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="swing-tag"
-                checked={preferences.includeSwingTag}
-                onCheckedChange={handleToggleSwingTag}
-              />
-              <label htmlFor="swing-tag" className="text-sm font-medium">
-                {t("activitySelector.autoSelection.includeSwingTag")}
-              </label>
-            </div>
-            <p className="text-muted-foreground mt-2 text-xs">
-              {t("activitySelector.autoSelection.tagDescription")}
-            </p>
-          </CardContent>
-        </Card>
-
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
