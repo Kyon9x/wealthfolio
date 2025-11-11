@@ -79,10 +79,11 @@ const OnboardingPage = () => {
           <div className="relative flex flex-col items-center">
             {/* Language selector - positioned absolutely in top right */}
             <div className="absolute top-2 right-4 z-10 sm:right-6 lg:right-8">
-              <div className="w-32 sm:w-40">
+              <div className="w-24 sm:w-28">
                 <LanguageSelector
                   value={settings?.language ?? "en"}
                   onChange={handleLanguageChange}
+                  compact
                 />
               </div>
             </div>

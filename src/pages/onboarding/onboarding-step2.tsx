@@ -48,10 +48,13 @@ function detectDefaultCurrency(): string | undefined {
   if (lang.startsWith("tr")) return "EUR";
   if (lang.startsWith("ar")) return "USD";
   if (lang.startsWith("hi")) return "INR";
+  if (lang.startsWith("vi")) return "VND";
+  if (lang.startsWith("th")) return "THB";
+
   return undefined;
 }
 
-const popularCurrencies = ["USD", "CAD", "EUR", "GBP", "AUD", "CHF", "JPY"];
+const popularCurrencies = ["VND", "USD", "CAD", "EUR", "GBP", "AUD", "CHF", "JPY"];
 
 export interface OnboardingStep2Handle {
   submitForm: () => void;
