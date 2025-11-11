@@ -2,17 +2,16 @@ import { AdaptiveCalendarView } from "../components/adaptive-calendar-view";
 import { DistributionCharts } from "../components/distribution-charts";
 import { EquityCurveChart } from "../components/equity-curve-chart";
 import { OpenTradesTable } from "../components/open-trades-table";
+import { PeriodSelector, getChartPeriodDisplay } from "../components/period-selector";
 import { useSwingDashboard } from "../hooks/use-swing-dashboard";
 import { useSwingPreferences } from "../hooks/use-swing-preferences";
+import { KPISummaryCards } from "./components/kpi-summary-cards";
 import {
-  AnimatedToggleGroup,
   Button,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  GainAmount,
-  GainPercent,
   Icons,
   Page,
   PageContent,
@@ -22,57 +21,6 @@ import {
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-
-// Chart period type is now automatically determined based on selected period
-const getChartPeriodDisplay = (
-  period: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL",
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any,
-) => {
-  switch (period) {
-    case "1M":
-      return {
-        type: t("dashboard.chartPeriod.daily"),
-        description: t("dashboard.chartPeriod.dailyDescription"),
-      };
-    case "3M":
-      return {
-        type: t("dashboard.chartPeriod.weekly"),
-        description: t("dashboard.chartPeriod.weeklyDescription"),
-      };
-    default:
-      return {
-        type: t("dashboard.chartPeriod.monthly"),
-        description: t("dashboard.chartPeriod.monthlyDescription"),
-      };
-  }
-};
-
-const PeriodSelector: React.FC<{
-  selectedPeriod: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL";
-  onPeriodSelect: (period: "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL") => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  t: any;
-}> = ({ selectedPeriod, onPeriodSelect, t }) => {
-  const periods = [
-    { value: "1M" as const, label: t("dashboard.periods.1M") },
-    { value: "3M" as const, label: t("dashboard.periods.3M") },
-    { value: "6M" as const, label: t("dashboard.periods.6M") },
-    { value: "YTD" as const, label: t("dashboard.periods.YTD") },
-    { value: "1Y" as const, label: t("dashboard.periods.1Y") },
-    { value: "ALL" as const, label: t("dashboard.periods.ALL") },
-  ];
-
-  return (
-    <AnimatedToggleGroup
-      items={periods}
-      value={selectedPeriod}
-      onValueChange={onPeriodSelect}
-      variant="secondary"
-      size="sm"
-    />
-  );
-};
 
 export default function DashboardPage() {
   const { t } = useTranslation("trading");
@@ -201,150 +149,7 @@ export default function DashboardPage() {
 
       <PageContent>
         <div className="space-y-4 sm:space-y-6">
-          {/* KPI Cards */}
-          <div className="grid grid-cols-1 gap-3 sm:gap-4 md:grid-cols-3">
-            {/* Widget 1: Overall P/L Summary - Clean Design */}
-
-            <Card
-              className={`${metrics.totalPL >= 0 ? "border-success/10 bg-success/10" : "border-destructive/10 bg-destructive/10"}`}
-            >
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pt-4 pb-3">
-                <CardTitle className="text-sm font-medium">{t("dashboard.kpi.pl.title")}</CardTitle>
-                <GainAmount
-                  className="text-xl font-bold sm:text-2xl"
-                  value={metrics.totalPL}
-                  currency={metrics.currency}
-                />
-              </CardHeader>
-              <CardContent className="space-y-3">
-                {/* Details Below - Labels Left, Amounts Right */}
-                <div className="space-y-2 pt-2">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.pl.realized", { count: metrics.totalTrades })}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <GainAmount
-                        value={metrics.totalRealizedPL}
-                        currency={metrics.currency}
-                        className="font-medium"
-                        displayDecimal={false}
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.pl.unrealized", { count: metrics.openPositions })}
-                    </span>
-                    <div className="flex items-center gap-2">
-                      <GainAmount
-                        value={metrics.totalUnrealizedPL}
-                        currency={metrics.currency}
-                        className="font-medium"
-                        displayDecimal={false}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Widget 2: Core Performance */}
-            <Card className="border-blue-500/10 bg-blue-500/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {t("dashboard.kpi.corePerformance.title")}
-                </CardTitle>
-                <Icons.CheckCircle className="text-muted-foreground h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.corePerformance.winRate")}
-                    </span>
-                    <GainPercent
-                      value={metrics.winRate}
-                      className="text-sm font-semibold"
-                      showSign={false}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.corePerformance.avgWin")}
-                    </span>
-                    <GainAmount
-                      value={metrics.averageWin}
-                      currency={metrics.currency}
-                      className="text-sm font-semibold"
-                      displayDecimal={false}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.corePerformance.avgLoss")}
-                    </span>
-                    <GainAmount
-                      value={-metrics.averageLoss}
-                      currency={metrics.currency}
-                      className="text-sm font-semibold"
-                      displayDecimal={false}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.corePerformance.totalTrades")}
-                    </span>
-                    <span className="text-sm font-semibold">{metrics.totalTrades}</span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Widget 3: Analytics & Ratios */}
-            <Card className="border-purple-500/10 bg-purple-500/10">
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
-                  {t("dashboard.kpi.analytics.title")}
-                </CardTitle>
-                <Icons.BarChart className="text-muted-foreground h-4 w-4" />
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.analytics.expectancy")}
-                    </span>
-                    <GainAmount
-                      value={metrics.expectancy}
-                      currency={metrics.currency}
-                      className="text-sm font-semibold"
-                      displayDecimal={false}
-                    />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.analytics.profitFactor")}
-                    </span>
-                    <span className="text-sm font-semibold">
-                      {metrics.profitFactor === Number.POSITIVE_INFINITY
-                        ? "∞"
-                        : metrics.profitFactor.toFixed(2)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-muted-foreground text-xs">
-                      {t("dashboard.kpi.analytics.avgHoldTime")}
-                    </span>
-                    <span className="text-sm font-semibold">
-                      {metrics.averageHoldingDays.toFixed(1)}{" "}
-                      {t("dashboard.kpi.analytics.daysUnit")}
-                    </span>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
+          <KPISummaryCards metrics={metrics} t={t} />
 
           {/* Charts Row - Equity Curve and Calendar */}
           <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
