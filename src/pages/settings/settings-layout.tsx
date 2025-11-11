@@ -1,8 +1,8 @@
 import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 import { ApplicationShell } from "@wealthfolio/ui";
-import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { SidebarNav } from "./sidebar-nav";
 
 export default function SettingsLayout() {
@@ -47,12 +47,12 @@ export default function SettingsLayout() {
       subtitle: t("navigation.marketData.subtitle"),
       icon: <Icons.BarChart className="h-5 w-5" />,
     },
-    {
-      title: t("navigation.addons.title"),
-      href: "addons",
-      subtitle: t("navigation.addons.subtitle"),
-      icon: <Icons.Package className="h-5 w-5" />,
-    },
+    // {
+    //   title: t("navigation.addons.title"),
+    //   href: "addons",
+    //   subtitle: t("navigation.addons.subtitle"),
+    //   icon: <Icons.Package className="h-5 w-5" />,
+    // },
     // {
     //   title: "Sync",
     //   href: "sync",

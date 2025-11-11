@@ -3,8 +3,8 @@ import { Icons } from "@/components/ui/icons";
 import { Separator } from "@/components/ui/separator";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Link } from "react-router-dom";
 
 import { SettingsHeader } from "../settings-header";
 
@@ -32,7 +32,8 @@ import {
 
 const useApiKeyStatus = (providerId: string, isOpen: boolean) => {
   const queryClient = useQueryClient();
-  const needsApiKey = providerId !== "YAHOO" && providerId !== "MANUAL";
+  const needsApiKey =
+    providerId !== "YAHOO" && providerId !== "MANUAL" && providerId !== "VN_MARKET";
 
   const { data: apiKey, isLoading } = useQuery({
     queryKey: QueryKeys.secrets.apiKey(providerId),
