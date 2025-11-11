@@ -139,7 +139,7 @@ export function ActivityForm({ accounts, activity, open, onClose }: ActivityForm
         if (submitData.accountId && toAccountId && submitData.accountId === toAccountId) {
           form.setError("toAccountId", {
             type: "manual",
-            message: "To Account must be different from From Account",
+            message: t("form.toAccountDifferent"),
           });
           return;
         }

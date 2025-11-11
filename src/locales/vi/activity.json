@@ -38,7 +38,7 @@
     "comment": "Ghi chú",
     "updateActivity": "Cập nhật hoạt động",
     "updateDescription": "Cập nhật chi tiết giao dịch của bạn",
-    "addDescription": "Ghi lại một giao dịch mới trong tài khoản của bạn.",
+    "addDescription": "Ghi lại một giao dịch mới trong tài khoản.",
     "learnMore": "Tìm hiểu thêm",
     "pleaseReviewEntry": "Vui lòng xem lại mục nhập của bạn",
     "transactionType": "Loại giao dịch",
@@ -52,13 +52,86 @@
       "income": "Thu nhập",
       "other": "Khác"
     },
-    "cancel": "Hủy"
+    "cancel": "Hủy",
+    "shares": "Cổ phiếu",
+    "price": "Giá",
+    "amount": "Số tiền",
+    "skipSymbolLookup": "Bỏ qua tra cứu mã",
+    "useDifferentCurrency": "Sử dụng tiền tệ khác",
+    "fromAccount": "Từ tài khoản",
+    "toAccount": "Đến tài khoản",
+    "selectAccount": "Chọn tài khoản",
+    "activityCurrency": "Tiền tệ giao dịch",
+    "description": "Mô tả",
+    "descriptionPlaceholder": "Thêm mô tả hoặc ghi chú tùy chọn cho giao dịch này...",
+    "enterSymbol": "Nhập mã",
+    "searchSymbol": "Tìm kiếm mã...",
+    "buy": "Mua",
+    "buyDescription": "Mua tài sản. Điều này tăng số lượng nắm giữ và giảm số dư tiền mặt.",
+    "sell": "Bán",
+    "sellDescription": "Bán tài sản. Điều này giảm số lượng nắm giữ và tăng số dư tiền mặt.",
+    "dividend": "Cổ tức",
+    "dividendDescription": "Thu nhập nhận được từ việc sở hữu cổ phiếu trong công ty hoặc đơn vị trong quỹ. Đây thường là phân phối lợi nhuận.",
+    "interest": "Lãi suất",
+    "interestDescription": "Thu nhập từ tiền gửi, trái phiếu hoặc cho vay tiền. Đây là khoản thanh toán cho việc sử dụng tiền của bạn.",
+    "dividendAmount": "Số tiền cổ tức",
+    "interestAmount": "Số tiền lãi",
+    "enterDividendAmount": "Nhập số tiền cổ tức",
+    "enterInterestAmount": "Nhập số tiền lãi",
+    "deposit": "Nạp tiền",
+    "depositDescription": "Tăng số dư tài khoản bằng cách thêm tiền.",
+    "withdrawal": "Rút tiền",
+    "withdrawalDescription": "Giảm số dư tài khoản bằng cách rút tiền.",
+    "transfer": "Chuyển khoản",
+    "transferDescription": "Chuyển tiền giữa các tài khoản của bạn. Lưu ý: Loại chuyển khoản này thường không tính vào hạn mức đóng góp.",
+    "selectDestinationAccount": "Chọn tài khoản đích",
+    "addHolding": "Thêm tài sản",
+    "addHoldingDescription": "Ghi lại tài sản nắm giữ mới. Tương tự như \"Mua\" nhưng không ảnh hưởng đến số dư tiền mặt. Sử dụng cho tài sản ban đầu, tài sản chuyển từ nhà môi giới khác, tài sản nhận được (ví dụ: quà tặng, thừa kế), hoặc để ghi lại giao dịch mua nhanh mà không cần mục nạp tiền riêng.",
+    "removeHolding": "Xóa tài sản",
+    "removeHoldingDescription": "Ghi lại việc xóa tài sản nắm giữ. Tương tự như \"Bán\" nhưng không ảnh hưởng đến số dư tiền mặt. Cũng sử dụng để ghi lại tài sản chuyển đến nhà môi giới khác hoặc tài sản bị xóa vì lý do khác ngoài bán (ví dụ: quà tặng, quyên góp).",
+    "averageCost": "Giá vốn trung bình",
+    "split": "Tách cổ phiếu",
+    "splitDescription": "Ghi lại việc tách cổ phiếu. Điều này thay đổi số lượng cổ phiếu bạn sở hữu nhưng thường không thay đổi tổng giá trị nắm giữ (ví dụ: tách 2-1 sẽ tăng gấp đôi số cổ phiếu).",
+    "feeActivity": "Phí",
+    "feeDescription": "Ghi lại phí hoặc chi phí riêng lẻ không liên quan trực tiếp đến giao dịch cụ thể, chẳng hạn như phí duy trì tài khoản. Điều này sẽ giảm số dư tiền mặt.",
+    "taxActivity": "Thuế",
+    "taxDescription": "Ghi lại các khoản thuế liên quan đến đầu tư của bạn, chẳng hạn như thuế lãi vốn hoặc thuế khấu trừ. Điều này sẽ giảm số dư tiền mặt.",
+    "feeAmount": "Số tiền phí",
+    "taxAmount": "Số tiền thuế",
+    "splitRatio": "Tỷ lệ tách",
+    "splitRatioPlaceholder": "Ví dụ: 2 cho tách 2:1, 0.5 cho tách 1:2",
+    "searchTickerPlaceholder": "Tìm kiếm mã...",
+    "sharesPlaceholder": "Cổ phiếu",
+    "averageCostPlaceholder": "Giá vốn trung bình",
+    "tickers": "Mã chứng khoán",
+    "totalValueHeader": "Tổng giá trị",
+    "addAnotherHolding": "Thêm tài sản khác",
+    "startDate": "Ngày bắt đầu",
+    "bulkHoldingsTitle": "Danh mục",
+    "bulkHoldingsDescription": "Nhanh chóng thêm nhiều tài sản vào danh mục của bạn. Nhập vị thế hiện tại với mã chứng khoán, số lượng và giá vốn trung bình.",
+    "bulkImportComment": "Nhập hàng loạt - {{count}} vị thế",
+    "pleaseFixErrors": "Vui lòng sửa các lỗi sau:",
+    "validating": "Đang xác thực...",
+    "importing": "Đang nhập...",
+    "confirm": "Xác nhận",
+    "importSuccessTitle": "Nhập thành công",
+    "importSuccessDescription": "Tài sản đã được nhập thành công.",
+    "noValidHoldings": "Không có tài sản hợp lệ",
+    "noValidHoldingsDescription": "Vui lòng thêm ít nhất một tài sản hợp lệ với mã, số lượng và giá vốn trung bình.",
+    "formValidationFailed": "Xác thực biểu mẫu thất bại",
+    "checkFormErrors": "Vui lòng kiểm tra lỗi trong biểu mẫu."
   },
   "delete": {
     "title": "Bạn có chắc chắn muốn xóa hoạt động này?",
     "description": "Hành động này không thể hoàn tác.",
     "cancel": "Hủy",
     "confirm": "Xóa"
+  },
+  "operations": {
+    "open": "Mở",
+    "edit": "Chỉnh sửa",
+    "duplicate": "Sao chép",
+    "delete": "Xóa"
   },
   "pagination": {
     "loading": "Đang tải…",
@@ -76,14 +149,156 @@
     "viewMode": "Chế độ xem",
     "editMode": "Chế độ chỉnh sửa"
   },
+  "cashBalance": {
+    "checking": "Đang kiểm tra số dư tài khoản...",
+    "insufficientFunds": "Không đủ số dư:",
+    "insufficientFundsHelp": "Ghi lại các khoản tiền gửi để bù đắp thiếu hụt, hoặc sử dụng 'Thêm tài sản' (bỏ qua theo dõi tiền mặt).",
+    "sufficientFunds": "Chi phí giao dịch: {{amount}} - Đủ số dư"
+  },
   "table": {
     "date": "Ngày",
     "type": "Loại",
     "symbol": "Mã",
     "quantity": "Số lượng",
     "unitPrice": "Đơn giá",
+    "priceAmount": "Giá/Số tiền",
     "fee": "Phí",
-    "total": "Tổng"
+    "total": "Tổng",
+    "account": "Tài khoản",
+    "currency": "Tiền tệ",
+    "toggleColumns": "Bật/tắt cột",
+    "noActivityFound": "Không tìm thấy hoạt động.",
+    "shares": "cổ phiếu",
+    "ratio": "Tỷ lệ",
+    "amount": "Số tiền",
+    "price": "Giá",
+    "totalValue": "Tổng giá trị"
+  },
+  "mobile": {
+    "noActivitiesFound": "Không tìm thấy hoạt động",
+    "tryAdjusting": "Thử điều chỉnh bộ lọc hoặc tiêu chí tìm kiếm.",
+    "searchPlaceholder": "Tìm kiếm...",
+    "detailedView": "Chế độ chi tiết",
+    "compactView": "Chế độ thu gọn",
+    "filterActivities": "Lọc hoạt động",
+    "account": "Tài khoản",
+    "allAccounts": "Tất cả tài khoản",
+    "activityType": "Loại hoạt động",
+    "allTypes": "Tất cả loại",
+    "done": "Xong",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "updateActivity": "Cập nhật hoạt động",
+    "addActivity": "Thêm hoạt động",
+    "update": "Cập nhật",
+    "add": "Thêm",
+    "selectAccount": "Chọn tài khoản",
+    "dateTime": "Ngày & Giờ",
+    "skipSymbolLookup": "Bỏ qua tra cứu mã",
+    "useDifferentCurrency": "Sử dụng tiền tệ khác",
+    "symbol": "Mã",
+    "enterSymbol": "Nhập mã",
+    "shares": "Cổ phiếu",
+    "avgCost": "Giá vốn TB",
+    "price": "Giá",
+    "dividendAmount": "Số tiền cổ tức",
+    "interestAmount": "Số tiền lãi",
+    "amount": "Số tiền",
+    "feeOptional": "Phí (Tùy chọn)",
+    "activityCurrency": "Tiền tệ giao dịch",
+    "descriptionOptional": "Mô tả (Tùy chọn)",
+    "addNote": "Thêm ghi chú hoặc bình luận...",
+    "selectAccountSheet": {
+      "title": "Chọn tài khoản",
+      "description": "Chọn tài khoản cho giao dịch này"
+    },
+    "selectTransactionType": "Chọn loại giao dịch",
+    "back": "Quay lại",
+    "next": "Tiếp theo",
+    "categories": {
+      "trade": "Giao dịch",
+      "holdings": "Tài sản",
+      "cash": "Tiền mặt",
+      "income": "Thu nhập",
+      "other": "Khác"
+    },
+    "activityTypes": {
+      "buy": {
+        "label": "Mua",
+        "description": "Mua tài sản"
+      },
+      "sell": {
+        "label": "Bán",
+        "description": "Bán tài sản"
+      },
+      "addHolding": {
+        "label": "Thêm tài sản",
+        "description": "Ghi lại tài sản hiện có"
+      },
+      "removeHolding": {
+        "label": "Xóa tài sản",
+        "description": "Xóa tài sản khỏi tài khoản"
+      },
+      "deposit": {
+        "label": "Nạp tiền",
+        "description": "Thêm tiền vào tài khoản"
+      },
+      "withdrawal": {
+        "label": "Rút tiền",
+        "description": "Rút tiền khỏi tài khoản"
+      },
+      "transferIn": {
+        "label": "Chuyển đến",
+        "description": "Chuyển tiền giữa các tài khoản"
+      },
+      "transferOut": {
+        "label": "Chuyển đi",
+        "description": "Chuyển tiền giữa các tài khoản"
+      },
+      "dividend": {
+        "label": "Cổ tức",
+        "description": "Thu nhập từ cổ tức"
+      },
+      "interest": {
+        "label": "Lãi suất",
+        "description": "Thu nhập từ lãi suất"
+      },
+      "fee": {
+        "label": "Phí",
+        "description": "Phí tài khoản hoặc giao dịch"
+      },
+      "tax": {
+        "label": "Thuế",
+        "description": "Thuế liên quan đầu tư"
+      },
+      "split": {
+        "label": "Tách cổ phiếu",
+        "description": "Điều chỉnh tách cổ phiếu"
+      }
+    }
+  },
+  "datagrid": {
+    "selected": "đã chọn",
+    "noResultsFound": "Không tìm thấy kết quả.",
+    "clearFilters": "Xóa bộ lọc",
+    "searchPlaceholder": "Tìm kiếm...",
+    "ticker": "MÃ",
+    "searchSymbol": "Tìm kiếm mã hoặc công ty...",
+    "loading": "Đang tải...",
+    "loadFailed": "Không thể tải mã chứng khoán.",
+    "noSymbolsFound": "Không tìm thấy mã chứng khoán.",
+    "saveSuccess": {
+      "title": "Đã lưu hoạt động",
+      "description": "Các thay đổi đang chờ của bạn đã được đồng bộ."
+    },
+    "discardSuccess": {
+      "title": "Đã hủy thay đổi",
+      "description": "Các chỉnh sửa và bản nháp chưa lưu đã bị xóa."
+    },
+    "addTransaction": "Thêm giao dịch",
+    "deleteSelected": "Xóa đã chọn",
+    "saveChanges": "Lưu thay đổi",
+    "discardChanges": "Hủy thay đổi"
   },
   "empty": {
     "title": "Chưa có hoạt động nào",
