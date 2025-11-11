@@ -40,5 +40,21 @@
     "netContribution": "Net Contribution",
     "costBasis": "Cost Basis",
     "dateRange": "from {{startDate}} to {{endDate}}"
+  },
+  "holdings": {
+    "title": "Holdings"
+  },
+  "contributionLimit": {
+    "contributedSoFar": "You've contributed",
+    "soFarIn": "so far in",
+    "noLimitSet": "There's no contribution limit set for this account.",
+    "youHaveContributed": "You've contributed",
+    "toThisAccountIn": "to this account in",
+    "yourTotalIs": "Your total is",
+    "whichIsOverThe": "which is over the",
+    "limit": "limit.",
+    "yourTotalContribution": "Your total contribution towards the",
+    "limitIs": "limit is",
+    "youHaveExceeded": "You have exceeded your limit by"
   }
 }

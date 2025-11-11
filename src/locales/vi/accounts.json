@@ -40,5 +40,21 @@
     "netContribution": "Đóng góp ròng",
     "costBasis": "Giá vốn",
     "dateRange": "từ {{startDate}} đến {{endDate}}"
+  },
+  "holdings": {
+    "title": "Nắm giữ"
+  },
+  "contributionLimit": {
+    "contributedSoFar": "Bạn đã đóng góp",
+    "soFarIn": "cho đến nay trong năm",
+    "noLimitSet": "Không có giới hạn đóng góp nào được thiết lập cho tài khoản này.",
+    "youHaveContributed": "Bạn đã đóng góp",
+    "toThisAccountIn": "vào tài khoản này trong năm",
+    "yourTotalIs": "Tổng của bạn là",
+    "whichIsOverThe": "vượt quá mức",
+    "limit": "giới hạn.",
+    "yourTotalContribution": "Tổng đóng góp của bạn cho mức",
+    "limitIs": "giới hạn là",
+    "youHaveExceeded": "Bạn đã vượt quá giới hạn"
   }
 }
