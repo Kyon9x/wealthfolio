@@ -212,12 +212,29 @@
     "openTrades": {
       "table": {
         "symbol": "Mã",
+        "account": "Tài Khoản",
         "quantity": "Số Lượng",
         "avgCost": "Giá Vốn TB",
         "current": "Hiện Tại",
         "pl": "Lãi/Lỗ",
         "returnPercent": "% Lợi Nhuận",
         "days": "Ngày"
+      },
+      "search": {
+        "placeholder": "Tìm mã hoặc tên...",
+        "clear": "Xóa tìm kiếm"
+      },
+      "filter": {
+        "account": "Tài Khoản",
+        "reset": "Đặt Lại"
+      },
+      "showing": "Hiển thị {{count}} trong {{total}}",
+      "noResults": "Không tìm thấy kết quả.",
+      "pagination": {
+        "info": "{{from}}-{{to}} trong {{total}}",
+        "previous": "Trước",
+        "page": "Trang {{current}} / {{total}}",
+        "next": "Sau"
       },
       "emptyState": {
         "title": "Không Có Vị Thế Đang Mở",

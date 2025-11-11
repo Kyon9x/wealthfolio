@@ -212,12 +212,29 @@
     "openTrades": {
       "table": {
         "symbol": "Symbol",
+        "account": "Account",
         "quantity": "Quantity",
         "avgCost": "Avg Cost",
         "current": "Current",
         "pl": "P/L",
         "returnPercent": "Return %",
         "days": "Days"
+      },
+      "search": {
+        "placeholder": "Search symbol or name...",
+        "clear": "Clear search"
+      },
+      "filter": {
+        "account": "Account",
+        "reset": "Reset"
+      },
+      "showing": "Showing {{count}} of {{total}}",
+      "noResults": "No results found.",
+      "pagination": {
+        "info": "{{from}}-{{to}} of {{total}}",
+        "previous": "Previous",
+        "page": "Page {{current}} of {{total}}",
+        "next": "Next"
       },
       "emptyState": {
         "title": "No Open Positions",
