@@ -1,0 +1,26 @@
+{
+  "title": "Hiệu suất",
+  "allPortfolio": "Toàn bộ Danh mục",
+  "actions": {
+    "addAccount": "Thêm tài khoản",
+    "addBenchmark": "Thêm Điểm chuẩn",
+    "addItem": "Thêm mục",
+    "retry": "Thử lại",
+    "remove": "Xóa {{name}}"
+  },
+  "metrics": {
+    "totalReturn": "Lợi nhuận Tổng",
+    "annualizedReturn": "Lợi nhuận Hàng năm",
+    "annualized": "Hàng năm",
+    "volatility": "Biến động",
+    "maxDrawdown": "Sụt giảm Tối đa"
+  },
+  "empty": {
+    "title": "Không có dữ liệu hiệu suất",
+    "description": "Chọn tài khoản để so sánh hiệu suất của chúng theo thời gian."
+  },
+  "error": {
+    "title": "Lỗi khi tính toán dữ liệu hiệu suất"
+  },
+  "calculating": "Đang tính toán..."
+}
