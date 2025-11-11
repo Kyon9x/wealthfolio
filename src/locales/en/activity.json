@@ -288,6 +288,8 @@
     "loading": "Loading...",
     "loadFailed": "Failed to load symbols.",
     "noSymbolsFound": "No symbols found.",
+    "addManualAsset": "Add new manual asset",
+    "createManualHolding": "Create \"{{symbol}}\" as manual holding",
     "saveSuccess": {
       "title": "Activities saved",
       "description": "Your pending changes are now synced."

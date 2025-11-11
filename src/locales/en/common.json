@@ -52,6 +52,29 @@
     "change": "Change",
     "percent": "Percent",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "moreInfoAbout": "More info about {{label}}",
+    "annualized": "Annualized:"
+  },
+  "accounts": {
+    "allPortfolio": "All Portfolio",
+    "portfolio": "Portfolio",
+    "securitiesAccounts": "Securities Accounts",
+    "cashAccounts": "Cash Accounts",
+    "cryptocurrencyAccounts": "Cryptocurrency Accounts",
+    "otherAccounts": "Other Accounts",
+    "selectAccount": "Select Account",
+    "addAccount": "Add account",
+    "selectAnAccount": "Select an account",
+    "searchAccounts": "Search accounts...",
+    "chooseAccountToAdd": "Choose an account to add to comparison"
+  },
+  "search": {
+    "noSymbolsFound": "No symbols found",
+    "somethingWentWrong": "Something went wrong"
+  },
+  "charts": {
+    "totalValue": "Total Value",
+    "netContribution": "Net Contribution"
   }
 }

@@ -290,6 +290,8 @@
     "loading": "Đang tải...",
     "loadFailed": "Không thể tải mã chứng khoán.",
     "noSymbolsFound": "Không tìm thấy mã chứng khoán.",
+    "addManualAsset": "Thêm tài sản thủ công mới",
+    "createManualHolding": "Tạo \"{{symbol}}\" dưới dạng tài sản thủ công",
     "saveSuccess": {
       "title": "Đã lưu hoạt động",
       "description": "Các thay đổi đang chờ của bạn đã được đồng bộ."

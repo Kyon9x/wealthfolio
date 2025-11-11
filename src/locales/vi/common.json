@@ -52,6 +52,29 @@
     "change": "Thay đổi",
     "percent": "Phần trăm",
     "yes": "Có",
-    "no": "Không"
+    "no": "Không",
+    "moreInfoAbout": "Thêm thông tin về {{label}}",
+    "annualized": "Hàng năm:"
+  },
+  "accounts": {
+    "allPortfolio": "Toàn bộ Danh mục",
+    "portfolio": "Danh mục",
+    "securitiesAccounts": "Tài khoản Chứng khoán",
+    "cashAccounts": "Tài khoản Tiền mặt",
+    "cryptocurrencyAccounts": "Tài khoản Tiền điện tử",
+    "otherAccounts": "Tài khoản Khác",
+    "selectAccount": "Chọn Tài khoản",
+    "addAccount": "Thêm tài khoản",
+    "selectAnAccount": "Chọn một tài khoản",
+    "searchAccounts": "Tìm kiếm tài khoản...",
+    "chooseAccountToAdd": "Chọn tài khoản để thêm vào so sánh"
+  },
+  "search": {
+    "noSymbolsFound": "Không tìm thấy mã nào",
+    "somethingWentWrong": "Đã xảy ra lỗi"
+  },
+  "charts": {
+    "totalValue": "Tổng giá trị",
+    "netContribution": "Góp góp ròng"
   }
 }

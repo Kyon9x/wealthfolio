@@ -5,6 +5,7 @@ import { formatDate } from "@/lib/utils";
 import { AmountDisplay } from "@wealthfolio/ui";
 import { useState } from "react";
 import { Area, AreaChart, Tooltip, YAxis } from "recharts";
+import { useTranslation } from "react-i18next";
 
 interface HistoryChartData {
   date: string;
@@ -98,15 +99,16 @@ export function HistoryChart({
   data: HistoryChartData[];
   isLoading?: boolean;
 }) {
+  const { t } = useTranslation();
   const { isBalanceHidden } = useBalancePrivacy();
   const [isChartHovered, setIsChartHovered] = useState(false);
 
   const chartConfig = {
     totalValue: {
-      label: "Total Value",
+      label: t("charts.totalValue"),
     },
     netContribution: {
-      label: "Net Contribution",
+      label: t("charts.netContribution"),
     },
   } satisfies ChartConfig;
 
