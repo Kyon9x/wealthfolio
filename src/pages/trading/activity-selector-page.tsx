@@ -1,5 +1,5 @@
-import { useSwingActivities } from "@/hooks/swingfolio/use-swing-activities";
-import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
+import { useSwingActivities } from "@/hooks/trading/use-swing-activities";
+import { useSwingPreferences } from "@/hooks/trading/use-swing-preferences";
 import {
   Badge,
   Button,

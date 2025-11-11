@@ -1,4 +1,4 @@
-import { useSwingPreferences } from "@/hooks/swingfolio/use-swing-preferences";
+import { useSwingPreferences } from "@/hooks/trading/use-swing-preferences";
 import {
   Button,
   Card,

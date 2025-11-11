@@ -1,4 +1,4 @@
-import { PerformanceCalculator, TradeMatcher } from "@/lib/swingfolio";
+import { PerformanceCalculator, TradeMatcher } from "@/lib/trading";
 import type { Holding } from "@/lib/types";
 import type { ClosedTrade, OpenPosition, SwingDashboardData } from "@/types/swingfolio";
 import { useQuery } from "@tanstack/react-query";
