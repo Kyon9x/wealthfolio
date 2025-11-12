@@ -1,7 +1,7 @@
 import { AnimatedToggleGroup } from "@/components/ui/animated-toggle-group";
 import { cn } from "@/lib/utils";
 import { startOfYear, subMonths, subWeeks, subYears } from "date-fns";
-import React, { useCallback } from "react";
+import React, { useCallback, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
 export type TimePeriod = "1D" | "1W" | "1M" | "3M" | "6M" | "YTD" | "1Y" | "3Y" | "5Y" | "ALL";
@@ -96,7 +96,7 @@ const IntervalSelector: React.FC<IntervalSelectorProps> = ({
   initialSelection = DEFAULT_INTERVAL_CODE,
 }) => {
   const { t } = useTranslation();
-  const intervals = createIntervals(t);
+  const intervals = useMemo(() => createIntervals(t), [t]);
 
   const handleValueChange = useCallback(
     (value: TimePeriod) => {
@@ -104,14 +104,18 @@ const IntervalSelector: React.FC<IntervalSelectorProps> = ({
       const dataToReturn = selectedData ?? intervals.find((i) => i.code === DEFAULT_INTERVAL_CODE)!;
       onIntervalSelect(dataToReturn.code, dataToReturn.description, dataToReturn.calculateRange());
     },
-    [onIntervalSelect, intervals],
+    [onIntervalSelect, intervals, t],
   );
 
-  const items = intervals.map((interval) => ({
-    value: interval.code,
-    label: interval.code,
-    title: interval.description,
-  }));
+  const items = useMemo(
+    () =>
+      intervals.map((interval) => ({
+        value: interval.code,
+        label: interval.code,
+        title: interval.description,
+      })),
+    [intervals],
+  );
 
   return (
     <div className={cn("relative w-full min-w-0", className)}>
