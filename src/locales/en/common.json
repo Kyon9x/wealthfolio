@@ -76,5 +76,17 @@
   "charts": {
     "totalValue": "Total Value",
     "netContribution": "Net Contribution"
+  },
+  "intervals": {
+    "1D": "Past day",
+    "1W": "Past week",
+    "1M": "Past month",
+    "3M": "Past 3 months",
+    "6M": "Past 6 months",
+    "YTD": "Year to date",
+    "1Y": "Past year",
+    "3Y": "Past 3 years",
+    "5Y": "Past 5 years",
+    "ALL": "All Time"
   }
 }

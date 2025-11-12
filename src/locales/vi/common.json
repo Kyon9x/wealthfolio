@@ -75,6 +75,18 @@
   },
   "charts": {
     "totalValue": "Tổng giá trị",
-    "netContribution": "Góp góp ròng"
+    "netContribution": "Vốn ròng"
+  },
+  "intervals": {
+    "1D": "Ngày qua",
+    "1W": "Tuần qua",
+    "1M": "Tháng qua",
+    "3M": "3 tháng qua",
+    "6M": "6 tháng qua",
+    "YTD": "Đầu năm đến nay",
+    "1Y": "Năm qua",
+    "3Y": "3 năm qua",
+    "5Y": "5 năm qua",
+    "ALL": "Toàn thời gian"
   }
 }

@@ -1,6 +1,6 @@
-import { useTranslation } from "react-i18next";
-import { format, parseISO, isValid } from "date-fns";
+import { format, isValid, parseISO } from "date-fns";
 import { enUS as en, vi } from "date-fns/locale";
+import { useTranslation } from "react-i18next";
 
 /**
  * Hook for providing localized date formatting functions
@@ -149,7 +149,7 @@ export function useDateFormatter() {
   };
 
   // Format date for income chart (compact)
-  const formatIncomeChartDate = (date: Date | string, isMobile: boolean = false) => {
+  const formatIncomeChartDate = (date: Date | string, isMobile = false) => {
     const dateObj = typeof date === "string" ? parseISO(date) : date;
     if (!isValid(dateObj)) return "";
 
@@ -161,6 +161,20 @@ export function useDateFormatter() {
     return isMobile ? format(dateObj, "MMM", { locale }) : format(dateObj, "MMM yy", { locale });
   };
 
+  // Format date and time for display (localized)
+  const formatDateTimeDisplay = (date: Date | string) => {
+    const dateObj = typeof date === "string" ? parseISO(date) : date;
+    if (!isValid(dateObj)) return "";
+
+    const locale = getDateFnsLocale();
+
+    // Use different formats based on language
+    if (currentLang === "vi") {
+      return format(dateObj, "HH:mm dd/MM/yyyy", { locale }); // Vietnamese: "14:30 05/09/2023"
+    }
+    return format(dateObj, "MMM dd, yyyy h:mm a", { locale }); // English: "Sep 15, 2023 2:30 PM"
+  };
+
   return {
     formatChartDate,
     formatChartDateMobile,
@@ -168,6 +182,6 @@ export function useDateFormatter() {
     formatChartTooltipMobile,
     formatActivityDate,
     formatIncomeChartDate,
-    currentLang,
+    formatDateTimeDisplay,
   };
 }

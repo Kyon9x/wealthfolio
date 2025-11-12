@@ -1,3 +1,4 @@
+import { PERFORMANCE_CHART_COLORS } from "@/components/performance-chart-colors";
 import {
   ChartConfig,
   ChartContainer,
@@ -6,13 +7,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { PERFORMANCE_CHART_COLORS } from "@/components/performance-chart-colors";
+import { useDateFormatter } from "@/hooks/use-date-formatter";
 import { ReturnData } from "@/lib/types";
 import { formatPercent } from "@wealthfolio/ui";
 import { differenceInDays, differenceInMonths, parseISO } from "date-fns";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
-import { useDateFormatter } from "@/hooks/use-date-formatter";
 
 interface PerformanceChartProps {
   data: {
@@ -80,7 +80,7 @@ export function PerformanceChart({ data }: PerformanceChartProps) {
     name,
   ) => {
     const formattedValue = formatPercent(Number(value));
-    return [formattedValue, name.toString()];
+    return [`${name.toString()}: `, formattedValue];
   };
 
   const tooltipLabelFormatter = (label: string) => formatChartTooltip(parseISO(label));
