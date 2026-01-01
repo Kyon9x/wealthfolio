@@ -67,5 +67,20 @@
     "ready_for_qa_revalidation": false
   },
   "status": "human_review",
-  "planStatus": "review"
+  "planStatus": "review",
+  "qa_iteration_history": [
+    {
+      "iteration": 1,
+      "status": "approved",
+      "timestamp": "2026-01-01T14:11:22.283711+00:00",
+      "issues": [],
+      "duration_seconds": 307.82
+    }
+  ],
+  "qa_stats": {
+    "total_iterations": 1,
+    "last_iteration": 1,
+    "last_status": "approved",
+    "issues_by_type": {}
+  }
 }
