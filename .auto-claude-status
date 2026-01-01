@@ -1,0 +1,25 @@
+{
+  "active": true,
+  "spec": "001-simple-task-to-fix-the-cursor-error-in-number-inpu",
+  "state": "complete",
+  "subtasks": {
+    "completed": 2,
+    "total": 2,
+    "in_progress": 0,
+    "failed": 0
+  },
+  "phase": {
+    "current": "Fix Cursor Position in Number Inputs",
+    "id": 1,
+    "total": 2
+  },
+  "workers": {
+    "active": 0,
+    "max": 1
+  },
+  "session": {
+    "number": 2,
+    "started_at": "2026-01-01T21:02:36.267919"
+  },
+  "last_update": "2026-01-01T21:06:14.462741"
+}

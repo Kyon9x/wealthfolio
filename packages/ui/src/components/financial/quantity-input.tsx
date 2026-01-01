@@ -17,6 +17,20 @@ const QuantityInput = React.forwardRef<HTMLInputElement, QuantityInputProps>(
           ? defaultValue
           : "";
 
+    // Track cursor position to preserve it during edits
+    const cursorPositionRef = React.useRef<number>(0);
+    const inputRef = React.useRef<HTMLInputElement | null>(null);
+
+    // Combine refs to ensure we have access to the input element
+    React.useImperativeHandle(ref, () => inputRef.current!);
+
+    // Restore cursor position after value changes
+    React.useEffect(() => {
+      if (inputRef.current && document.activeElement === inputRef.current) {
+        inputRef.current.setSelectionRange(cursorPositionRef.current, cursorPositionRef.current);
+      }
+    }, [sanitizedValue]);
+
     const handleChange = React.useCallback(
       (e: React.ChangeEvent<HTMLInputElement>) => {
         // Allow negative sign only at the start if allowNegative is true
@@ -27,6 +41,9 @@ const QuantityInput = React.forwardRef<HTMLInputElement, QuantityInputProps>(
         if (!regex.test(rawValue)) {
           return;
         }
+
+        // Store cursor position before processing
+        const cursorPos = e.target.selectionStart ?? 0;
 
         // Ensure only one decimal point
         const decimalIndex = rawValue.indexOf(".");
@@ -42,6 +59,9 @@ const QuantityInput = React.forwardRef<HTMLInputElement, QuantityInputProps>(
             processedValue = processedValue.slice(0, decimalIndex + maxDecimalPlaces + 1);
           }
         }
+
+        // Update cursor position ref for restoration after render
+        cursorPositionRef.current = cursorPos;
 
         // Call the original onChange with the processed value
         if (onChange) {
@@ -64,7 +84,7 @@ const QuantityInput = React.forwardRef<HTMLInputElement, QuantityInputProps>(
         inputMode="decimal"
         placeholder="0.00"
         className={cn("text-right", className)}
-        ref={ref}
+        ref={inputRef}
         {...props}
         value={sanitizedValue}
         onChange={handleChange}
