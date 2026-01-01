@@ -25,7 +25,8 @@
           "verification": {
             "type": "manual",
             "run": "Test in activity form - enter number, place cursor in middle, type - should insert at cursor position"
-          }
+          },
+          "updated_at": "2026-01-01T14:03:49.072911+00:00"
         },
         {
           "id": "subtask-1-2",
@@ -49,5 +50,6 @@
     "created_at": "2025-01-01T21:00:00Z",
     "complexity": "simple",
     "estimated_sessions": 1
-  }
+  },
+  "last_updated": "2026-01-01T14:03:49.072921+00:00"
 }
