@@ -32,16 +32,18 @@
           "id": "subtask-1-2",
           "description": "Fix MoneyInput cursor position restoration using useEffect with ref",
           "service": "main",
-          "status": "pending",
+          "status": "completed",
           "files_to_create": [],
           "files_to_modify": [
             "packages/ui/src/components/financial/money-input.tsx"
           ],
           "patterns_from": [],
+          "notes": "Added cursorPositionRef to track cursor position during edits. Added inputRef with useImperativeHandle to properly expose input element. Added useEffect to restore cursor position after controlledValue changes. Store cursor position in handleChange before processing value. Changed Input ref from ref to inputRef.",
           "verification": {
             "type": "manual",
             "run": "Test in bulk holdings form - enter currency amount, place cursor in middle, type - should insert at cursor position"
-          }
+          },
+          "updated_at": "2026-01-01T14:10:00.000000+00:00"
         }
       ]
     }
@@ -51,5 +53,5 @@
     "complexity": "simple",
     "estimated_sessions": 1
   },
-  "last_updated": "2026-01-01T14:03:49.072921+00:00"
+  "last_updated": "2026-01-01T14:10:00.000000+00:00"
 }
