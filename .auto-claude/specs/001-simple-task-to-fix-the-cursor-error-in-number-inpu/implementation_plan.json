@@ -55,18 +55,22 @@
   },
   "last_updated": "2026-01-01T14:10:45.419747+00:00",
   "qa_signoff": {
-    "status": "approved",
+    "status": "fixes_applied",
     "qa_session": 0,
-    "issues_found": [
+    "fix_session": 1,
+    "issues_fixed": [
       {
-        "description": "No critical or major issues found. Minor issue: No automated tests for cursor position behavior."
+        "title": "Tauri build cache stale path reference",
+        "description": "Build failed with error referencing old project path 'wealthfolio' instead of 'wealthvn'. Stale build cache had incorrect path references.",
+        "fix_commit": "pending",
+        "fix_action": "Removed src-tauri/target directory to clear stale build cache"
       }
     ],
     "tests_passed": {},
-    "timestamp": "2026-01-01T14:10:45.419735+00:00",
-    "ready_for_qa_revalidation": false
+    "timestamp": "2026-01-01T14:29:06.087Z",
+    "ready_for_qa_revalidation": true
   },
-  "status": "human_review",
+  "status": "qa_validation",
   "planStatus": "review",
   "qa_iteration_history": [
     {
@@ -75,12 +79,27 @@
       "timestamp": "2026-01-01T14:11:22.283711+00:00",
       "issues": [],
       "duration_seconds": 307.82
+    },
+    {
+      "iteration": 2,
+      "status": "rejected",
+      "timestamp": "2026-01-01T14:29:15.203000+00:00",
+      "issues": [
+        {
+          "title": "Build failure",
+          "description": "Tauri build failed due to stale cache referencing old project path 'wealthfolio'"
+        }
+      ],
+      "duration_seconds": 0
     }
   ],
   "qa_stats": {
-    "total_iterations": 1,
-    "last_iteration": 1,
-    "last_status": "approved",
-    "issues_by_type": {}
-  }
+    "total_iterations": 2,
+    "last_iteration": 2,
+    "last_status": "rejected",
+    "issues_by_type": {
+      "build": 1
+    }
+  },
+  "updated_at": "2026-01-01T14:30:00.000000+00:00"
 }
