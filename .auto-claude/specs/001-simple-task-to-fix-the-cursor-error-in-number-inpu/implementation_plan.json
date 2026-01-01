@@ -62,7 +62,7 @@
       {
         "title": "Tauri build cache stale path reference",
         "description": "Build failed with error referencing old project path 'wealthfolio' instead of 'wealthvn'. Stale build cache had incorrect path references.",
-        "fix_commit": "pending",
+        "fix_commit": "ba16cc94",
         "fix_action": "Removed src-tauri/target directory to clear stale build cache"
       }
     ],
