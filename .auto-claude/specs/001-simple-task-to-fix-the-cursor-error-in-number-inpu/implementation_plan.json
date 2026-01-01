@@ -53,5 +53,19 @@
     "complexity": "simple",
     "estimated_sessions": 1
   },
-  "last_updated": "2026-01-01T14:10:00.000000+00:00"
+  "last_updated": "2026-01-01T14:10:45.419747+00:00",
+  "qa_signoff": {
+    "status": "approved",
+    "qa_session": 0,
+    "issues_found": [
+      {
+        "description": "No critical or major issues found. Minor issue: No automated tests for cursor position behavior."
+      }
+    ],
+    "tests_passed": {},
+    "timestamp": "2026-01-01T14:10:45.419735+00:00",
+    "ready_for_qa_revalidation": false
+  },
+  "status": "human_review",
+  "planStatus": "review"
 }

@@ -1,11 +1,11 @@
 {
   "active": true,
   "spec": "001-simple-task-to-fix-the-cursor-error-in-number-inpu",
-  "state": "building",
+  "state": "complete",
   "subtasks": {
-    "completed": 1,
+    "completed": 2,
     "total": 2,
-    "in_progress": 1,
+    "in_progress": 0,
     "failed": 0
   },
   "phase": {
@@ -21,5 +21,5 @@
     "number": 2,
     "started_at": "2026-01-01T21:02:36.267919"
   },
-  "last_update": "2026-01-01T21:04:20.265251"
+  "last_update": "2026-01-01T21:06:14.462741"
 }
