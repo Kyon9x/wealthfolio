@@ -15,12 +15,13 @@
           "id": "subtask-1-1",
           "description": "Fix QuantityInput cursor position by adding ref tracking and useEffect restoration",
           "service": "main",
-          "status": "pending",
+          "status": "completed",
           "files_to_create": [],
           "files_to_modify": [
             "packages/ui/src/components/financial/quantity-input.tsx"
           ],
           "patterns_from": [],
+          "notes": "Added cursorPositionRef and inputRef with useImperativeHandle. Added useEffect to restore cursor position after sanitizedValue changes. Store cursor position in handleChange before processing value.",
           "verification": {
             "type": "manual",
             "run": "Test in activity form - enter number, place cursor in middle, type - should insert at cursor position"
