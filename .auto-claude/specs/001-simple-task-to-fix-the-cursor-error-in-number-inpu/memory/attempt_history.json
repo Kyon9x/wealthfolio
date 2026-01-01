@@ -1,0 +1,33 @@
+{
+  "subtasks": {
+    "subtask-1-1": {
+      "attempts": [
+        {
+          "session": 1,
+          "timestamp": "2026-01-01T21:03:54.204961",
+          "approach": "Implemented: Fix QuantityInput cursor position by adding ref tracking and useEffect restoration",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    },
+    "subtask-1-2": {
+      "attempts": [
+        {
+          "session": 2,
+          "timestamp": "2026-01-01T21:05:51.527747",
+          "approach": "Implemented: Fix MoneyInput cursor position restoration using useEffect with ref",
+          "success": true,
+          "error": null
+        }
+      ],
+      "status": "completed"
+    }
+  },
+  "stuck_subtasks": [],
+  "metadata": {
+    "created_at": "2026-01-01T21:02:36.267198",
+    "last_updated": "2026-01-01T21:05:51.527760"
+  }
+}

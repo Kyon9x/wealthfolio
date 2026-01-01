@@ -1,0 +1,22 @@
+{
+  "task_description": "Fix number input cursor position bug in activity and bulk holding forms - characters append to end instead of inserting at cursor position",
+  "scoped_services": ["main"],
+  "files_to_modify": [
+    "packages/ui/src/components/financial/quantity-input.tsx",
+    "packages/ui/src/components/financial/money-input.tsx"
+  ],
+  "patterns": {
+    "root_cause": "Input handlers using value concatenation or synthetic events without cursor position tracking",
+    "affected_components": ["QuantityInput", "MoneyInput"],
+    "solution_pattern": "use cursorPositionRef + useEffect to restore cursor position after value changes"
+  },
+  "service_contexts": {
+    "main": {
+      "type": "monorepo_ui_package",
+      "location": "packages/ui",
+      "framework": "react",
+      "form_library": "react-hook-form"
+    }
+  },
+  "created_at": "2025-01-01T21:00:00Z"
+}

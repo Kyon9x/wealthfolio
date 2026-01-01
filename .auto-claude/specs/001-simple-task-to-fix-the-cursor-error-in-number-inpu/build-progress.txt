@@ -1,0 +1,28 @@
+# Build Progress
+
+## Completed Subtasks
+
+### subtask-1-1: Fix QuantityInput cursor position (COMPLETED)
+- Status: ✅ Completed
+- Implementation:
+  - Added cursorPositionRef to track cursor position
+  - Added inputRef with useImperativeHandle to properly expose input element
+  - Added useEffect to restore cursor position when sanitizedValue changes
+  - Store cursor position in handleChange before value processing
+- Files Modified:
+  - packages/ui/src/components/financial/quantity-input.tsx
+- Commit: def26de8
+
+### subtask-1-2: Fix MoneyInput cursor position restoration (COMPLETED)
+- Status: ✅ Completed
+- Implementation:
+  - Added cursorPositionRef to track cursor position during edits
+  - Added inputRef with useImperativeHandle to properly expose input element
+  - Added useEffect to restore cursor position after controlledValue changes
+  - Store cursor position in handleChange before processing value
+  - Changed Input ref from ref to inputRef
+- Files Modified:
+  - packages/ui/src/components/financial/money-input.tsx
+- Commit: f5edf622
+
+## All Subtasks Completed ✅
