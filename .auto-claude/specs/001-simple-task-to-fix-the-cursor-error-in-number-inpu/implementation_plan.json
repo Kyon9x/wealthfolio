@@ -53,24 +53,29 @@
     "complexity": "simple",
     "estimated_sessions": 1
   },
-  "last_updated": "2026-01-01T14:10:45.419747+00:00",
+  "last_updated": "2026-01-01T14:33:46.281044+00:00",
   "qa_signoff": {
     "status": "fixes_applied",
-    "qa_session": 0,
+    "qa_session": 1,
     "fix_session": 1,
     "issues_fixed": [
       {
-        "title": "Tauri build cache stale path reference",
-        "description": "Build failed with error referencing old project path 'wealthfolio' instead of 'wealthvn'. Stale build cache had incorrect path references.",
-        "fix_commit": "ba16cc94",
-        "fix_action": "Removed src-tauri/target directory to clear stale build cache"
+        "title": "MoneyInput cursor position not adjusted for comma formatting",
+        "description": "Added logic to calculate cursor position adjustment by counting commas before the cursor position. The fix properly accounts for thousand separators added by toLocaleString().",
+        "file": "packages/ui/src/components/financial/money-input.tsx",
+        "lines": "54-65"
       }
     ],
-    "tests_passed": {},
-    "timestamp": "2026-01-01T14:29:06.087Z",
+    "tests_passed": {
+      "unit": "N/A (no unit tests)",
+      "integration": "N/A",
+      "e2e": "N/A",
+      "browser": "SKIPPED (sandbox restrictions)"
+    },
+    "timestamp": "2026-01-01T14:35:00.000000+00:00",
     "ready_for_qa_revalidation": true
   },
-  "status": "qa_validation",
+  "status": "human_review",
   "planStatus": "review",
   "qa_iteration_history": [
     {
@@ -91,14 +96,25 @@
         }
       ],
       "duration_seconds": 0
+    },
+    {
+      "iteration": 1,
+      "status": "rejected",
+      "timestamp": "2026-01-01T14:34:13.107564+00:00",
+      "issues": [
+        {
+          "description": "CRITICAL: MoneyInput cursor position not adjusted for comma formatting. The cursor position is captured before formatCurrency() adds commas via toLocaleString(), but restoration uses the stale position. This causes incorrect cursor behavior when editing values like \"1234\" \u2192 \"1,234\". \n\nMINOR: QuantityInput cursor position may exceed value length after processing (e.g., when limiting decimal places). Should add bounds checking.\n\nLocation: packages/ui/src/components/financial/money-input.tsx:52-58"
+        }
+      ],
+      "duration_seconds": 175.5
     }
   ],
   "qa_stats": {
-    "total_iterations": 2,
-    "last_iteration": 2,
+    "total_iterations": 3,
+    "last_iteration": 1,
     "last_status": "rejected",
     "issues_by_type": {
-      "build": 1
+      "unknown": 2
     }
   },
   "updated_at": "2026-01-01T14:30:00.000000+00:00"

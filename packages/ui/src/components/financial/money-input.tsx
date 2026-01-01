@@ -51,11 +51,24 @@ const MoneyInput = React.forwardRef<HTMLInputElement, InputProps>(
 
       const formattedValue = formatCurrency(rawValue);
 
+      // Calculate cursor position adjustment for comma formatting
+      // Count formatting characters (commas) added before the cursor position
+      let adjustedCursorPos = cursorPos;
+      if (formattedValue && cursorPos > 0) {
+        // Get the portion of formatted value before the cursor position
+        const beforeCursor = formattedValue.substring(0, Math.min(cursorPos, formattedValue.length));
+        // Count formatting characters (commas) in this portion
+        const formattingCharCount = (beforeCursor.match(/,/g) || []).length;
+        adjustedCursorPos = cursorPos + formattingCharCount;
+        // Ensure the adjusted position doesn't exceed the formatted value length
+        adjustedCursorPos = Math.min(adjustedCursorPos, formattedValue.length);
+      }
+
       // Update the input value with the formatted amount
       e.target.value = formattedValue;
 
-      // Store cursor position for restoration after re-render
-      cursorPositionRef.current = cursorPos;
+      // Store adjusted cursor position for restoration after re-render
+      cursorPositionRef.current = adjustedCursorPos;
 
       // Call the original onChange with the numeric value
       if (onChange) {
