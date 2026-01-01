@@ -1,0 +1,52 @@
+{
+  "feature": "Fix Number Input Cursor Position Bug",
+  "spec_name": "fix-number-input-cursor-bug",
+  "workflow_type": "simple",
+  "total_phases": 1,
+  "recommended_workers": 1,
+  "phases": [
+    {
+      "phase": 1,
+      "name": "Fix Cursor Position in Number Inputs",
+      "description": "Add cursor position preservation to QuantityInput and MoneyInput components",
+      "depends_on": [],
+      "subtasks": [
+        {
+          "id": "subtask-1-1",
+          "description": "Fix QuantityInput cursor position by adding ref tracking and useEffect restoration",
+          "service": "main",
+          "status": "pending",
+          "files_to_create": [],
+          "files_to_modify": [
+            "packages/ui/src/components/financial/quantity-input.tsx"
+          ],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "run": "Test in activity form - enter number, place cursor in middle, type - should insert at cursor position"
+          }
+        },
+        {
+          "id": "subtask-1-2",
+          "description": "Fix MoneyInput cursor position restoration using useEffect with ref",
+          "service": "main",
+          "status": "pending",
+          "files_to_create": [],
+          "files_to_modify": [
+            "packages/ui/src/components/financial/money-input.tsx"
+          ],
+          "patterns_from": [],
+          "verification": {
+            "type": "manual",
+            "run": "Test in bulk holdings form - enter currency amount, place cursor in middle, type - should insert at cursor position"
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "created_at": "2025-01-01T21:00:00Z",
+    "complexity": "simple",
+    "estimated_sessions": 1
+  }
+}

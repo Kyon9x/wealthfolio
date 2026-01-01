@@ -1,0 +1,1351 @@
+{
+  "project_root": "/Users/huyenpm/chitq/codes/wealthvn",
+  "project_type": "monorepo",
+  "services": {
+    "src-server": {
+      "name": "src-server",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/src-server",
+      "language": "Rust",
+      "framework": "Axum",
+      "type": "backend",
+      "package_manager": "cargo",
+      "default_port": 3000,
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        },
+        "tests": {
+          "path": "tests",
+          "purpose": "Tests"
+        }
+      },
+      "entry_point": "src/main.rs",
+      "test_directory": "tests",
+      "environment": {
+        "variables": {
+          "DATABASE_URL": {
+            "value": "../db/app.db",
+            "source": "../.env",
+            "type": "path",
+            "sensitive": false,
+            "required": false
+          }
+        },
+        "required_count": 0,
+        "optional_count": 0,
+        "detected_count": 1
+      },
+      "api": {
+        "routes": [
+          {
+            "path": "/healthz",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/readyz",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/accounts",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/accounts/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/holdings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/valuations/history",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/valuations/latest",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/portfolio/update",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/portfolio/recalculate",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/performance/history",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/performance/summary",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/income/summary",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/exchange-rates/latest",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/exchange-rates",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/exchange-rates/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/search",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/bulk",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/import/check",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/import",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/import/mapping",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/providers",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/providers/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/search",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/history",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/:symbol",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/id/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/sync",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/limits",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/limits/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/limits/:id/deposits",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/profile",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/profile/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/data-source/:id",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/secrets",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals/allocations",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/installed",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/install-zip",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/toggle",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/:id",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/runtime/:id",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/enabled-on-startup",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/extract",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/listings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/ratings",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/staging/download",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/install-from-staging",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/staging",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/openapi.json",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/installed",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/install-zip",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/toggle",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/runtime/{id}",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/extract",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/check-update",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/check-all",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/addons/store/staging",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/addons.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals/{id}/progress",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/goals.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals/{id}/allocations-on-date",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/goals.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/goals.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/goals/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/goals.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/accounts",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/accounts.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/accounts/{id}",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api/accounts.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/sync/status",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/sync.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/sync/pair-and-sync",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/sync.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/sync/force-full",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/sync.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/sync/sync-now",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/sync.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/sync/probe",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/sync.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/search",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/bulk",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/import/check",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/activities/import",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/activities.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/portfolio/update",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/portfolio.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/portfolio/recalculate",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/portfolio.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/events/stream",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/portfolio.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/exchange-rates/latest",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/exchange_rates.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/exchange-rates/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/exchange_rates.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/holdings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/holdings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/holdings/item",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/holdings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/valuations/history",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/holdings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/valuations/latest",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/holdings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/performance/history",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/performance.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/performance/summary",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/performance.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/assets.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/assets.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/profile",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/assets.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/profile/{id}",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api/assets.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/assets/data-source/{id}",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api/assets.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/settings",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/settings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/app/info",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/settings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/app/check-update",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/settings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/utilities/database/backup",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/settings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/utilities/database/restore",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/settings.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/providers",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/search",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/history",
+            "methods": [
+              "GET"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/latest",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/{symbol}",
+            "methods": [
+              "PUT"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/id/{id}",
+            "methods": [
+              "DELETE"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/quotes/import",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/sync/history",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          },
+          {
+            "path": "/market-data/sync",
+            "methods": [
+              "POST"
+            ],
+            "file": "src/api/market_data.rs",
+            "framework": "Rust",
+            "requires_auth": false
+          }
+        ],
+        "total_routes": 109,
+        "methods": [
+          "PUT",
+          "POST",
+          "DELETE",
+          "GET"
+        ],
+        "protected_routes": []
+      },
+      "monitoring": {
+        "health_checks": [
+          "/healthz",
+          "/activities/import/mapping"
+        ]
+      }
+    },
+    "src-core": {
+      "name": "src-core",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/src-core",
+      "language": "Rust",
+      "framework": null,
+      "type": "library",
+      "package_manager": "cargo",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        },
+        "tests": {
+          "path": "tests",
+          "purpose": "Tests"
+        }
+      },
+      "entry_point": "src/lib.rs",
+      "test_directory": "tests",
+      "environment": {
+        "variables": {
+          "DATABASE_URL": {
+            "value": "../db/app.db",
+            "source": "../.env",
+            "type": "path",
+            "sensitive": false,
+            "required": false
+          }
+        },
+        "required_count": 0,
+        "optional_count": 0,
+        "detected_count": 1
+      }
+    },
+    "src-tauri": {
+      "name": "src-tauri",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/src-tauri",
+      "language": "Rust",
+      "framework": null,
+      "type": "unknown",
+      "package_manager": "cargo",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "entry_point": "src/main.rs",
+      "environment": {
+        "variables": {
+          "DATABASE_URL": {
+            "value": "../db/app.db",
+            "source": "../.env",
+            "type": "path",
+            "sensitive": false,
+            "required": false
+          }
+        },
+        "required_count": 0,
+        "optional_count": 0,
+        "detected_count": 1
+      }
+    },
+    "docusaurus": {
+      "name": "docusaurus",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/docusaurus",
+      "language": "JavaScript",
+      "framework": "React",
+      "type": "frontend",
+      "package_manager": "npm",
+      "default_port": 3010,
+      "dev_command": "npm run dev",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "dependencies": [
+        "@docusaurus/theme-mermaid",
+        "@docusaurus/core",
+        "@docusaurus/preset-classic",
+        "@mdx-js/react",
+        "clsx",
+        "prism-react-renderer",
+        "react",
+        "react-dom"
+      ],
+      "dev_dependencies": [
+        "prettier"
+      ],
+      "dockerfile": "Dockerfile",
+      "environment": {
+        "variables": {
+          "DATABASE_URL": {
+            "value": "../db/app.db",
+            "source": "../.env",
+            "type": "path",
+            "sensitive": false,
+            "required": false
+          }
+        },
+        "required_count": 0,
+        "optional_count": 0,
+        "detected_count": 1
+      },
+      "consumes": [
+        "src-server.api",
+        "addon-dev-tools.api",
+        "docusaurus"
+      ]
+    },
+    "ui": {
+      "name": "ui",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/packages/ui",
+      "language": "TypeScript",
+      "framework": null,
+      "type": "frontend",
+      "package_manager": "npm",
+      "dev_command": "npm run dev",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "entry_point": "src/index.ts",
+      "dependencies": [
+        "@hookform/resolvers",
+        "@radix-ui/react-accordion",
+        "@radix-ui/react-alert-dialog",
+        "@radix-ui/react-avatar",
+        "@radix-ui/react-checkbox",
+        "@radix-ui/react-collapsible",
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dropdown-menu",
+        "@radix-ui/react-hover-card",
+        "@radix-ui/react-label",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-progress",
+        "@radix-ui/react-radio-group",
+        "@radix-ui/react-scroll-area",
+        "@radix-ui/react-select",
+        "@radix-ui/react-separator",
+        "@radix-ui/react-slot",
+        "@radix-ui/react-switch",
+        "@radix-ui/react-tabs",
+        "@radix-ui/react-toast"
+      ],
+      "dev_dependencies": [
+        "@types/react",
+        "@types/react-dom",
+        "shadcn",
+        "tsup",
+        "typescript"
+      ],
+      "consumes": [
+        "src-server.api",
+        "addon-dev-tools.api"
+      ]
+    },
+    "addon-sdk": {
+      "name": "addon-sdk",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/packages/addon-sdk",
+      "language": "TypeScript",
+      "framework": null,
+      "type": "unknown",
+      "package_manager": "npm",
+      "dev_command": "npm run dev",
+      "key_directories": {
+        "src": {
+          "path": "src",
+          "purpose": "Source code"
+        }
+      },
+      "entry_point": "src/index.ts",
+      "dependencies": [],
+      "dev_dependencies": [
+        "@types/react",
+        "@types/react-dom",
+        "tsup",
+        "typescript"
+      ]
+    },
+    "addon-dev-tools": {
+      "name": "addon-dev-tools",
+      "path": "/Users/huyenpm/chitq/codes/wealthvn/packages/addon-dev-tools",
+      "language": "JavaScript",
+      "framework": "Express",
+      "type": "backend",
+      "package_manager": "npm",
+      "default_port": 3000,
+      "entry_point": "index.js",
+      "dependencies": [
+        "commander",
+        "express",
+        "cors",
+        "chokidar"
+      ],
+      "dev_dependencies": [],
+      "api": {
+        "routes": [
+          {
+            "path": "/health",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/status",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/manifest.json",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/addon.js",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/reload",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/files",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/test",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/debug",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          },
+          {
+            "path": "/ping",
+            "methods": [
+              "GET"
+            ],
+            "file": "dev-server.js",
+            "framework": "Express",
+            "requires_auth": false
+          }
+        ],
+        "total_routes": 9,
+        "methods": [
+          "GET"
+        ],
+        "protected_routes": []
+      },
+      "monitoring": {
+        "health_checks": [
+          "/health",
+          "/ping"
+        ]
+      }
+    }
+  },
+  "infrastructure": {
+    "dockerfile": "Dockerfile",
+    "ci": "GitHub Actions",
+    "ci_workflows": [
+      "docker-publish.yml",
+      "release.yml",
+      "docs.yml"
+    ]
+  },
+  "conventions": {
+    "js_linting": "ESLint",
+    "typescript": true
+  },
+  "monorepo_tool": "pnpm-workspace"
+}

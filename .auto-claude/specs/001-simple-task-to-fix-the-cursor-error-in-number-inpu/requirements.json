@@ -1,0 +1,4 @@
+{
+  "task_description": "hi there, in activity adding or edit for both activity and bulk holding in the number field. when ever I put the cusor to edit the number. when I type the number is insert into the last of line. it's not expected. we should insert number in current cursor place. can you help to analyze and fix",
+  "workflow_type": "bug_fix"
+}
