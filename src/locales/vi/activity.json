@@ -190,7 +190,8 @@
     "ratio": "Tỷ lệ",
     "amount": "Số tiền",
     "price": "Giá",
-    "totalValue": "Tổng giá trị"
+    "totalValue": "Tổng giá trị",
+    "to": "đến"
   },
   "mobile": {
     "noActivitiesFound": "Không tìm thấy hoạt động",
@@ -510,6 +511,7 @@
       "cancel": "Hủy",
       "confirmImport": "Xác nhận nhập",
       "importing": "Đang nhập..."
-    }
+    },
+    "cannotChangeTransferType": "Không thể thay đổi loại chuyển khoản khi chỉnh sửa. Vui lòng xóa và tạo lại để thay đổi chi tiết chuyển khoản."
   }
 }
