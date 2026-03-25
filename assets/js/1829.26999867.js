@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkwealthvn_docs=self.webpackChunkwealthvn_docs||[]).push([[1829],{1829(e,c,s){s.d(c,{createPacketServices:()=>a.$});var a=s(790);s(6100)}}]);
