@@ -27,11 +27,7 @@
     "type-check": "tsc --noEmit && pnpm -r type-check",
     "type-check:root": "tsc --noEmit",
     "check": "pnpm format:check && pnpm lint:quiet && pnpm type-check",
-    "publish:sdk": "cd packages/addon-sdk && npm publish --access public",
-    "publish:ui": "cd packages/ui && npm publish --access public",
-    "publish:addon-dev-tools": "cd packages/addon-dev-tools && npm publish --access public",
-    "addon:create": "cd packages/addon-dev-tools && node cli.js create",
-    "addon:dev": "cd packages/addon-dev-tools && node dev-server.js"
+    "publish:ui": "cd packages/ui && npm publish --access public"
   },
   "dependencies": {
     "@docusaurus/core": "3.9.2",

@@ -9,7 +9,6 @@
     // Path mapping for main app
     "paths": {
       "@/*": ["./src/*"],
-      "@wealthvn/addon-sdk": ["packages/addon-sdk/src"],
       "@wealthvn/ui": ["packages/ui/src"],
       "@wealthvn/ui/*": ["packages/ui/src/*"],
       "@/components/ui/*": ["packages/ui/src/components/ui/*"]
@@ -19,7 +18,6 @@
   "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test"],
   "references": [
     { "path": "./tsconfig.node.json" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/addon-sdk" }
+    { "path": "./packages/ui" }
   ]
 }

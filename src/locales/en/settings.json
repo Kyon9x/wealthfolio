@@ -37,6 +37,10 @@
       "title": "Data Export",
       "subtitle": "Backup and export your data"
     },
+    "ai": {
+      "title": "AI Provider",
+      "subtitle": "Configure AI assistant settings"
+    },
     "about": {
       "title": "About",
       "subtitle": "About WealthVN"
@@ -659,5 +663,27 @@
       "exportButton": "Export {{name}}",
       "exportingButton": "Exporting {{name}}..."
     }
+  },
+  "ai": {
+    "title": "AI Provider",
+    "description": "Configure AI providers to power the intelligent assistant.",
+    "providers": "Providers",
+    "noProviders": "No AI providers available",
+    "configured": "Configured",
+    "notConfigured": "Not configured",
+    "noApiKey": "No API key set",
+    "notRequired": "No API key required",
+    "addApiKey": "Add API Key",
+    "updateApiKey": "Update API Key",
+    "removeApiKey": "Remove",
+    "saveApiKey": "Save API Key",
+    "cancel": "Cancel",
+    "saving": "Saving...",
+    "apiKeySaved": "API key saved successfully",
+    "apiKeyRemoved": "API key removed",
+    "removeConfirmTitle": "Remove API Key?",
+    "removeConfirmDescription": "This will remove the stored API key for {{provider}}. You will need to re-enter it to use this provider.",
+    "remove": "Remove",
+    "comingSoon": "More providers coming soon"
   }
 }

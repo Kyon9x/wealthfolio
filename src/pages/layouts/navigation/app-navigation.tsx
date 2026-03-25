@@ -1,6 +1,4 @@
-import { getDynamicNavItems, subscribeToNavigationUpdates } from "@/addons/addons-runtime-context";
 import { Icons } from "@/components/ui/icons";
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 
 export interface NavLink {
@@ -12,33 +10,13 @@ export interface NavLink {
 export interface NavigationProps {
   primary: NavLink[];
   secondary?: NavLink[];
-  addons?: NavLink[];
 }
 
 export function useNavigation() {
   const { t } = useTranslation("common");
-  const [dynamicItems, setDynamicItems] = useState<NavigationProps["primary"]>([]);
-
-  // Subscribe to navigation updates from addons
-  useEffect(() => {
-    const updateDynamicItems = () => {
-      const itemsFromRuntime = getDynamicNavItems();
-      setDynamicItems(itemsFromRuntime);
-    };
-
-    // Initial load
-    updateDynamicItems();
-
-    // Subscribe to updates
-    const unsubscribe = subscribeToNavigationUpdates(updateDynamicItems);
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   // Build static navigation with translations
-  const staticNavigation: NavigationProps = {
+  const navigation: NavigationProps = {
     primary: [
       {
         icon: <Icons.Dashboard className="size-6" />,
@@ -70,6 +48,11 @@ export function useNavigation() {
         title: t("navigation.activities"),
         href: "/activities",
       },
+      {
+        icon: <Icons.Sparkles className="size-6" />,
+        title: t("navigation.ai"),
+        href: "/ai",
+      },
     ],
     secondary: [
       {
@@ -78,13 +61,6 @@ export function useNavigation() {
         href: "/settings",
       },
     ],
-  };
-
-  // Combine static navigation items with addons grouped separately
-  const navigation: NavigationProps = {
-    primary: staticNavigation.primary,
-    secondary: staticNavigation.secondary,
-    addons: dynamicItems,
   };
 
   return navigation;

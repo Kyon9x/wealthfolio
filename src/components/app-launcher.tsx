@@ -272,7 +272,6 @@ export function AppLauncher() {
     const navItems = [
       ...(navigation.primary ?? []),
       ...(navigation.secondary ?? []),
-      ...(navigation.addons ?? []),
     ] as LauncherActionItem[];
 
     return [...quickActions, ...navItems];

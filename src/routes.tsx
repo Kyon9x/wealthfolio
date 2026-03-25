@@ -1,4 +1,3 @@
-import { Suspense, useEffect, useState } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { AppLayout } from "@/pages/layouts/app-layout";
@@ -20,7 +19,6 @@ import SettingsAppearancePage from "@/pages/settings/appearance/appearance-page"
 import AccountPage from "./pages/account/account-page";
 import AssetProfilePage from "./pages/asset/asset-profile-page";
 import OnboardingPage from "./pages/onboarding/onboarding-page";
-import AddonSettingsPage from "./pages/settings/addons/addon-settings";
 import ContributionLimitPage from "./pages/settings/contribution-limits/contribution-limits-page";
 import ExportSettingsPage from "./pages/settings/exports/exports-page";
 import GeneralSettingsPage from "./pages/settings/general/general-page";
@@ -28,36 +26,16 @@ import GeneralSettingsPage from "./pages/settings/general/general-page";
 import MarketDataImportPage from "./pages/settings/market-data/market-data-import-page";
 import MarketDataSettingsPage from "./pages/settings/market-data/market-data-settings";
 import useGlobalEventListener from "./use-global-event-listener";
-// import QRScannerPage from './pages/qr-scanner/qr-scanner-page'; // File not found
-import { getDynamicRoutes, subscribeToNavigationUpdates } from "@/addons/addons-runtime-context";
 import NotFoundPage from "@/pages/not-found";
 import AboutSettingsPage from "./pages/settings/about/about-page";
 import SwingfolioActivitySelectorPage from "./pages/trading/activities/activity-selector-page";
 import SwingfolioDashboardPage from "./pages/trading/dashboard/dashboard-page";
 import SwingfolioSettingsPage from "./pages/trading/settings/settings-page";
+import AiPage from "./pages/ai/ai-page";
+import AiProviderSettingsPage from "./pages/settings/ai-provider/ai-provider-page";
 
 export function AppRoutes() {
   useGlobalEventListener();
-  const [dynamicRoutes, setDynamicRoutes] = useState<
-    { path: string; component: React.LazyExoticComponent<React.ComponentType<unknown>> }[]
-  >([]);
-
-  // Subscribe to dynamic route updates
-  useEffect(() => {
-    const updateRoutes = () => {
-      setDynamicRoutes(getDynamicRoutes());
-    };
-
-    // Initial load
-    updateRoutes();
-
-    // Subscribe to updates
-    const unsubscribe = subscribeToNavigationUpdates(updateRoutes);
-
-    return () => {
-      unsubscribe();
-    };
-  }, []);
 
   return (
     <BrowserRouter>
@@ -87,20 +65,7 @@ export function AppRoutes() {
           <Route path="trading" element={<SwingfolioDashboardPage />} />
           <Route path="trading/activities" element={<SwingfolioActivitySelectorPage />} />
           <Route path="trading/settings" element={<SwingfolioSettingsPage />} />
-          {/* Dynamic addon routes */}
-          {dynamicRoutes.map(({ path, component: Component }) => (
-            <Route
-              key={path}
-              path={path}
-              element={
-                <Suspense
-                  fallback={<div className="flex h-64 items-center justify-center">Loading...</div>}
-                >
-                  <Component />
-                </Suspense>
-              }
-            />
-          ))}
+          <Route path="ai" element={<AiPage />} />
           <Route path="settings" element={<SettingsLayout />}>
             <Route index element={<GeneralSettingsPage />} />
             <Route path="general" element={<GeneralSettingsPage />} />
@@ -113,7 +78,7 @@ export function AppRoutes() {
             <Route path="market-data" element={<MarketDataSettingsPage />} />
             <Route path="market-data/import" element={<MarketDataImportPage />} />
             <Route path="securities" element={<AssetsPage />} />
-            <Route path="addons" element={<AddonSettingsPage />} />
+            <Route path="ai" element={<AiProviderSettingsPage />} />
           </Route>
           <Route path="*" element={<NotFoundPage />} />
         </Route>

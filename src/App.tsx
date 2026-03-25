@@ -22,9 +22,6 @@ function App() {
       }),
   );
 
-  // Make QueryClient available globally for addons
-  window.__wealthvn_query_client__ = queryClient;
-
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>

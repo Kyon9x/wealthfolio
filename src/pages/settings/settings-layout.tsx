@@ -67,6 +67,12 @@ export default function SettingsLayout() {
       icon: <Icons.Download className="h-5 w-5" />,
     },
     {
+      title: t("navigation.ai.title"),
+      href: "ai",
+      subtitle: t("navigation.ai.subtitle"),
+      icon: <Icons.Sparkles className="h-5 w-5" />,
+    },
+    {
       title: t("navigation.about.title"),
       href: "about",
       subtitle: t("navigation.about.subtitle"),

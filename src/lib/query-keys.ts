@@ -62,11 +62,6 @@ export const QueryKeys = {
 
   ASSET_HISTORY: "asset-history",
 
-  // Addons
-  INSTALLED_ADDONS: "installedAddons",
-  ADDON_STORE_LISTINGS: "addonStoreListings",
-  ADDON_AUTO_UPDATE_CHECK: "addonAutoUpdateCheck",
-
   secrets: {
     apiKey: (providerId: string) => ["secrets", "apiKey", providerId],
   },

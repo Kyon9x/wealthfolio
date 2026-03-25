@@ -37,6 +37,10 @@
       "title": "Xuất dữ liệu",
       "subtitle": "Sao lưu và xuất dữ liệu của bạn"
     },
+    "ai": {
+      "title": "Nhà cung cấp AI",
+      "subtitle": "Cấu hình trợ lý AI"
+    },
     "about": {
       "title": "Về ứng dụng",
       "subtitle": "Về WealthVN"
@@ -659,5 +663,27 @@
       "exportButton": "Xuất {{name}}",
       "exportingButton": "Đang xuất {{name}}..."
     }
+  },
+  "ai": {
+    "title": "Nhà cung cấp AI",
+    "description": "Cấu hình nhà cung cấp AI để cấp sức mạnh cho trợ lý.",
+    "providers": "Nhà cung cấp",
+    "noProviders": "Không có nhà cung cấp AI nào",
+    "configured": "Đã cấu hình",
+    "notConfigured": "Chưa cấu hình",
+    "noApiKey": "Chưa đặt khóa API",
+    "notRequired": "Không cần khóa API",
+    "addApiKey": "Thêm khóa API",
+    "updateApiKey": "Cập nhật khóa API",
+    "removeApiKey": "Gỡ bỏ",
+    "saveApiKey": "Lưu khóa API",
+    "cancel": "Hủy",
+    "saving": "Đang lưu...",
+    "apiKeySaved": "Đã lưu khóa API thành công",
+    "apiKeyRemoved": "Đã gỡ bỏ khóa API",
+    "removeConfirmTitle": "Gỡ bỏ khóa API?",
+    "removeConfirmDescription": "Điều này sẽ gỡ bỏ khóa API đã lưu của {{provider}}. Bạn sẽ cần nhập lại để sử dụng nhà cung cấp này.",
+    "remove": "Gỡ bỏ",
+    "comingSoon": "Sẽ có thêm nhà cung cấp sớm"
   }
 }

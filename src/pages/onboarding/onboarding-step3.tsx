@@ -13,7 +13,6 @@ export const OnboardingStep3: React.FC = () => {
     { id: "explore-dashboard", label: t("step3.checklist.exploreDashboard") },
     { id: "create-goals", label: t("step3.checklist.createGoals") },
     { id: "set-limits", label: t("step3.checklist.setLimits") },
-    { id: "install-addons", label: t("step3.checklist.installAddons") },
   ];
 
   const toggleChecklistItem = (id: string) => {
