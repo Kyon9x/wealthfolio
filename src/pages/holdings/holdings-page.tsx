@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/sheet";
 import { QueryKeys } from "@/lib/query-keys";
 import { useQueries } from "@tanstack/react-query";
-import { AnimatedToggleGroup, AmountDisplay, Page, PageContent, PageHeader } from "@wealthvn/ui";
+import { AnimatedToggleGroup, AmountDisplay, Page, PageContent, PageHeader } from "@/ui";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 

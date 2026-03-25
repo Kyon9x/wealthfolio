@@ -1,14 +1,14 @@
 import { formatValidationStatus } from "@/lib/quote-import-utils";
 import { QuoteImport } from "@/lib/types/quote-import";
-import { Badge } from "@wealthvn/ui/components/ui/badge";
+import { Badge } from "@/ui/components/ui/badge";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@wealthvn/ui/components/ui/card";
-import { Icons } from "@wealthvn/ui/components/ui/icons";
+} from "@/ui/components/ui/card";
+import { Icons } from "@/ui/components/ui/icons";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@wealthvn/ui/components/ui/table";
+} from "@/ui/components/ui/table";
 import { useTranslation } from "react-i18next";
 
 interface QuotePreviewTableProps {

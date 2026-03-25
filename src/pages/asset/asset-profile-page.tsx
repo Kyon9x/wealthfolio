@@ -13,7 +13,7 @@ import { DataSource, PORTFOLIO_ACCOUNT_ID } from "@/lib/constants";
 import { QueryKeys } from "@/lib/query-keys";
 import { Asset, Country, Holding, Quote, Sector } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { AnimatedToggleGroup, Page, PageContent, PageHeader } from "@wealthvn/ui";
+import { AnimatedToggleGroup, Page, PageContent, PageHeader } from "@/ui";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";

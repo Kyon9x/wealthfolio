@@ -29,7 +29,7 @@ import {
   PopoverContent,
   PopoverTrigger,
   formatAmount,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { formatQuantity } from "@/lib/utils";
 import {
   useReactTable,

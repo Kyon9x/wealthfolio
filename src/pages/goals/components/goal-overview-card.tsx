@@ -6,7 +6,7 @@
 import { MetricDisplay } from "@/components/metric-display";
 import { formatTimeRemaining } from "@/lib/date-utils";
 import type { Goal } from "@/lib/types";
-import { formatAmount, Icons } from "@wealthvn/ui";
+import { formatAmount, Icons } from "@/ui";
 import { useTranslation } from "react-i18next";
 
 interface GoalOverviewCardProps {

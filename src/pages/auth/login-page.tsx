@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
   Input,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { FormEvent, useState } from "react";
 
 export function LoginPage() {

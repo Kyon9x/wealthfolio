@@ -28,7 +28,7 @@ import {
   PageContent,
   PageHeader,
   Separator,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { subMonths } from "date-fns";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";

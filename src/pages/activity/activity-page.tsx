@@ -16,7 +16,7 @@ import {
   Page,
   PageContent,
   PageHeader,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { debounce } from "lodash";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

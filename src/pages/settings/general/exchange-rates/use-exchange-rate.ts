@@ -9,7 +9,7 @@ import {
   deleteExchangeRate as deleteExchangeRateApi,
 } from "@/commands/exchange-rates";
 import { QueryKeys } from "@/lib/query-keys";
-import { worldCurrencies } from "@wealthvn/ui";
+import { worldCurrencies } from "@/ui";
 
 export function useExchangeRates() {
   const getCurrencyName = (code: string) => {

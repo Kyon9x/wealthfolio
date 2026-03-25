@@ -1,0 +1,25 @@
+{
+  "chat": {
+    "title": "Trợ lý AI",
+    "conversations": "Hội thoại",
+    "inputPlaceholder": "Gửi tin nhắn...",
+    "disclaimer": "Câu trả lời có thể không chính xác. Không phải lời khuyên tài chính.",
+    "stop": "Dừng",
+    "welcome": "Xin chào!",
+    "welcomeSubtitle": "Tôi có thể giúp gì cho bạn hôm nay?",
+    "suggestions": {
+      "performance": "Danh mục đầu tư của tôi hoạt động thế nào trong năm nay?",
+      "holdings": "Những tài sản nào hoạt động tốt nhất?",
+      "dividends": "Tổng quan thu nhập cổ tức của tôi",
+      "allocation": "Phân bổ tài sản của tôi"
+    }
+  },
+  "threadList": {
+    "newThread": "Hội thoại mới",
+    "searchPlaceholder": "Tìm kiếm hội thoại...",
+    "pinned": "Đã ghim",
+    "recent": "Gần đây",
+    "noThreads": "Chưa có hội thoại nào.",
+    "noSearchResults": "Không tìm thấy hội thoại nào phù hợp."
+  }
+}

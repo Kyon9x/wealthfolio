@@ -2,9 +2,9 @@ import React from "react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { formatPercent } from "@wealthvn/ui";
-import { AmountDisplay } from "@wealthvn/ui";
-import { QuantityDisplay } from "@wealthvn/ui";
+import { formatPercent } from "@/ui";
+import { AmountDisplay } from "@/ui";
+import { QuantityDisplay } from "@/ui";
 import { useBalancePrivacy } from "@/hooks/use-balance-privacy";
 import { useTranslation } from "react-i18next";
 

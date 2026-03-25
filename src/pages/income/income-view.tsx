@@ -14,7 +14,7 @@ import {
     AnimatedToggleGroup,
     GainPercent,
     PrivacyAmount,
-} from "@wealthvn/ui";
+} from "@/ui";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Cell, Pie, PieChart } from "recharts";

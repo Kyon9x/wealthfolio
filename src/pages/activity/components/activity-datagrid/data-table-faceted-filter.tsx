@@ -14,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
-import { Icons } from "@wealthvn/ui";
+import { Icons } from "@/ui";
 import { useTranslation } from "react-i18next";
 
 interface DataTableFacetedFilterProps {

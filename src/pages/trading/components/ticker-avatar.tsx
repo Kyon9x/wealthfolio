@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Avatar, AvatarImage, AvatarFallback } from "@wealthvn/ui";
+import { Avatar, AvatarImage, AvatarFallback } from "@/ui";
 
 interface TickerAvatarProps {
   symbol: string;

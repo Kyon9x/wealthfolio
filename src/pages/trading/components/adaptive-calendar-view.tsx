@@ -1,4 +1,4 @@
-import { Button, Icons, GainAmount } from "@wealthvn/ui";
+import { Button, Icons, GainAmount } from "@/ui";
 import type { CalendarMonth, CalendarDay } from "../types";
 import {
   addYears,

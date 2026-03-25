@@ -5,7 +5,7 @@ import { QueryKeys } from "@/lib/query-keys";
 import { useSettingsContext } from "@/lib/settings-provider";
 import type { Goal, GoalAllocation } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { Button, EmptyPlaceholder, Icons, Page, Skeleton } from "@wealthvn/ui";
+import { Button, EmptyPlaceholder, Icons, Page, Skeleton } from "@/ui";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import GoalsAllocations from "./components/goal-allocations";

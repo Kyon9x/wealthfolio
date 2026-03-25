@@ -1,5 +1,5 @@
 import { Card } from "@/components/ui/card";
-// import { formatAmount, formatPercent } from '@wealthvn/ui';
+// import { formatAmount, formatPercent } from '@/ui';
 
 import {
   RadialBarChart,

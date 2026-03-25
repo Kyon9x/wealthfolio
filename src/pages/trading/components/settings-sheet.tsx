@@ -17,7 +17,7 @@ import {
     SheetDescription,
     SheetHeader,
     SheetTitle,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { useTranslation } from "react-i18next";
 import { useSwingPreferences } from "../hooks/use-swing-preferences";
 

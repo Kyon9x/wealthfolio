@@ -7,8 +7,8 @@ import {
   EmptyPlaceholder,
   Icons,
   formatAmount,
-} from "@wealthvn/ui";
-import { Bar, CartesianGrid, Cell, ComposedChart, Line, XAxis, YAxis } from "@wealthvn/ui/chart";
+} from "@/ui";
+import { Bar, CartesianGrid, Cell, ComposedChart, Line, XAxis, YAxis } from "@/ui/chart";
 import { parseISO } from "date-fns";
 import type { EquityPoint } from "../types";
 import { useTranslation } from "react-i18next";

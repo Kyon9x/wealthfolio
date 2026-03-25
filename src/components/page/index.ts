@@ -1,1 +1,1 @@
-export { Page, PageContent, PageHeader, PageScrollContainer, usePage } from "@wealthvn/ui";
+export { Page, PageContent, PageHeader, PageScrollContainer, usePage } from "@/ui";

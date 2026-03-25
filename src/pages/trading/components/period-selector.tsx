@@ -1,4 +1,4 @@
-import { AnimatedToggleGroup } from "@wealthvn/ui";
+import { AnimatedToggleGroup } from "@/ui";
 
 type PeriodType = "1M" | "3M" | "6M" | "YTD" | "1Y" | "ALL";
 
