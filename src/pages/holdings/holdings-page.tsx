@@ -145,12 +145,12 @@ export const HoldingsPage = () => {
         break;
       case "sector":
         filteredHoldings = adjustedHoldings.filter(
-          (h) => h.instrument?.sector === sheetFilterName,
+          (h) => h.instrument?.sectors?.some((s) => s.name === sheetFilterName),
         );
         break;
       case "country":
         filteredHoldings = adjustedHoldings.filter(
-          (h) => h.instrument?.country === sheetFilterName,
+          (h) => h.instrument?.countries?.some((c) => c.name === sheetFilterName),
         );
         break;
       case "currency":
@@ -176,7 +176,7 @@ export const HoldingsPage = () => {
 
   const currentHoldings = useMemo(() => {
     if (!adjustedHoldings) {
-      return { cashHoldings: [], nonCashHoldings: [], filteredNonCashHoldings: [] };
+      return { cashHoldings: [], filteredNonCashHoldings: [] };
     }
 
     const currentHoldings = adjustedHoldings;
@@ -185,10 +185,10 @@ export const HoldingsPage = () => {
     const nonCash =
       currentHoldings.filter((holding) => holding.holdingType?.toLowerCase() !== HoldingType.CASH) ?? [];
 
-    return { cashHoldings: cash, nonCashHoldings: nonCash, filteredNonCashHoldings: nonCash };
+    return { cashHoldings: cash, filteredNonCashHoldings: nonCash };
   }, [adjustedHoldings]);
 
-  const { cashHoldings, nonCashHoldings, filteredNonCashHoldings } = currentHoldings;
+  const { cashHoldings, filteredNonCashHoldings } = currentHoldings;
 
   const renderHoldingsView = () => (
     <div className="space-y-4 p-2 lg:p-4">

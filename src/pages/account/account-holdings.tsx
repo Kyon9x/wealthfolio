@@ -1,12 +1,10 @@
 import { getHoldings } from "@/commands/portfolio";
-import { useAccounts } from "@/hooks/use-accounts";
 import { useDividendAdjustedHoldings } from "@/hooks/use-dividend-adjusted-holdings";
 import { QueryKeys } from "@/lib/query-keys";
-import { Account, Holding, HoldingType } from "@/lib/types";
+import { Holding, HoldingType } from "@/lib/types";
 import { HoldingsTable } from "@/pages/holdings/components/holdings-table";
 import { useQuery } from "@tanstack/react-query";
 import { Button, EmptyPlaceholder, Icons } from "@wealthvn/ui";
-import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 
@@ -25,12 +23,6 @@ const AccountHoldings = ({ accountId, showEmptyState = true }: AccountHoldingsPr
   });
 
   const { adjustedHoldings } = useDividendAdjustedHoldings(holdings ?? undefined);
-
-  const { accounts } = useAccounts();
-
-  const selectedAccount = useMemo(() => {
-    return accounts?.find((acc) => acc.id === accountId) ?? null;
-  }, [accounts, accountId]);
 
   if (!isLoading && !adjustedHoldings?.length) {
     return null;

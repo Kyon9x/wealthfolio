@@ -17,9 +17,11 @@ on:
     branches:
       - main
       - develop
+    types: [opened, synchronize, reopened]
 
 jobs:
   build:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -69,6 +71,7 @@ jobs:
           publish_dir: ./docusaurus/build
 
   lint-docs:
+    if: github.event_name != 'pull_request' || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code

@@ -243,7 +243,6 @@ export const ActivityTable = ({
           const activity = row.original;
           const linkId = activity.transferLinkId ?? (activity as any).transfer_link_id;
           const isExpanded = expandedTransferIds.has(linkId || "");
-          const hasSubRows = activity.subRows && activity.subRows.length > 0;
 
           // Show expander button for TRANSFER_OUT with transfer link
           if (activityType === ActivityType.TRANSFER_OUT && linkId) {
