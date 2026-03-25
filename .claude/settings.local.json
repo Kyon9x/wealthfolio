@@ -12,7 +12,8 @@
       "Bash(pnpm -r build)",
       "Bash(sqlite3:*)",
       "Bash(xargs kill:*)",
-      "Bash(/dev/null pkill:*)"
+      "Bash(/dev/null pkill:*)",
+      "Bash(pnpm run:*)"
     ],
     "deny": [],
     "ask": []

@@ -79,7 +79,7 @@ const ActivityPage = () => {
   });
   const accounts = accountsData ?? [];
 
-  const { deleteActivityMutation, duplicateActivityMutation } = useActivityMutations();
+  const { deleteActivityMutation } = useActivityMutations();
   const {
     flatData,
     totalRowCount,
@@ -107,13 +107,6 @@ const ActivityPage = () => {
     setSelectedActivity(activity);
     setShowDeleteAlert(true);
   }, []);
-
-  const handleDuplicate = useCallback(
-    async (activity: ActivityDetails) => {
-      await duplicateActivityMutation.mutateAsync(activity);
-    },
-    [duplicateActivityMutation],
-  );
 
   const handleDeleteConfirm = async () => {
     if (!selectedActivity?.id) return;

@@ -87,9 +87,13 @@ export function useActivityMutations(
 
   const addActivityMutation = useMutation({
     mutationFn: async (data: NewActivityFormValues) => {
-      const { ...rest } = data;
-      const activity = await createActivity(rest);
-      await createQuoteFromActivity(data);
+      const toAccountId = (data as any).toAccountId;
+      const createData: ActivityCreate = {
+        ...data,
+        toAccountId: toAccountId ? Number(toAccountId) : null,
+      } as ActivityCreate;
+      const activity = await createActivity(createData);
+      await createQuoteFromActivity(createData);
       return activity;
     },
     ...createMutationOptions("adding"),
@@ -97,8 +101,13 @@ export function useActivityMutations(
 
   const updateActivityMutation = useMutation({
     mutationFn: async (data: NewActivityFormValues & { id: string }) => {
-      const activity = await updateActivity(data);
-      await createQuoteFromActivity(data);
+      const toAccountId = (data as any).toAccountId;
+      const updateData: ActivityUpdate = {
+        ...data,
+        toAccountId: toAccountId ? Number(toAccountId) : null,
+      } as ActivityUpdate;
+      const activity = await updateActivity(updateData);
+      await createQuoteFromActivity(updateData);
       return activity;
     },
     ...createMutationOptions("updating"),
@@ -125,7 +134,7 @@ export function useActivityMutations(
       comment: "Duplicated",
     } as NewActivityFormValues;
 
-    return await createActivity(newActivityData);
+    return await createActivity(newActivityData as ActivityCreate);
   };
 
   const duplicateActivityMutation = useMutation({

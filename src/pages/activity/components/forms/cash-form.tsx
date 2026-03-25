@@ -1,4 +1,5 @@
 import { Textarea } from "@/components/ui/textarea";
+import { ActivityDetails } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -76,11 +77,11 @@ export const CashForm = ({
             control={control}
             types={cashTypes}
             columns={3}
-            disabled={isEditingTransfer}
+            disabled={!!isEditingTransfer}
           />
           {isEditingTransfer && (
             <p className="text-muted-foreground text-xs mt-2">
-              {t("form.cannotChangeTransferType")}
+              {t("import.cannotChangeTransferType")}
             </p>
           )}
         </div>
