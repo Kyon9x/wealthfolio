@@ -1,5 +1,6 @@
 use super::registry::ServiceContext;
 use std::sync::{Arc, RwLock};
+use wealthvn_ai::{AiProviderServiceTrait, ChatService, ChatConfig, ProviderService};
 use wealthvn_core::{
     accounts::{AccountRepository, AccountService},
     activities::{ActivityRepository, ActivityService},
@@ -20,7 +21,9 @@ use wealthvn_core::{
     AssetRepository, AssetService,
 };
 
-// Other imports
+use crate::ai_chat::ChatRepository;
+use crate::context::TauriAiEnvironment;
+use crate::secret_store::KeyringSecretStore;
 
 pub async fn initialize_context(
     app_data_dir: &str,
@@ -137,6 +140,30 @@ pub async fn initialize_context(
 
     let vn_assets_sync_service = Arc::new(VnAssetsSyncService::new(pool.clone()));
 
+    // Initialize AI services
+    let secret_store = Arc::new(KeyringSecretStore::default());
+    let chat_repository = Arc::new(ChatRepository::new(pool.clone(), writer.clone()));
+
+    let ai_environment = Arc::new(TauriAiEnvironment::new(
+        base_currency.clone(),
+        account_service.clone(),
+        activity_service.clone(),
+        holdings_service.clone(),
+        valuation_service.clone(),
+        goal_service.clone(),
+        settings_service.clone(),
+        secret_store.clone(),
+        chat_repository.clone(),
+        market_data_service.clone(),
+        performance_service.clone(),
+        income_service.clone(),
+    ));
+
+    let ai_provider_service: Arc<dyn AiProviderServiceTrait> = Arc::new(ProviderService::new(ai_environment.clone()));
+
+    // Create the ChatService with default config
+    let ai_chat_service = Arc::new(ChatService::new(ai_environment, ChatConfig::default()));
+
     Ok(ServiceContext {
         base_currency,
         instance_id,
@@ -154,5 +181,8 @@ pub async fn initialize_context(
         holdings_service,
         valuation_service,
         vn_assets_sync_service,
+        ai_provider_service,
+        ai_chat_service,
+        ai_chat_repository: chat_repository,
     })
 }

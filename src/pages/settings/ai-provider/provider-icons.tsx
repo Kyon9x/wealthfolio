@@ -4,7 +4,7 @@
  */
 
 import { LucideIcon } from "lucide-react";
-import { Icons } from "@/ui";
+import { Icons } from "@/ui/components/ui/icons";
 
 export interface ProviderIconProps {
   name: string;

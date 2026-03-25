@@ -500,6 +500,22 @@ export interface AiProviderSetting {
   requiresApiKey: boolean;
   hasApiKey: boolean;
   isDefault?: boolean;
+  // Extended fields for UI (added in getAiProviders)
+  icon?: string;
+  type?: "api" | "local";
+  models?: Array<{
+    id: string;
+    name: string;
+    capabilities?: ModelCapabilityOverrides;
+    isCatalog: boolean;
+  }>;
+  favoriteModels?: string[];
+  selectedModel?: string;
+  modelCapabilityOverrides?: Record<string, ModelCapabilityOverrides>;
+  toolsAllowlist?: string[] | null;
+  defaultModel?: string;
+  documentationUrl?: string | null;
+  supportsCustomUrl?: boolean;
 }
 
 /**

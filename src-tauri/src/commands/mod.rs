@@ -1,6 +1,7 @@
 pub mod account;
 pub mod activity;
 pub mod addon;
+pub mod ai;
 pub mod asset;
 pub mod error;
 pub mod goal;

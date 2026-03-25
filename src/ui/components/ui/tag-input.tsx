@@ -1,5 +1,5 @@
-import { Badge } from "../badge";
-import { Button } from "../button";
+import { Badge } from "./badge";
+import { Button } from "./button";
 import { cn } from "../../lib/utils";
 import { XIcon } from "lucide-react";
 import * as React from "react";

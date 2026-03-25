@@ -898,14 +898,14 @@ function ProviderSettingsCardWrapper({
     id: provider.id,
     name: provider.name,
     description: provider.description ?? "",
-    type: provider.requiresApiKey ? "api" : "local",
-    icon: "LogoAnthropic", // Default, will be mapped properly
+    type: provider.type ?? (provider.requiresApiKey ? "api" : "local"),
+    icon: provider.icon ?? "LogoAnthropic",
     enabled: provider.enabled,
     isDefault: provider.isDefault ?? false,
     hasApiKey: provider.hasApiKey,
     priority: provider.priority,
     customUrl: provider.url ?? undefined,
-    documentationUrl: undefined,
+    documentationUrl: provider.documentationUrl,
     supportsModelListing: provider.id !== "ollama", // Example: Ollama doesn't support listing
     connectionFields: provider.requiresApiKey
       ? [
@@ -933,11 +933,11 @@ function ProviderSettingsCardWrapper({
             required: true,
           },
         ],
-    models: [],
-    favoriteModels: [],
-    selectedModel: undefined,
-    modelCapabilityOverrides: {},
-    toolsAllowlist: undefined,
+    models: provider.models ?? [],
+    favoriteModels: provider.favoriteModels ?? [],
+    selectedModel: provider.selectedModel,
+    modelCapabilityOverrides: provider.modelCapabilityOverrides ?? {},
+    toolsAllowlist: provider.toolsAllowlist,
   };
 
   return (
@@ -1037,15 +1037,6 @@ export function AiProviderSettings() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h3 className="text-lg font-semibold">AI Providers</h3>
-          <p className="text-sm text-muted-foreground">
-            Configure AI providers to power the intelligent assistant
-          </p>
-        </div>
-      </div>
-
       {sortedProviders.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center py-12">

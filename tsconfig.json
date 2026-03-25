@@ -7,11 +7,12 @@
     "composite": false,
     // Path mapping for main app
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@/components/ui/*": ["./src/ui/components/ui/*"]
     }
   },
   "include": ["src/**/*"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test", "src/ui/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test"],
   "references": [
     { "path": "./tsconfig.node.json" }
   ]

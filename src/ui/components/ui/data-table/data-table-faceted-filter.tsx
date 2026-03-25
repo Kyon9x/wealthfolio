@@ -15,7 +15,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import { Separator } from "../separator";
 
 import { Icons } from "../icons";
-import { cn } from "../../lib/utils";
+import { cn } from "../../../lib/utils";
 
 export interface DataTableFacetedFilterProps<TData, TValue> {
   id: string;

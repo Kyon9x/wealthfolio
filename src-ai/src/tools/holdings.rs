@@ -1,0 +1,233 @@
+//! Holdings tool - fetch portfolio holdings.
+
+use async_trait::async_trait;
+use rust_decimal::prelude::ToPrimitive;
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+
+use super::{MAX_HOLDINGS, ToolContext, ToolResult, ToolWithContext};
+use crate::error::AiError;
+
+// ============================================================================
+// Tool Arguments and Output
+// ============================================================================
+
+/// Arguments for the get_holdings tool.
+#[derive(Debug, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetHoldingsArgs {
+    /// Account ID, or "TOTAL" for all accounts.
+    #[serde(default = "default_account_id")]
+    pub account_id: String,
+
+    /// View mode: "table", "treemap", or "both". Default is "treemap".
+    /// - "table": Show holdings as a detailed list with values and gains
+    /// - "treemap": Show portfolio composition chart with daily performance colors
+    /// - "both": Show treemap first, then table below
+    #[serde(default = "default_view_mode")]
+    pub view_mode: String,
+}
+
+fn default_account_id() -> String {
+    "TOTAL".to_string()
+}
+
+fn default_view_mode() -> String {
+    "treemap".to_string()
+}
+
+/// DTO for holding data in tool output.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct HoldingDto {
+    pub account: String,
+    pub symbol: String,
+    pub name: Option<String>,
+    pub holding_type: String,
+    pub quantity: f64,
+    pub market_value_base: f64,
+    pub cost_basis_base: Option<f64>,
+    pub unrealized_gain_pct: Option<f64>,
+    pub day_change_pct: Option<f64>,
+    pub weight: f64,
+    pub currency: String,
+}
+
+/// Output envelope for holdings tool.
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct GetHoldingsOutput {
+    pub holdings: Vec<HoldingDto>,
+    pub total_value: f64,
+    pub currency: String,
+    pub account_scope: String,
+    /// View mode requested: "table", "treemap", or "both"
+    pub view_mode: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub truncated: Option<bool>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub original_count: Option<usize>,
+}
+
+// ============================================================================
+// Tool Implementation
+// ============================================================================
+
+/// Tool to get portfolio holdings.
+pub struct GetHoldingsTool;
+
+#[async_trait]
+impl<C: ToolContext + Send + Sync> ToolWithContext<C> for GetHoldingsTool {
+    fn definition(&self) -> super::ToolDefinition {
+        super::ToolDefinition::new(
+            "get_holdings",
+            "Get portfolio holdings for an account or all accounts. Returns symbol, quantity, market value, cost basis, and gain/loss for each holding. Use account_id='TOTAL' for aggregate holdings across all accounts. Use viewMode to control display: 'treemap' for visual composition chart with daily performance, 'table' for detailed list, or 'both' to show both views.",
+            serde_json::json!({
+                "type": "object",
+                "properties": {
+                    "accountId": {
+                        "type": "string",
+                        "description": "Account ID to get holdings for, or 'TOTAL' for all accounts",
+                        "default": "TOTAL"
+                    },
+                    "viewMode": {
+                        "type": "string",
+                        "enum": ["table", "treemap", "both"],
+                        "description": "Display mode: 'treemap' for composition chart with daily gains (best for 'how is my portfolio today?'), 'table' for detailed list, 'both' for treemap + table",
+                        "default": "treemap"
+                    }
+                },
+                "required": []
+            }),
+        )
+    }
+
+    async fn call(
+        &self,
+        context: &C,
+        args: serde_json::Value,
+    ) -> Result<ToolResult, AiError> {
+        let start = std::time::Instant::now();
+
+        let args: GetHoldingsArgs = serde_json::from_value(args)
+            .map_err(|e| AiError::InvalidInput(format!("Invalid arguments: {}", e)))?;
+
+        let account_id = &args.account_id;
+        let base_currency = context.base_currency();
+
+        // Fetch holdings
+        let holdings = context
+            .holdings_service()
+            .get_holdings(account_id, &base_currency)
+            .await
+            .map_err(|e| AiError::ToolExecutionFailed(e.to_string()))?;
+
+        // Build account_id -> name lookup
+        let accounts = context
+            .account_service()
+            .get_active_accounts()
+            .unwrap_or_default();
+        let account_names: HashMap<String, String> =
+            accounts.into_iter().map(|a| (a.id, a.name)).collect();
+
+        let original_count = holdings.len();
+
+        // Convert to DTOs, filtering out cash positions, and apply limit
+        let holdings_dto: Vec<HoldingDto> = holdings
+            .into_iter()
+            .filter(|h| h.holding_type != wealthvn_core::holdings::HoldingType::Cash)
+            .take(MAX_HOLDINGS)
+            .map(|h| {
+                // Extract symbol and name from instrument
+                let (symbol, name) = h
+                    .instrument
+                    .as_ref()
+                    .map(|i| (i.symbol.clone(), i.name.clone()))
+                    .unwrap_or_else(|| ("CASH".to_string(), None));
+
+                // Convert HoldingType enum to string
+                let holding_type = match h.holding_type {
+                    wealthvn_core::holdings::HoldingType::Cash => "Cash",
+                    wealthvn_core::holdings::HoldingType::Security => "Security",
+                };
+
+                let account = account_names
+                    .get(&h.account_id)
+                    .cloned()
+                    .unwrap_or_else(|| h.account_id.clone());
+
+                HoldingDto {
+                    account,
+                    symbol,
+                    name,
+                    holding_type: holding_type.to_string(),
+                    quantity: h.quantity.to_f64().unwrap_or(0.0),
+                    market_value_base: h.market_value.base.to_f64().unwrap_or(0.0),
+                    cost_basis_base: h.cost_basis.as_ref().and_then(|c| c.base.to_f64()),
+                    unrealized_gain_pct: h.unrealized_gain_pct.and_then(|d| d.to_f64()),
+                    day_change_pct: h.day_change_pct.and_then(|d| d.to_f64()),
+                    weight: h.weight.to_f64().unwrap_or(0.0),
+                    currency: h.local_currency,
+                }
+            })
+            .collect();
+
+        let returned_count = holdings_dto.len();
+        let total_value: f64 = holdings_dto.iter().map(|h| h.market_value_base).sum();
+        let truncated = original_count > returned_count;
+
+        let output = GetHoldingsOutput {
+            holdings: holdings_dto,
+            total_value,
+            currency: base_currency,
+            account_scope: account_id.clone(),
+            view_mode: args.view_mode.clone(),
+            truncated: if truncated { Some(true) } else { None },
+            original_count: if truncated {
+                Some(original_count)
+            } else {
+                None
+            },
+        };
+
+        let duration_ms = start.elapsed().as_millis();
+
+        Ok(ToolResult::ok(output)
+            .with_count(returned_count)
+            .with_truncation(original_count, returned_count)
+            .with_account_scope(account_id)
+            .with_duration_ms(duration_ms))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_defaults() {
+        assert_eq!(default_account_id(), "TOTAL");
+        assert_eq!(default_view_mode(), "treemap");
+    }
+
+    #[test]
+    fn test_holding_dto_serialization() {
+        let dto = HoldingDto {
+            account: "My Account".to_string(),
+            symbol: "AAPL".to_string(),
+            name: Some("Apple Inc.".to_string()),
+            holding_type: "Security".to_string(),
+            quantity: 100.0,
+            market_value_base: 15000.0,
+            cost_basis_base: Some(12000.0),
+            unrealized_gain_pct: Some(25.0),
+            day_change_pct: Some(1.5),
+            weight: 0.15,
+            currency: "USD".to_string(),
+        };
+
+        let json = serde_json::to_string(&dto).unwrap();
+        assert!(json.contains("\"symbol\":\"AAPL\""));
+        assert!(json.contains("\"quantity\":100"));
+    }
+}

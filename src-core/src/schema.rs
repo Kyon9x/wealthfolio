@@ -251,11 +251,43 @@ diesel::table! {
     }
 }
 
+diesel::table! {
+    ai_messages (id) {
+        id -> Text,
+        thread_id -> Text,
+        role -> Text,
+        content_json -> Text,
+        created_at -> Text,
+    }
+}
+
+diesel::table! {
+    ai_thread_tags (id) {
+        id -> Text,
+        thread_id -> Text,
+        tag -> Text,
+        created_at -> Text,
+    }
+}
+
+diesel::table! {
+    ai_threads (id) {
+        id -> Text,
+        title -> Nullable<Text>,
+        created_at -> Text,
+        updated_at -> Text,
+        config_snapshot -> Nullable<Text>,
+        is_pinned -> Integer,
+    }
+}
+
 diesel::joinable!(accounts -> platforms (platform_id));
 diesel::joinable!(goals_allocation -> accounts (account_id));
 diesel::joinable!(goals_allocation -> goals (goal_id));
 diesel::joinable!(allocation_versions -> goals_allocation (allocation_id));
 diesel::joinable!(quotes -> assets (symbol));
+diesel::joinable!(ai_messages -> ai_threads (thread_id));
+diesel::joinable!(ai_thread_tags -> ai_threads (thread_id));
 
 diesel::allow_tables_to_appear_in_same_query!(
-    accounts,activities,activity_import_profiles,app_settings,assets,contribution_limits,daily_account_valuation,goals,goals_allocation,allocation_versions,holdings_snapshots,market_data_providers,platforms,quotes,vn_assets,vn_assets_sync,vn_historical_records,);
+    accounts,activities,activity_import_profiles,app_settings,assets,contribution_limits,daily_account_valuation,goals,goals_allocation,allocation_versions,holdings_snapshots,market_data_providers,platforms,quotes,vn_assets,vn_assets_sync,vn_historical_records,ai_messages,ai_thread_tags,ai_threads,);

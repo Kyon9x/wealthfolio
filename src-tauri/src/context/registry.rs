@@ -1,8 +1,13 @@
 use std::sync::{Arc, RwLock};
+use wealthvn_ai::{AiProviderServiceTrait, ChatService};
 use wealthvn_core::{
     self, accounts, activities, assets, fx, goals, limits, market_data, portfolio, settings,
     vn_market::VnAssetsSyncService,
 };
+
+use super::TauriAiEnvironment;
+use crate::ai_chat::ChatRepository;
+
 pub struct ServiceContext {
     pub base_currency: Arc<RwLock<String>>,
     pub instance_id: Arc<String>,
@@ -22,6 +27,9 @@ pub struct ServiceContext {
     pub holdings_service: Arc<dyn portfolio::holdings::HoldingsServiceTrait>,
     pub valuation_service: Arc<dyn portfolio::valuation::ValuationServiceTrait>,
     pub vn_assets_sync_service: Arc<VnAssetsSyncService>,
+    pub ai_provider_service: Arc<dyn AiProviderServiceTrait>,
+    pub ai_chat_service: Arc<ChatService<TauriAiEnvironment>>,
+    pub ai_chat_repository: Arc<ChatRepository>,
 }
 
 impl ServiceContext {
@@ -87,5 +95,17 @@ impl ServiceContext {
 
     pub fn vn_assets_sync_service(&self) -> Arc<VnAssetsSyncService> {
         Arc::clone(&self.vn_assets_sync_service)
+    }
+
+    pub fn ai_provider_service(&self) -> Arc<dyn AiProviderServiceTrait> {
+        Arc::clone(&self.ai_provider_service)
+    }
+
+    pub fn ai_chat_service(&self) -> Arc<ChatService<TauriAiEnvironment>> {
+        Arc::clone(&self.ai_chat_service)
+    }
+
+    pub fn ai_chat_repository(&self) -> Arc<ChatRepository> {
+        Arc::clone(&self.ai_chat_repository)
     }
 }
