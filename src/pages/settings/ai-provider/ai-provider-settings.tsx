@@ -905,34 +905,9 @@ function ProviderSettingsCardWrapper({
     hasApiKey: provider.hasApiKey,
     priority: provider.priority,
     customUrl: provider.url ?? undefined,
-    documentationUrl: provider.documentationUrl,
+    documentationUrl: provider.documentationUrl ?? undefined,
     supportsModelListing: provider.id !== "ollama", // Example: Ollama doesn't support listing
-    connectionFields: provider.requiresApiKey
-      ? [
-          {
-            key: "apiKey",
-            label: "API Key",
-            type: "password",
-            placeholder: `Enter your ${provider.name} API key`,
-            required: true,
-          },
-          {
-            key: "baseUrl",
-            label: "Custom Endpoint",
-            type: "text",
-            placeholder: "Leave empty to use default",
-            required: false,
-          },
-        ]
-      : [
-          {
-            key: "baseUrl",
-            label: "Server URL",
-            type: "text",
-            placeholder: "http://localhost:11434",
-            required: true,
-          },
-        ],
+    connectionFields: provider.connectionFields ?? [],
     models: provider.models ?? [],
     favoriteModels: provider.favoriteModels ?? [],
     selectedModel: provider.selectedModel,

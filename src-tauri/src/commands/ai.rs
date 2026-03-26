@@ -194,11 +194,146 @@ pub async fn list_providers(
 }
 
 /// Get the current AI settings (selected provider, model, API key status).
+///
+/// Returns a merged view of all providers combining catalog defaults
+/// with user-configured settings from the settings service.
 #[tauri::command]
 pub async fn get_ai_settings(
     context: State<'_, Arc<ServiceContext>>,
-) -> CommandResult<wealthvn_ai::SimpleSettings> {
-    Ok(context.ai_provider_service().get_settings()?)
+) -> CommandResult<wealthvn_ai::provider_model::AiProvidersResponse> {
+    let catalog = context.ai_provider_service().get_provider_catalog();
+    let capabilities = context.ai_provider_service().get_capabilities();
+    let settings_service = context.settings_service();
+
+    // Get the default provider from settings
+    let default_provider = settings_service
+        .get_setting_value("ai_default_provider")
+        .ok();
+
+    // Merge each provider with user settings
+    let mut merged_providers = Vec::new();
+    for provider in catalog {
+        let provider_id = provider.id.clone();
+
+        // Get user settings for this provider
+        let enabled_key = format!("ai_provider_{}_enabled", provider_id);
+        let url_key = format!("ai_provider_{}_url", provider_id);
+        let favorite_models_key = format!("ai_provider_{}_favorite_models", provider_id);
+        let model_overrides_key = format!("ai_provider_{}_model_overrides", provider_id);
+        let tools_allowlist_key = format!("ai_provider_{}_tools_allowlist", provider_id);
+        let selected_model_key = format!("ai_provider_{}_selected_model", provider_id);
+
+        // Parse user settings
+        let enabled: bool = settings_service
+            .get_setting_value(&enabled_key)
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(provider.default_config.enabled);
+
+        let custom_url = settings_service
+            .get_setting_value(&url_key)
+            .ok()
+            .filter(|v| !v.is_empty());
+
+        let selected_model = settings_service
+            .get_setting_value(&selected_model_key)
+            .ok()
+            .filter(|v| !v.is_empty());
+
+        let favorite_models: Vec<String> = settings_service
+            .get_setting_value(&favorite_models_key)
+            .ok()
+            .and_then(|v| serde_json::from_str(&v).ok())
+            .unwrap_or_default();
+
+        let model_capability_overrides: std::collections::HashMap<String, wealthvn_ai::provider_model::ModelCapabilityOverrides> =
+            settings_service
+                .get_setting_value(&model_overrides_key)
+                .ok()
+                .and_then(|v| serde_json::from_str(&v).ok())
+                .unwrap_or_default();
+
+        let tools_allowlist: Option<Vec<String>> = settings_service
+            .get_setting_value(&tools_allowlist_key)
+            .ok()
+            .and_then(|v| serde_json::from_str(&v).ok());
+
+        // Check if provider has API key
+        let has_api_key = context.ai_provider_service().has_api_key(&provider_id);
+
+        // Build merged models list
+        let mut merged_models = Vec::new();
+        for model in &provider.models {
+            let has_overrides = model_capability_overrides.contains_key(&model.id);
+            // Start with catalog capabilities
+            let mut capabilities = model.capabilities.clone();
+            // Apply overrides if present
+            if let Some(overrides) = model_capability_overrides.get(&model.id) {
+                if let Some(v) = overrides.tools {
+                    capabilities.tools = v;
+                }
+                if let Some(v) = overrides.thinking {
+                    capabilities.thinking = v;
+                }
+                if let Some(v) = overrides.vision {
+                    capabilities.vision = v;
+                }
+                if let Some(v) = overrides.streaming {
+                    capabilities.streaming = v;
+                }
+            }
+
+            merged_models.push(wealthvn_ai::provider_model::MergedModel {
+                id: model.id.clone(),
+                name: None,
+                capabilities,
+                is_catalog: true,
+                is_favorite: favorite_models.contains(&model.id),
+                has_capability_overrides: has_overrides,
+            });
+        }
+
+        // Determine if this is the default provider
+        let is_default = default_provider.as_ref() == Some(&provider_id);
+
+        merged_providers.push(wealthvn_ai::provider_model::MergedProvider {
+            // From catalog
+            id: provider.id.clone(),
+            name: provider.name.clone(),
+            provider_type: provider.provider_type.clone(),
+            icon: provider.icon.clone(),
+            description: provider.description.clone(),
+            env_key: provider.env_key.clone().unwrap_or_default(),
+            connection_fields: provider.connection_fields.clone(),
+            models: merged_models,
+            default_model: provider.default_model.clone(),
+            documentation_url: provider.documentation_url.unwrap_or_default(),
+
+            // From user settings
+            enabled,
+            favorite: false, // Not implemented yet
+            selected_model: selected_model.clone(),
+            custom_url: custom_url.clone(),
+            priority: provider.default_config.priority,
+            favorite_models: favorite_models.clone(),
+            model_capability_overrides,
+            tools_allowlist,
+
+            // Computed
+            has_api_key,
+            is_default,
+            supports_model_listing: provider.provider_type == "api" || provider.provider_type == "local",
+        });
+    }
+
+    // Sort by priority
+    merged_providers.sort_by_key(|p| p.priority);
+
+    Ok(wealthvn_ai::provider_model::AiProvidersResponse {
+        providers: merged_providers,
+        capabilities,
+        default_provider,
+    })
 }
 
 /// Get capability info for AI features.
@@ -320,20 +455,122 @@ pub async fn get_thread_tags(
 // Provider Settings Commands
 // ============================================================================
 
+use wealthvn_ai::provider_model::ModelCapabilityOverrides;
+
 /// Update settings for a specific AI provider.
+///
+/// This command handles updating all aspects of a provider's configuration:
+/// - enabled/disabled state
+/// - API key (via secret storage)
+/// - custom URL for local providers
+/// - favorite models list
+/// - model capability overrides
+/// - tools allowlist
 #[tauri::command]
 pub async fn update_provider_settings(
     context: State<'_, Arc<ServiceContext>>,
     provider_id: String,
     enabled: Option<bool>,
-    api_key: Option<String>,
+    custom_url: Option<String>,
+    favorite_models: Option<Vec<String>>,
+    model_capability_override: Option<ModelCapabilityOverrideData>,
+    tools_allowlist: Option<Option<Vec<String>>>,
+    selected_model: Option<String>,
 ) -> Result<(), String> {
-    let service = context.ai_provider_service();
-    if let Some(key) = api_key {
-        service.set_api_key(&provider_id, &key).map_err(|e| e.to_string())?;
+    // Handle enabled state - store in settings service
+    if let Some(enabled_val) = enabled {
+        let key = format!("ai_provider_{}_enabled", provider_id);
+        let value = if enabled_val { "true" } else { "false" };
+        context
+            .settings_service()
+            .set_setting_value(&key, value)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
     }
-    // TODO: Handle enabled flag when provider service supports it
+
+    // Handle custom URL - store in settings service
+    if let Some(url) = custom_url {
+        let key = format!("ai_provider_{}_url", provider_id);
+        context
+            .settings_service()
+            .set_setting_value(&key, &url)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    }
+
+    // Handle favorite models - store as JSON array
+    if let Some(models) = favorite_models {
+        let key = format!("ai_provider_{}_favorite_models", provider_id);
+        let json_value = serde_json::to_string(&models)
+            .map_err(|e| format!("Failed to serialize favorite models: {}", e))?;
+        context
+            .settings_service()
+            .set_setting_value(&key, &json_value)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    }
+
+    // Handle model capability override - store as JSON object
+    if let Some(override_data) = model_capability_override {
+        let key = format!("ai_provider_{}_model_overrides", provider_id);
+        // Get existing overrides
+        let mut overrides_map: std::collections::HashMap<String, ModelCapabilityOverrides> =
+            context
+                .settings_service()
+                .get_setting_value(&key)
+                .ok()
+                .and_then(|v| serde_json::from_str(&v).ok())
+                .unwrap_or_default();
+
+        if let Some(overrides) = override_data.overrides {
+            overrides_map.insert(override_data.model_id, overrides);
+        } else {
+            overrides_map.remove(&override_data.model_id);
+        }
+
+        let json_value = serde_json::to_string(&overrides_map)
+            .map_err(|e| format!("Failed to serialize model overrides: {}", e))?;
+        context
+            .settings_service()
+            .set_setting_value(&key, &json_value)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    }
+
+    // Handle tools allowlist - store as JSON array (null means all enabled)
+    if let Some(allowlist) = tools_allowlist {
+        let key = format!("ai_provider_{}_tools_allowlist", provider_id);
+        let json_value = serde_json::to_string(&allowlist)
+            .map_err(|e| format!("Failed to serialize tools allowlist: {}", e))?;
+        context
+            .settings_service()
+            .set_setting_value(&key, &json_value)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    }
+
+    // Handle selected model
+    if let Some(model) = selected_model {
+        let key = format!("ai_provider_{}_selected_model", provider_id);
+        context
+            .settings_service()
+            .set_setting_value(&key, &model)
+            .await
+            .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    }
+
+    // Note: API key is handled separately via the secret management commands
+    // (set_secret, get_secret, delete_secret) which use the OS keyring
+
     Ok(())
+}
+
+/// Helper struct for deserializing model capability override data
+#[derive(Debug, Clone, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ModelCapabilityOverrideData {
+    model_id: String,
+    overrides: Option<ModelCapabilityOverrides>,
 }
 
 /// Set or clear the default AI provider.
@@ -342,19 +579,40 @@ pub async fn set_default_provider(
     context: State<'_, Arc<ServiceContext>>,
     provider_id: String,
 ) -> Result<(), String> {
-    // TODO: Implement default provider setting
-    log::info!("Setting default provider to: {}", provider_id);
+    context
+        .settings_service()
+        .set_setting_value("ai_default_provider", &provider_id)
+        .await
+        .map_err(|e: wealthvn_core::Error| e.to_string())?;
+    log::info!("Set default AI provider to: {}", provider_id);
     Ok(())
 }
 
 /// List available models from a provider.
+///
+/// For API providers, this queries the provider's API to get available models.
+/// For local providers, it returns models from the provider configuration.
 #[tauri::command]
 pub async fn list_ai_models(
     context: State<'_, Arc<ServiceContext>>,
     provider_id: String,
-) -> Result<Vec<wealthvn_ai::FetchedModel>, String> {
-    // TODO: Implement model listing
-    log::info!("Listing models for provider: {}", provider_id);
+) -> Result<Vec<wealthvn_ai::provider_model::FetchedModel>, String> {
+    let service = context.ai_provider_service();
+
+    // Check if provider has an API key (if required)
+    let has_api_key = service.has_api_key(&provider_id);
+
+    // For now, return empty list if no API key
+    // TODO: Implement actual API calls to list models from providers
+    if !has_api_key && provider_id != "ollama" {
+        return Ok(vec![]);
+    }
+
+    // For Ollama, we could implement local model listing
+    // For API providers, we'd need to call their respective APIs
+    log::info!("Listing models for provider: {} (has_api_key: {})", provider_id, has_api_key);
+
+    // Return empty for now - this will be implemented with actual API calls
     Ok(vec![])
 }
 
@@ -366,10 +624,10 @@ pub async fn list_ai_models(
 /// Used to persist state like submission status after user actions.
 #[tauri::command]
 pub async fn update_tool_result(
-    context: State<'_, Arc<ServiceContext>>,
-    thread_id: String,
-    tool_call_id: String,
-    result_patch: serde_json::Value,
+    _context: State<'_, Arc<ServiceContext>>,
+    _thread_id: String,
+    _tool_call_id: String,
+    _result_patch: serde_json::Value,
 ) -> CommandResult<()> {
     // TODO: Implement tool result persistence
     // For now, this is a no-op as tool results are stored in the message content

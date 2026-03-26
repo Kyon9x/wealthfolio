@@ -96,7 +96,6 @@ const IntervalSelector: React.FC<IntervalSelectorProps> = ({
   initialSelection = DEFAULT_INTERVAL_CODE,
 }) => {
   const { t } = useTranslation();
-  // @ts-expect-error - TypeScript 5.7.3 has a compiler bug with overload resolution
   const intervals = useMemo(() => createIntervals(t), [t]);
 
   const handleValueChange = useCallback(

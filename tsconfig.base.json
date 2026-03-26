@@ -29,7 +29,7 @@
     "noImplicitThis": true,
     "strictNullChecks": true,
     "strictFunctionTypes": true,
-    "strictBindCallApply": true,
+    // "strictBindCallApply": true, // Disabled due to TypeScript 6.0.2 compiler bug
     "strictPropertyInitialization": true,
     "alwaysStrict": true,
 

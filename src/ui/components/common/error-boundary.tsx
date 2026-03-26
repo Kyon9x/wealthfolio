@@ -12,7 +12,7 @@ interface State {
 }
 
 class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
+  public override state: State = {
     hasError: false,
     error: undefined,
   };
@@ -21,7 +21,7 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error(`Error Boundary Caught Error:
       Message: ${error.message}
       Stack: ${error.stack}
@@ -29,7 +29,7 @@ class ErrorBoundary extends Component<Props, State> {
     `);
   }
 
-  public render() {
+  public override render() {
     if (this.state.hasError) {
       return (
         <div className="flex h-screen w-full flex-col items-center justify-center p-4">
