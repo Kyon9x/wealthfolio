@@ -181,36 +181,82 @@ export function ActivityForm({
         const toAccount = accounts.find((a) => a.value === toAccountId);
 
         if (fromAccount && toAccount) {
-          // Generate a unique transfer link ID to pair the activities
-          const transferLinkId = typeof crypto !== "undefined" && "randomUUID" in crypto
-            ? crypto.randomUUID()
-            : `transfer-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+          // When editing, preserve the existing transferLinkId from the original activity
+          // When creating new, generate a unique transfer link ID to pair the activities
+          let transferLinkId: string;
 
-          // Create TRANSFER_OUT activity for source account
-          const transferOutActivity = {
-            ...submitData,
-            activityType: "TRANSFER_OUT" as const,
-            assetId: `$CASH-${fromAccount.currency}`,
-            accountId: submitData.accountId,
-            transferLinkId,
-            toAccountId: String(toAccountId),
-          };
-
-          // Create TRANSFER_IN activity for destination account
-          const transferInActivity = {
-            ...submitData,
-            activityType: "TRANSFER_IN" as const,
-            assetId: `$CASH-${toAccount.currency}`,
-            accountId: toAccountId,
-            transferLinkId,
-          };
+          if (id && activity?.transferLinkId) {
+            // Preserve existing transferLinkId when editing
+            transferLinkId = activity.transferLinkId;
+          } else {
+            // Generate new transferLinkId for new transfers
+            transferLinkId = typeof crypto !== "undefined" && "randomUUID" in crypto
+              ? crypto.randomUUID()
+              : `transfer-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+          }
 
           if (id) {
-            // For updates, we would need to update both activities
-            // This is a simplified implementation - in a real app you'd need to handle this more carefully
-            await updateActivityMutation.mutateAsync({ id, ...transferOutActivity });
+            // When editing a transfer, we need to update both activities
+            // Determine which activity type we're editing and find the paired activity
+            const originalActivityType = activity?.activityType; // TRANSFER_IN or TRANSFER_OUT
+            const pairedActivity = activities?.find(a =>
+              a.transferLinkId === activity?.transferLinkId &&
+              a.id !== id
+            );
+
+            // Build the update for the current activity based on its type
+            const currentActivityUpdate = {
+              ...submitData,
+              activityType: originalActivityType === "TRANSFER_IN" ? "TRANSFER_IN" as const : "TRANSFER_OUT" as const,
+              assetId: originalActivityType === "TRANSFER_IN"
+                ? `$CASH-${toAccount.currency}`
+                : `$CASH-${fromAccount.currency}`,
+              accountId: submitData.accountId,
+              transferLinkId,
+              toAccountId: String(toAccountId),
+            };
+
+            // Update the current activity
+            await updateActivityMutation.mutateAsync({ id, ...currentActivityUpdate });
+
+            // If there's a paired activity, update it as well
+            if (pairedActivity) {
+              // The paired activity has the opposite type
+              const pairedActivityUpdate = {
+                ...submitData,
+                activityType: pairedActivity.activityType === "TRANSFER_IN" ? "TRANSFER_IN" as const : "TRANSFER_OUT" as const,
+                assetId: pairedActivity.activityType === "TRANSFER_IN"
+                  ? `$CASH-${toAccount.currency}`
+                  : `$CASH-${fromAccount.currency}`,
+                accountId: toAccountId,
+                transferLinkId,
+              };
+              await updateActivityMutation.mutateAsync({
+                id: pairedActivity.id,
+                ...pairedActivityUpdate,
+              });
+            }
           } else {
-            // Add both activities
+            // Create TRANSFER_OUT activity for source account
+            const transferOutActivity = {
+              ...submitData,
+              activityType: "TRANSFER_OUT" as const,
+              assetId: `$CASH-${fromAccount.currency}`,
+              accountId: submitData.accountId,
+              transferLinkId,
+              toAccountId: String(toAccountId),
+            };
+
+            // Create TRANSFER_IN activity for destination account
+            const transferInActivity = {
+              ...submitData,
+              activityType: "TRANSFER_IN" as const,
+              assetId: `$CASH-${toAccount.currency}`,
+              accountId: toAccountId,
+              transferLinkId,
+            };
+
+            // Add both activities for new transfers
             await addActivityMutation.mutateAsync(transferOutActivity);
             await addActivityMutation.mutateAsync(transferInActivity);
           }
