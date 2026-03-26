@@ -1,7 +1,7 @@
 import { AuthProvider } from "@/context/auth-context";
 import { SettingsProvider } from "@/lib/settings-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { TooltipProvider } from "@wealthvn/ui";
+import { TooltipProvider } from "@/ui";
 import { useState } from "react";
 import { PrivacyProvider } from "./context/privacy-context";
 import { AppRoutes } from "./routes";
@@ -21,9 +21,6 @@ function App() {
         },
       }),
   );
-
-  // Make QueryClient available globally for addons
-  window.__wealthvn_query_client__ = queryClient;
 
   return (
     <QueryClientProvider client={queryClient}>

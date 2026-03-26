@@ -15,7 +15,7 @@ import { QueryKeys } from "@/lib/query-keys";
 import { Account, Goal, GoalAllocation } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { useQueryClient } from "@tanstack/react-query";
-import { formatAmount } from "@wealthvn/ui";
+import { formatAmount } from "@/ui";
 import { Percent } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";

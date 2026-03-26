@@ -8,7 +8,7 @@ import {
   EmptyPlaceholder,
   formatAmount,
   Icons,
-} from "@wealthvn/ui";
+} from "@/ui";
 import {
   Bar,
   BarChart,
@@ -19,7 +19,7 @@ import {
   ChartTooltipContent,
   XAxis,
   YAxis,
-} from "@wealthvn/ui/chart";
+} from "@/ui/chart";
 import type { TradeDistribution } from "../types";
 import { useTranslation } from "react-i18next";
 

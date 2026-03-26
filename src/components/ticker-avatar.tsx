@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@wealthvn/ui";
+import { Avatar, AvatarFallback, AvatarImage } from "@/ui";
 
 interface TickerAvatarProps {
   symbol: string;

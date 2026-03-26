@@ -23,11 +23,11 @@ import {
   FormDescription,
   DatePickerInput,
   Input,
-} from "@wealthvn/ui";
+} from "@/ui";
 
 import { newContributionLimitSchema } from "@/lib/schemas";
 import { useContributionLimitMutations } from "../use-contribution-limit-mutations";
-import { MoneyInput } from "@wealthvn/ui";
+import { MoneyInput } from "@/ui";
 
 type NewContributionLimit = z.infer<typeof newContributionLimitSchema>;
 

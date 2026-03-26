@@ -33,7 +33,8 @@
     "accounts": "Accounts",
     "settings": "Settings",
     "goals": "Goals",
-    "assets": "Assets"
+    "assets": "Assets",
+    "ai": "AI Assistant"
   },
   "common": {
     "name": "Name",

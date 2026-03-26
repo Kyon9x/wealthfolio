@@ -29,9 +29,15 @@ export default defineConfig({
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
-      "@/components/ui": path.resolve(__dirname, "packages/ui/src/components/ui"),
-      "@wealthvn/addon-sdk": path.resolve(__dirname, "packages/addon-sdk/src"),
-      "@wealthvn/ui": path.resolve(__dirname, "packages/ui/src"),
+      "@/components/ui": path.resolve(__dirname, "src/ui/components/ui"),
+      "@/ui": path.resolve(__dirname, "src/ui"),
+      "@/components": path.resolve(__dirname, "src/components"),
+      "@/lib": path.resolve(__dirname, "src/lib"),
+      "@/hooks": path.resolve(__dirname, "src/hooks"),
+      "@/pages": path.resolve(__dirname, "src/pages"),
+      "@/adapters": path.resolve(__dirname, "src/adapters"),
+      "@/commands": path.resolve(__dirname, "src/commands"),
+      "@wealthvn/ui": path.resolve(__dirname, "src/ui"),
       "@": path.resolve(__dirname, "./src"),
     },
     extensions: [".js", ".ts", ".jsx", ".tsx", ".json"],

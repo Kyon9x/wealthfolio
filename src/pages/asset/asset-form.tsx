@@ -20,7 +20,7 @@ import { InputTags } from "@/components/ui/tag-input";
 import { Textarea } from "@/components/ui/textarea";
 import { DataSource, dataSourceSchema } from "@/lib/constants";
 import { UpdateAssetProfile } from "@/lib/types";
-import { ResponsiveSelect, type ResponsiveSelectOption } from "@wealthvn/ui";
+import { ResponsiveSelect, type ResponsiveSelectOption } from "@/ui";
 
 import { ParsedAsset, formatBreakdownTags, tagsToBreakdown } from "./asset-utils";
 

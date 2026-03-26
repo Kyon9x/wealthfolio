@@ -4,7 +4,7 @@
  */
 
 import type { Goal } from "@/lib/types";
-import { Button, Icons } from "@wealthvn/ui";
+import { Button, Icons } from "@/ui";
 import { useTranslation } from "react-i18next";
 
 interface GoalHeaderProps {

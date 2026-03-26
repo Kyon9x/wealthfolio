@@ -6,7 +6,7 @@ import {
 } from "../activity-type-selector";
 import { useFormContext } from "react-hook-form";
 import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
-import { MoneyInput } from "@wealthvn/ui";
+import { MoneyInput } from "@/ui";
 import { ConfigurationCheckbox, CommonFields, AssetSymbolInput } from "./common";
 import { useTranslation } from "react-i18next";
 

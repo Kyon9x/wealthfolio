@@ -5,6 +5,8 @@ mod commands;
 mod context;
 mod events;
 mod listeners;
+mod secret_store;
+mod ai_chat;
 
 #[cfg(not(any(target_os = "android", target_os = "ios")))]
 mod menu;
@@ -292,6 +294,28 @@ pub fn run() {
             commands::addon::install_addon_from_staging,
             commands::addon::clear_addon_staging,
             commands::addon::submit_addon_rating,
+            commands::ai::stream_chat,
+            commands::ai::list_threads,
+            commands::ai::get_thread,
+            commands::ai::create_thread,
+            commands::ai::update_thread,
+            commands::ai::delete_thread,
+            commands::ai::pin_thread,
+            commands::ai::list_providers,
+            commands::ai::get_ai_settings,
+            commands::ai::get_capabilities,
+            commands::ai::save_api_key,
+            commands::ai::get_api_key,
+            commands::ai::delete_api_key,
+            commands::ai::has_api_key,
+            commands::ai::get_thread_messages,
+            commands::ai::add_thread_tag,
+            commands::ai::remove_thread_tag,
+            commands::ai::get_thread_tags,
+            commands::ai::update_provider_settings,
+            commands::ai::set_default_provider,
+            commands::ai::list_ai_models,
+            commands::ai::update_tool_result,
         ])
         .build(tauri::generate_context!())
         .expect("error while running WealthVN application");

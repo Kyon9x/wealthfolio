@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Account, Goal, GoalAllocation } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { formatAmount } from "@wealthvn/ui";
+import { formatAmount } from "@/ui";
 import { Percent } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";

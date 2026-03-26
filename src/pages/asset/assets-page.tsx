@@ -17,7 +17,7 @@ import {
     SheetHeader,
     SheetTitle,
 } from "@/components/ui/sheet";
-import { Separator } from "@wealthvn/ui";
+import { Separator } from "@/ui";
 import { useTranslation } from "react-i18next";
 
 import { useSyncMarketDataMutation } from "@/hooks/use-sync-market-data";

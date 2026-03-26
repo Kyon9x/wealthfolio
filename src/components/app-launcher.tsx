@@ -18,7 +18,7 @@ import {
   CommandList,
   Icons,
   type Icon,
-} from "@wealthvn/ui";
+} from "@/ui";
 import React, { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -272,7 +272,6 @@ export function AppLauncher() {
     const navItems = [
       ...(navigation.primary ?? []),
       ...(navigation.secondary ?? []),
-      ...(navigation.addons ?? []),
     ] as LauncherActionItem[];
 
     return [...quickActions, ...navItems];

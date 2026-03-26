@@ -16,7 +16,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { useFormContext } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";

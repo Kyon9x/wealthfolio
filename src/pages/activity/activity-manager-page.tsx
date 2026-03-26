@@ -8,7 +8,7 @@ import { QueryKeys } from "@/lib/query-keys";
 import { Account, ActivityDetails } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
-import { Card, CardContent, Icons, Page, PageContent, PageHeader } from "@wealthvn/ui";
+import { Card, CardContent, Icons, Page, PageContent, PageHeader } from "@/ui";
 import { useMemo } from "react";
 import { useForm, type Resolver, type SubmitHandler } from "react-hook-form";
 import { useTranslation } from "react-i18next";

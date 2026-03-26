@@ -13,7 +13,7 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { useGoalProgress } from "../hooks/use-goal-progress";

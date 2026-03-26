@@ -2,7 +2,7 @@ import { Toaster } from "@/components/sonner";
 import { AppLauncher } from "@/components/app-launcher";
 import useNavigationEventListener from "@/hooks/use-navigation-event-listener";
 import { useSettings } from "@/hooks/use-settings";
-import { ApplicationShell, ErrorBoundary, PageScrollContainer } from "@wealthvn/ui";
+import { ApplicationShell, ErrorBoundary, PageScrollContainer } from "@/ui";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useNavigation } from "./navigation/app-navigation";
 import { AppSidebar } from "./navigation/app-sidebar";

@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useSettingsContext } from "@/lib/settings-provider";
 import { Account, Goal, GoalAllocation } from "@/lib/types";
-import { Icons } from "@wealthvn/ui";
+import { Icons } from "@/ui";
 import React, { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { EditSingleAllocationModal } from "./edit-single-allocation-modal";

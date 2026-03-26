@@ -3,7 +3,7 @@ import { DataTableColumnHeader } from "@/components/ui/data-table/data-table-col
 import { Lot } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataTable, formatAmount, GainAmount, GainPercent } from "@wealthvn/ui";
+import { DataTable, formatAmount, GainAmount, GainPercent } from "@/ui";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 

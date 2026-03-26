@@ -8,7 +8,7 @@ import {
   SelectValue,
   Badge,
   SearchableSelect,
-} from "@wealthvn/ui";
+} from "@/ui";
 import {
   ImportFormat,
   ActivityType,

@@ -19,7 +19,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { DatePickerInput, Icons, MoneyInput } from "@wealthvn/ui";
+import { DatePickerInput, Icons, MoneyInput } from "@/ui";
 
 import {
   DialogDescription,

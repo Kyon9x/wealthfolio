@@ -3,7 +3,7 @@
  * Displays the growth projection chart with time period selector
  */
 
-import { AnimatedToggleGroup, formatAmount, Icons, Skeleton } from "@wealthvn/ui";
+import { AnimatedToggleGroup, formatAmount, Icons, Skeleton } from "@/ui";
 import { useTranslation } from "react-i18next";
 import {
     Area,

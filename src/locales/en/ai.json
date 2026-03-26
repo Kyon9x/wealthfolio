@@ -1,0 +1,25 @@
+{
+  "chat": {
+    "title": "AI Assistant",
+    "conversations": "Conversations",
+    "inputPlaceholder": "Send a message...",
+    "disclaimer": "Responses may be inaccurate. Not financial advice.",
+    "stop": "Stop",
+    "welcome": "Hello there!",
+    "welcomeSubtitle": "How can I help you today?",
+    "suggestions": {
+      "performance": "How is my portfolio performing this year?",
+      "holdings": "What are my top performing holdings?",
+      "dividends": "Show my dividend income summary",
+      "allocation": "Analyze my asset allocation"
+    }
+  },
+  "threadList": {
+    "newThread": "New Thread",
+    "searchPlaceholder": "Search threads...",
+    "pinned": "Pinned",
+    "recent": "Recent",
+    "noThreads": "No conversations yet.",
+    "noSearchResults": "No threads match your search."
+  }
+}

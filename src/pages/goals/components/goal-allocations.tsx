@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { Account, Goal, GoalAllocation } from "@/lib/types";
-import { formatAmount } from "@wealthvn/ui";
+import { formatAmount } from "@/ui";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 

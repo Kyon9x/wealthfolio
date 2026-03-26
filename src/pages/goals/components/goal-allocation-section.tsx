@@ -4,7 +4,7 @@
  */
 
 import type { Account, Goal, GoalAllocation } from "@/lib/types";
-import { Button, Icons } from "@wealthvn/ui";
+import { Button, Icons } from "@/ui";
 import { useTranslation } from "react-i18next";
 import { AllocationHistoryTable } from "./allocation-history-table";
 import GoalsAllocations from "./goal-allocations";

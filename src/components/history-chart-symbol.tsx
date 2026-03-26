@@ -1,6 +1,6 @@
 import { TimePeriod } from "@/lib/types";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, YAxis } from "recharts";
-import { formatAmount } from "@wealthvn/ui";
+import { formatAmount } from "@/ui";
 import { formatDate } from "@/lib/utils";
 
 interface CustomTooltipProps<TPayload = { timestamp: string; currency: string }> {

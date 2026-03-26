@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Icons } from "@wealthvn/ui";
+import { Icons } from "@/ui";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 
@@ -13,7 +13,6 @@ export const OnboardingStep3: React.FC = () => {
     { id: "explore-dashboard", label: t("step3.checklist.exploreDashboard") },
     { id: "create-goals", label: t("step3.checklist.createGoals") },
     { id: "set-limits", label: t("step3.checklist.setLimits") },
-    { id: "install-addons", label: t("step3.checklist.installAddons") },
   ];
 
   const toggleChecklistItem = (id: string) => {

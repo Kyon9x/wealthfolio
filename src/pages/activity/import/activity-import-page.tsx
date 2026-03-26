@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { QueryKeys } from "@/lib/query-keys";
 import type { Account, ActivityImport, ImportMappingData } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
-import { AlertFeedback, Page, PageContent, PageHeader } from "@wealthvn/ui";
+import { AlertFeedback, Page, PageContent, PageHeader } from "@/ui";
 import { AnimatePresence, motion } from "motion/react";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";

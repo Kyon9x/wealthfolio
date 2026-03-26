@@ -10,9 +10,6 @@ const useNavigationEventListener = () => {
       return;
     };
 
-    // Make navigate function available globally for addons
-    window.__wealthvn_navigate__ = navigate;
-
     const setupNavigationListener = async () => {
       const handleNavigateToRoute = (event: { payload: { route: string } }) => {
         const { route } = event.payload;
@@ -32,8 +29,6 @@ const useNavigationEventListener = () => {
       });
 
     return () => {
-      // Clean up global reference
-      delete window.__wealthvn_navigate__;
       cleanup();
     };
   }, [navigate]);

@@ -16,7 +16,7 @@ import {
   FormMessage,
   MoneyInput,
   QuantityInput,
-} from "@wealthvn/ui";
+} from "@/ui";
 import { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { useTranslation } from "react-i18next";

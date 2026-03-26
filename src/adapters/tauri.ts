@@ -7,94 +7,8 @@ import { debug, error, info, trace, warn } from "@tauri-apps/plugin-log";
 
 export type { EventCallback, UnlistenFn };
 
-    import type {
-        AddonInstallResult,
-        AddonManifest,
-        AddonUpdateCheckResult,
-        AddonUpdateInfo,
-        AddonValidationResult,
-        AddonFile as BaseAddonFile,
-        FunctionPermission,
-        Permission,
-    } from "@wealthvn/addon-sdk";
-
-// Tauri-specific types with camelCase serialization to match Rust
-export interface AddonFile extends Omit<BaseAddonFile, "is_main"> {
-  isMain: boolean;
-}
-
-// Re-export SDK types directly
-export type {
-    AddonInstallResult,
-    AddonManifest,
-    AddonUpdateCheckResult,
-    AddonUpdateInfo,
-    AddonValidationResult,
-    FunctionPermission,
-    Permission
-};
-
-export interface ExtractedAddon {
-  metadata: AddonManifest;
-  files: AddonFile[];
-}
-
-export interface InstalledAddon {
-  metadata: AddonManifest;
-  /** File path where the addon is stored (Tauri-specific) */
-  filePath: string;
-  /** Whether this is a ZIP-based addon (Tauri-specific) */
-  isZipAddon: boolean;
-}
-
 export const invokeTauri = async <T>(command: string, payload?: Record<string, unknown>) => {
   return await invoke<T>(command, payload);
-};
-
-export const extractAddonZip = async (zipData: Uint8Array): Promise<ExtractedAddon> => {
-  return await invoke<ExtractedAddon>("extract_addon_zip", { zipData: Array.from(zipData) });
-};
-
-export const installAddonZip = async (
-  zipData: Uint8Array,
-  enableAfterInstall?: boolean,
-): Promise<AddonManifest> => {
-  return await invoke<AddonManifest>("install_addon_zip", {
-    zipData: Array.from(zipData),
-    enableAfterInstall,
-  });
-};
-
-export const installAddonFile = async (
-  fileName: string,
-  fileContent: string,
-  enableAfterInstall?: boolean,
-): Promise<AddonManifest> => {
-  return await invoke<AddonManifest>("install_addon_file", {
-    fileName,
-    fileContent,
-    enableAfterInstall,
-  });
-};
-
-export const listInstalledAddons = async (): Promise<InstalledAddon[]> => {
-  return await invoke<InstalledAddon[]>("list_installed_addons");
-};
-
-export const toggleAddon = async (addonId: string, enabled: boolean): Promise<void> => {
-  return await invoke<void>("toggle_addon", { addonId, enabled });
-};
-
-export const uninstallAddon = async (addonId: string): Promise<void> => {
-  return await invoke<void>("uninstall_addon", { addonId });
-};
-
-export const loadAddonForRuntime = async (addonId: string): Promise<ExtractedAddon> => {
-  return await invoke<ExtractedAddon>("load_addon_for_runtime", { addonId });
-};
-
-export const getEnabledAddonsOnStartup = async (): Promise<ExtractedAddon[]> => {
-  return await invoke<ExtractedAddon[]>("get_enabled_addons_on_startup");
 };
 
 export const openCsvFileDialogTauri = async (): Promise<null | string | string[]> => {
@@ -211,13 +125,4 @@ export const logger = {
 
 export const readBinaryFileTauri = async (path: string): Promise<Uint8Array> => {
   return await readFile(path);
-};
-
-export const openAddonZipFileDialogTauri = async (): Promise<string | null> => {
-  const selected = await open({
-    filters: [{ name: "Addon Packages", extensions: ["zip"] }],
-    multiple: false,
-  });
-  if (Array.isArray(selected)) return selected[0] ?? null;
-  return selected;
 };

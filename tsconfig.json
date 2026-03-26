@@ -4,22 +4,18 @@
     // Main app specific settings
     "types": ["@tauri-apps/api", "vitest/globals", "@testing-library/jest-dom", "node"],
     "noEmit": true,
-    "composite": false, // Main app doesn't need to be composite
-
+    "composite": false,
+    // "ignoreDeprecations": "6.0", // Not supported in TypeScript 5.7.3
+    "skipLibCheck": true,
     // Path mapping for main app
     "paths": {
       "@/*": ["./src/*"],
-      "@wealthvn/addon-sdk": ["packages/addon-sdk/src"],
-      "@wealthvn/ui": ["packages/ui/src"],
-      "@wealthvn/ui/*": ["packages/ui/src/*"],
-      "@/components/ui/*": ["packages/ui/src/components/ui/*"]
+      "@/components/ui/*": ["./src/ui/components/ui/*"]
     }
   },
-  "include": ["src"],
-  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test"],
+  "include": ["src/**/*"],
+  "exclude": ["src/**/*.test.ts", "src/**/*.spec.ts", "src/test", "src/pages"],
   "references": [
-    { "path": "./tsconfig.node.json" },
-    { "path": "./packages/ui" },
-    { "path": "./packages/addon-sdk" }
+    { "path": "./tsconfig.node.json" }
   ]
 }
